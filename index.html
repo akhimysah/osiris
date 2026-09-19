@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSIRIS — Holding Group</title>
+<meta name="description" content="OSIRIS Group — Holding privé multi-secteurs. F&B, Immobilier de luxe, Lifestyle, Tech. 13 maisons, 3 univers.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg: #000;
+    --cream: #f5f2ec;
+    --dim: rgba(245,242,236,0.5);
+    --mute: rgba(245,242,236,0.35);
+    --line: rgba(245,242,236,0.15);
+    --accent: #c9a961;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* Grain overlay everywhere */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.25;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
+}
+
+::selection { background: var(--cream); color: var(--bg); }
+
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+a { color: inherit; text-decoration: none; }
+
+/* ======= CURSOR ======= */
+.cursor-dot, .cursor-ring {
+    position: fixed; pointer-events: none; z-index: 9999;
+    top: 0; left: 0;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+}
+.cursor-dot {
+    width: 6px; height: 6px;
+    background: var(--cream);
+    border-radius: 50%;
+}
+.cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--cream);
+    border-radius: 50%;
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+}
+.cursor-ring.hover { width: 80px; height: 80px; }
+.cursor-ring.view-mode { width: 120px; height: 120px; background: var(--cream); border: none; }
+.cursor-ring.view-mode::after {
+    content: "VIEW"; position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Archivo', sans-serif; font-weight: 700;
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--bg);
+}
+
+/* ======= LOADER ======= */
+.loader {
+    position: fixed; inset: 0;
+    background: #000;
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    transition: opacity 0.8s, visibility 0.8s;
+}
+.loader.hidden { opacity: 0; visibility: hidden; }
+
+/* --- Scanning sweep line --- */
+.loader::before {
+    content: "";
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cream) 30%, var(--cream) 70%, transparent);
+    box-shadow: 0 0 40px rgba(245,242,236,0.6);
+    animation: loaderSweep 1.0s cubic-bezier(0.77,0,0.18,1) forwards;
+    animation-delay: 0.1s;
+    opacity: 0;
+    z-index: 4;
+}
+@keyframes loaderSweep {
+    0%   { transform: translateY(0); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* --- Stage container --- */
+.loader-stage {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; height: 100%;
+}
+
+/* --- The G LOGO (stage 1) --- */
+.loader-logo {
+    position: absolute;
+    width: clamp(140px, 24vw, 280px);
+    height: clamp(140px, 24vw, 280px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    animation:
+        logoIn 0.01s linear forwards 0.25s,
+        logoPulse 0.35s ease-in-out 1.55s 1,
+        logoGlitch 0.35s steps(1) 1.9s,
+        logoOut 0.45s cubic-bezier(0.77,0,0.18,1) forwards 2.25s;
+}
+.loader-logo { overflow: visible; }
+.loader-logo svg,
+.loader-logo-ghost svg {
+    width: 100%; height: 100%;
+    display: block;
+    overflow: visible;
+}
+.loader-logo svg {
+    filter: drop-shadow(0 0 30px rgba(245,242,236,0.25));
+    transform: scale(1.15);
+    animation: logoZoom 1.4s cubic-bezier(0.19,1,0.22,1) forwards 0.3s;
+}
+.loader-logo svg circle,
+.loader-logo svg path,
+.loader-logo-ghost svg circle,
+.loader-logo-ghost svg path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+}
+.loader-logo svg circle {
+    animation: logoDraw 1.2s cubic-bezier(0.77,0,0.18,1) forwards 0.3s;
+}
+.loader-logo svg path {
+    animation: logoDraw 0.8s cubic-bezier(0.77,0,0.18,1) forwards 1.0s;
+}
+.loader-logo-ghost svg circle,
+.loader-logo-ghost svg path {
+    stroke-dashoffset: 0;
+}
+@keyframes logoDraw {
+    to { stroke-dashoffset: 0; }
+}
+@keyframes logoZoom {
+    to { transform: scale(1); }
+}
+@keyframes logoIn { to { opacity: 1; } }
+@keyframes logoPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.12); filter: drop-shadow(0 0 50px rgba(245,242,236,0.6)) brightness(1.3); }
+}
+@keyframes logoGlitch {
+    0%   { transform: translate(0, 0) scale(1); }
+    20%  { transform: translate(-6px, 2px) scale(1.03); }
+    40%  { transform: translate(5px, -3px) scale(0.98); }
+    60%  { transform: translate(-3px, 4px) scale(1.04); }
+    80%  { transform: translate(4px, -2px) scale(1); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes logoOut {
+    0%   { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-60px) scale(0.4); opacity: 0; }
+}
+
+/* RGB ghost duplicates during glitch */
+.loader-logo-ghost {
+    position: absolute;
+    width: clamp(140px, 24vw, 280px);
+    height: clamp(140px, 24vw, 280px);
+    mix-blend-mode: screen;
+    opacity: 0;
+    pointer-events: none;
+    animation: ghostFlicker 0.35s steps(3) 1.9s;
+}
+.loader-logo-ghost svg {
+    mix-blend-mode: screen;
+}
+.loader-logo-ghost.red  svg { stroke: #ff003c; }
+.loader-logo-ghost.cyan svg { stroke: #00e5ff; }
+@keyframes ghostFlicker {
+    0%, 100% { opacity: 0; transform: translate(0,0); }
+    33%      { opacity: 0.9; transform: translate(-9px, 3px); }
+    66%      { opacity: 0.6; transform: translate(8px, -4px); }
+}
+
+/* Crosshair + brackets (stage 1 only) */
+.loader-crosshair, .loader-bracket {
+    position: absolute; pointer-events: none;
+    opacity: 0;
+    animation: reticleIn 0.3s ease forwards 0.2s,
+               reticleOut 0.3s ease forwards 2.2s;
+}
+.loader-crosshair {
+    width: clamp(180px, 32vw, 380px);
+    height: clamp(180px, 32vw, 380px);
+}
+.loader-crosshair::before,
+.loader-crosshair::after {
+    content: ""; position: absolute;
+    background: rgba(245,242,236,0.15);
+}
+.loader-crosshair::before { left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-50%); }
+.loader-crosshair::after  { top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-50%); }
+.loader-bracket {
+    width: clamp(200px, 36vw, 420px);
+    height: clamp(200px, 36vw, 420px);
+}
+.loader-bracket span {
+    position: absolute; width: 18px; height: 18px;
+    border-color: var(--cream);
+    border-style: solid;
+}
+.loader-bracket span:nth-child(1) { top: 0; left: 0; border-width: 2px 0 0 2px; }
+.loader-bracket span:nth-child(2) { top: 0; right: 0; border-width: 2px 2px 0 0; }
+.loader-bracket span:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+.loader-bracket span:nth-child(4) { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+@keyframes reticleIn  { to { opacity: 1; } }
+@keyframes reticleOut { to { opacity: 0; } }
+
+/* --- OSIRIS wordmark (stage 2 — animation ORIGINALE conservée) --- */
+.loader-word {
+    position: absolute;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 12vw, 10rem);
+    letter-spacing: -0.06em;
+    line-height: 0.8;
+    text-transform: uppercase;
+    overflow: hidden;
+    opacity: 0;
+    animation: wordAppear 0.01s linear forwards 2.55s;
+}
+.loader-word span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100%);
+    animation: loadLetter 0.8s cubic-bezier(0.77,0,0.18,1) forwards;
+}
+.loader-word span:nth-child(1) { animation-delay: 2.65s; }
+.loader-word span:nth-child(2) { animation-delay: 2.75s; }
+.loader-word span:nth-child(3) { animation-delay: 2.85s; }
+.loader-word span:nth-child(4) { animation-delay: 2.95s; }
+.loader-word span:nth-child(5) { animation-delay: 3.05s; }
+.loader-word span:nth-child(6) { animation-delay: 3.15s; }
+@keyframes wordAppear { to { opacity: 1; } }
+@keyframes loadLetter {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Corner meta (tickers) --- */
+.loader-count {
+    position: absolute; bottom: 3rem; left: 3rem;
+    font-family: 'Archivo', sans-serif; font-weight: 500;
+    font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--dim);
+    z-index: 6;
+}
+.loader-count span { color: var(--cream); }
+.loader-meta {
+    position: absolute; bottom: 3rem; right: 3rem;
+    font-family: 'Archivo', sans-serif; font-weight: 500;
+    font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--dim);
+    text-align: right;
+    z-index: 6;
+}
+.loader-tag-tl {
+    position: absolute; top: 2rem; left: 2rem;
+    font-family: 'Archivo', sans-serif; font-weight: 600;
+    font-size: 0.62rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--dim); z-index: 6;
+    display: flex; gap: 0.7rem; align-items: center;
+}
+.loader-tag-tl .blink {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: tagBlink 0.6s infinite;
+}
+.loader-tag-tr {
+    position: absolute; top: 2rem; right: 2rem;
+    font-family: 'Archivo', sans-serif; font-weight: 500;
+    font-size: 0.62rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--dim); z-index: 6;
+    text-align: right;
+}
+@keyframes tagBlink { 50% { opacity: 0.25; } }
+
+/* ======= NAV ======= */
+nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.8rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    mix-blend-mode: difference;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cream);
+}
+nav .logo {
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 1rem;
+}
+nav .links { display: flex; gap: 2.5rem; }
+nav .links a { position: relative; transition: opacity 0.3s; }
+nav .links a:hover { opacity: 0.5; }
+nav .menu-btn {
+    display: flex; align-items: center; gap: 0.6rem;
+    cursor: none;
+}
+nav .menu-btn .dot {
+    width: 6px; height: 6px; background: var(--cream); border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+}
+
+/* ======= HERO ======= */
+.hero {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 3rem 2.5rem 2rem;
+    overflow: hidden;
+}
+.hero-bg {
+    position: absolute; inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+.hero-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.55) contrast(1.1) grayscale(0.3);
+    animation: slowZoom 20s ease-in-out infinite alternate;
+}
+@keyframes slowZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
+.hero-bg::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.9) 100%);
+}
+.hero-content {
+    position: relative; z-index: 2;
+    width: 100%;
+}
+.hero-top {
+    position: absolute;
+    top: 5rem;
+    left: 0;
+    display: flex; gap: 4rem;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500; font-size: 0.7rem;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--dim);
+}
+.hero-top span:first-child { color: var(--cream); }
+.hero-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(4rem, 18vw, 20rem);
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+.hero-title .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    text-transform: none;
+}
+.hero-bottom {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+}
+.hero-desc {
+    max-width: 400px;
+    font-size: 0.85rem; line-height: 1.5;
+    color: var(--dim);
+    font-weight: 300;
+}
+.hero-stats {
+    display: flex; gap: 3rem;
+    font-family: 'Archivo', sans-serif;
+}
+.hero-stats .stat-num {
+    font-weight: 900;
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+.hero-stats .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-top: 0.5rem;
+}
+.scroll-indicator {
+    position: absolute;
+    right: 2.5rem; bottom: 2rem;
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--dim);
+    writing-mode: vertical-rl;
+    display: flex; align-items: center; gap: 1rem;
+}
+.scroll-indicator::after {
+    content: "";
+    width: 1px; height: 40px;
+    background: var(--cream);
+    animation: scrollLine 2s infinite;
+}
+@keyframes scrollLine {
+    0%, 100% { transform: scaleY(1); transform-origin: top; }
+    50% { transform: scaleY(0.3); transform-origin: top; }
+}
+
+/* ======= MARQUEE ======= */
+.marquee {
+    padding: 2rem 0;
+    overflow: hidden;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+.marquee-track {
+    display: flex; gap: 4rem;
+    white-space: nowrap;
+    animation: marquee 40s linear infinite;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+}
+.marquee-track .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+}
+.marquee-track span { display: flex; align-items: center; gap: 4rem; }
+.marquee-track .dot {
+    display: inline-block;
+    width: 10px; height: 10px; background: var(--cream);
+    border-radius: 50%;
+}
+@keyframes marquee {
+    to { transform: translateX(-50%); }
+}
+
+/* ======= INTRO ======= */
+.intro {
+    padding: 10rem 2.5rem 6rem;
+    position: relative;
+}
+.intro-label {
+    display: flex; align-items: center; gap: 1rem;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500; font-size: 0.7rem;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 4rem;
+}
+.intro-label::before {
+    content: ""; display: inline-block;
+    width: 40px; height: 1px; background: var(--cream);
+}
+.intro-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    max-width: 1400px;
+}
+.intro-title .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    margin-top: 8rem;
+    align-items: start;
+}
+.intro-text p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: var(--cream);
+    font-weight: 300;
+}
+.intro-text p.mute { color: var(--dim); font-size: 0.95rem; }
+.intro-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    border-left: 1px solid var(--line);
+    padding-left: 3rem;
+}
+.intro-stats .stat {
+    display: flex; flex-direction: column;
+}
+.intro-stats .stat-num {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 6vw, 5rem);
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+}
+.intro-stats .stat-num sup {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 0.4em;
+    color: var(--accent);
+    vertical-align: top;
+}
+.intro-stats .stat-label {
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-top: 0.8rem;
+}
+
+/* ======= BRAND LIST (Balenciaga-style hover image) ======= */
+.brands-list {
+    padding: 8rem 2.5rem;
+    border-top: 1px solid var(--line);
+    position: relative;
+}
+.brands-list-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 4rem;
+}
+.brands-list-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+}
+.brands-list-title .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.brands-list-count {
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+.brand-line {
+    display: grid;
+    grid-template-columns: 60px 1fr auto 140px 40px;
+    gap: 2rem;
+    align-items: center;
+    padding: 2rem 0;
+    border-top: 1px solid var(--line);
+    position: relative;
+    transition: padding-left 0.5s cubic-bezier(0.77,0,0.18,1);
+}
+.brand-line:last-child { border-bottom: 1px solid var(--line); }
+.brand-line:hover { padding-left: 2rem; }
+.brand-line .idx {
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--dim);
+}
+.brand-line .name {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    transition: transform 0.5s cubic-bezier(0.77,0,0.18,1);
+}
+.brand-line:hover .name { transform: translateX(20px); }
+.brand-line .category {
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+.brand-line .universe {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--mute);
+}
+.brand-line .arrow {
+    font-family: 'Archivo', sans-serif;
+    font-size: 1.2rem;
+    transition: transform 0.5s cubic-bezier(0.77,0,0.18,1);
+}
+.brand-line:hover .arrow { transform: translateX(10px) rotate(-45deg); }
+
+/* Hover image follower */
+.hover-image {
+    position: fixed;
+    width: 340px; height: 440px;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.4s;
+    overflow: hidden;
+    will-change: transform;
+}
+.hover-image.active { opacity: 1; }
+.hover-image img, .hover-image video {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(0.15) contrast(1.05);
+    transition: transform 0.6s cubic-bezier(0.77,0,0.18,1);
+    display: none;
+}
+.hover-image.active.is-img img { display: block; }
+.hover-image.active.is-video video { display: block; }
+.hover-image.is-logo { background: #0a0a0a; }
+.hover-image.is-logo img {
+    object-fit: contain;
+    padding: 3.5rem;
+    filter: none;
+}
+
+/* ======= UNIVERSES (horizontal scroll) ======= */
+.universes {
+    padding: 8rem 0 0;
+    border-top: 1px solid var(--line);
+}
+.universes-head {
+    padding: 0 2.5rem;
+    margin-bottom: 4rem;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 4rem;
+}
+.universes-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 10vw, 9rem);
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    line-height: 0.9;
+}
+.universes-title .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.universes-desc {
+    max-width: 340px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--dim);
+    padding-bottom: 1rem;
+}
+.universe-strip {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    gap: 2rem;
+    padding: 0 2.5rem 2rem;
+    scrollbar-width: none;
+}
+.universe-strip::-webkit-scrollbar { display: none; }
+.universe-card {
+    flex: 0 0 70vw;
+    min-width: 500px;
+    height: 85vh;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+}
+.universe-card img {
+    transition: transform 1.2s cubic-bezier(0.77,0,0.18,1);
+    filter: brightness(0.65) grayscale(0.2);
+}
+.universe-card:hover img { transform: scale(1.05); }
+.universe-card::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.85) 100%);
+}
+.universe-card-content {
+    position: absolute;
+    inset: 0;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 2;
+}
+.universe-card-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+}
+.universe-card-num {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500; font-size: 0.7rem;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--cream);
+}
+.universe-card-count {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: 3rem;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+}
+.universe-card-count sup {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.3em;
+    color: var(--accent);
+    vertical-align: top;
+    margin-left: 0.3rem;
+}
+.universe-card-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 4rem);
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    text-transform: uppercase;
+}
+.universe-card-title .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.universe-card-brands {
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-top: 1rem;
+    line-height: 1.8;
+}
+
+/* ======= EDITORIAL (full-bleed image + text) ======= */
+.editorial {
+    margin-top: 8rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 100vh;
+}
+.editorial-img {
+    position: relative;
+    overflow: hidden;
+}
+.editorial-img img {
+    filter: grayscale(0.3) contrast(1.05) brightness(0.85);
+    transition: transform 8s linear;
+}
+.editorial-img:hover img { transform: scale(1.05); }
+.editorial-text {
+    padding: 6rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #0a0908;
+    border-left: 1px solid var(--line);
+}
+.editorial-tag {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500; font-size: 0.7rem;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+}
+.editorial-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+}
+.editorial-title .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.editorial-body p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--dim);
+    margin-bottom: 1.5rem;
+}
+
+/* ======= MANIFESTO ======= */
+.manifesto {
+    padding: 12rem 2.5rem;
+    position: relative;
+    text-align: center;
+    border-top: 1px solid var(--line);
+    overflow: hidden;
+}
+.manifesto-bg {
+    position: absolute; inset: 0; z-index: 0;
+    opacity: 0.15;
+}
+.manifesto-bg img {
+    filter: grayscale(1) contrast(1.2);
+}
+.manifesto-content {
+    position: relative; z-index: 2;
+    max-width: 1400px; margin: 0 auto;
+}
+.manifesto-label {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500; font-size: 0.7rem;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 4rem;
+}
+.manifesto-quote {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+}
+.manifesto-quote .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.manifesto-sign {
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-top: 4rem;
+}
+
+/* ======= SHOWCASE VIDEO ======= */
+.showcase {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+.showcase-video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+}
+.showcase-video video {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(0.1) contrast(1.05);
+}
+.showcase::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 35%, rgba(0,0,0,0.1) 65%, rgba(0,0,0,0.85) 100%);
+    z-index: 1;
+}
+.showcase-content {
+    position: relative; z-index: 2;
+    height: 100%;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 4rem 3rem;
+}
+.showcase-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--cream);
+}
+.showcase-top .label { color: var(--accent); }
+.showcase-bottom {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 3rem; flex-wrap: wrap;
+}
+.showcase-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 9vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: var(--cream);
+}
+.showcase-title .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.showcase-meta {
+    font-size: 0.85rem;
+    color: var(--dim);
+    max-width: 360px;
+    line-height: 1.7;
+    text-align: right;
+}
+.showcase-meta a {
+    display: inline-block;
+    margin-top: 1.2rem;
+    color: var(--cream);
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 0.2rem;
+    font-size: 0.7rem;
+    letter-spacing: 3px; text-transform: uppercase;
+}
+@media (max-width: 720px) {
+    .showcase { height: 80vh; }
+    .showcase-content { padding: 2rem 1.5rem; }
+    .showcase-meta { text-align: left; }
+}
+
+/* ======= TIMELINE ======= */
+.timeline {
+    padding: 8rem 2.5rem;
+    border-top: 1px solid var(--line);
+}
+.timeline-head {
+    margin-bottom: 5rem;
+}
+.timeline-title {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    max-width: 1000px;
+}
+.timeline-title .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    border-top: 1px solid var(--line);
+    padding-top: 3rem;
+}
+.timeline-item {
+    padding-right: 2rem;
+}
+.timeline-year {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: 3rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+.timeline-event {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+.timeline-desc {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--dim);
+}
+
+/* ======= CONTACT ======= */
+.contact {
+    padding: 10rem 2.5rem 4rem;
+    border-top: 1px solid var(--line);
+    position: relative;
+}
+.contact-label {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500; font-size: 0.7rem;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 3rem;
+    display: flex; align-items: center; gap: 1rem;
+}
+.contact-label::before {
+    content: ""; width: 40px; height: 1px; background: var(--cream);
+}
+.contact-headline {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 12vw, 16rem);
+    line-height: 0.85;
+    letter-spacing: -0.055em;
+    text-transform: uppercase;
+}
+.contact-headline .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    text-transform: none;
+}
+.contact-email {
+    display: inline-block;
+    margin-top: 4rem;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.2rem, 3vw, 2.5rem);
+    letter-spacing: -0.02em;
+    text-transform: none;
+    border-bottom: 1px solid var(--cream);
+    padding-bottom: 0.3rem;
+    transition: opacity 0.3s;
+}
+.contact-email:hover { opacity: 0.5; }
+.contact-meta {
+    margin-top: 5rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--line);
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.contact-meta .label {
+    color: var(--dim);
+    margin-bottom: 0.8rem;
+    display: block;
+    font-size: 0.65rem;
+}
+.contact-social {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: baseline;
+}
+.contact-social-label {
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+.contact-social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+}
+.contact-social-links a {
+    position: relative;
+    color: var(--ink);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+.contact-social-links a::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -4px;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s cubic-bezier(0.77,0,0.18,1);
+}
+.contact-social-links a:hover::after { transform: scaleX(1); }
+.contact-social-links a:hover { opacity: 0.6; }
+.contact-social-links a sup {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0;
+    margin-left: 0.3rem;
+    color: var(--dim);
+    font-style: italic;
+    vertical-align: super;
+}
+
+/* ======= FOOTER ======= */
+footer {
+    padding: 2rem 2.5rem;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+footer .logo-big {
+    font-weight: 900;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    text-transform: uppercase;
+}
+
+/* ======= REVEAL ANIM ======= */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s cubic-bezier(0.77,0,0.18,1), transform 1s cubic-bezier(0.77,0,0.18,1);
+}
+.reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ======= RESPONSIVE ======= */
+@media (max-width: 900px) {
+    nav { padding: 1.2rem 1.5rem; }
+    nav .links { display: none; }
+    .hero { padding: 3rem 1.5rem 1.5rem; }
+    .hero-bottom { flex-direction: column; align-items: stretch; }
+    .intro, .brands-list, .universes, .manifesto, .timeline, .contact {
+        padding-left: 1.5rem; padding-right: 1.5rem;
+    }
+    .intro-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .intro-stats { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 2rem; }
+    .editorial { grid-template-columns: 1fr; }
+    .editorial-text { padding: 3rem 1.5rem; border-left: none; border-top: 1px solid var(--line); }
+    .editorial-img { min-height: 60vh; }
+    .brand-line {
+        grid-template-columns: 40px 1fr 30px;
+        gap: 1rem;
+    }
+    .brand-line .category, .brand-line .universe { display: none; }
+    .timeline-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .contact-meta { grid-template-columns: 1fr 1fr; }
+    .universe-card { flex-basis: 85vw; min-width: 300px; height: 75vh; }
+    .scroll-indicator { display: none; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+    body { cursor: auto; }
+    .cursor-dot, .cursor-ring { display: none; }
+    .hover-image { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor-dot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- HOVER IMAGE -->
+<div class="hover-image" id="hoverImage"><img src="" alt=""><video muted loop playsinline preload="metadata"></video></div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+    <div class="loader-tag-tl"><span class="blink"></span><span>LIVE · OSR/G-01</span></div>
+    <div class="loader-tag-tr">SYSTEM BOOT<br>v.2026.04</div>
+
+    <div class="loader-stage">
+        <!-- Reticle -->
+        <div class="loader-crosshair"></div>
+        <div class="loader-bracket"><span></span><span></span><span></span><span></span></div>
+
+        <!-- STAGE 1 — The G logo (inline SVG, stroke-drawn) -->
+        <div class="loader-logo-ghost red">
+            <svg viewBox="0 0 280 280" fill="none" stroke="#f5f2ec" stroke-width="23.6" stroke-linecap="butt" stroke-linejoin="miter">
+                <circle cx="137.3" cy="139.1" r="98.2" pathLength="1"/>
+                <path d="M 209.1 120.5 L 147.7 120.5 L 147.7 195.5" pathLength="1"/>
+            </svg>
+        </div>
+        <div class="loader-logo-ghost cyan">
+            <svg viewBox="0 0 280 280" fill="none" stroke="#f5f2ec" stroke-width="23.6" stroke-linecap="butt" stroke-linejoin="miter">
+                <circle cx="137.3" cy="139.1" r="98.2" pathLength="1"/>
+                <path d="M 209.1 120.5 L 147.7 120.5 L 147.7 195.5" pathLength="1"/>
+            </svg>
+        </div>
+        <div class="loader-logo">
+            <svg viewBox="0 0 280 280" fill="none" stroke="#f5f2ec" stroke-width="23.6" stroke-linecap="butt" stroke-linejoin="miter">
+                <circle cx="137.3" cy="139.1" r="98.2" pathLength="1"/>
+                <path d="M 209.1 120.5 L 147.7 120.5 L 147.7 195.5" pathLength="1"/>
+            </svg>
+        </div>
+
+        <!-- STAGE 2 — OSIRIS wordmark (animation originale) -->
+        <div class="loader-word">
+            <span>O</span><span>S</span><span>I</span><span>R</span><span>I</span><span>S</span>
+        </div>
+    </div>
+
+    <div class="loader-count"><span id="loadCount">0</span>%</div>
+    <div class="loader-meta">Holding Group<br>Est. 2023</div>
+</div>
+
+<!-- NAV -->
+<nav>
+    <a href="#" class="logo">OSIRIS</a>
+    <div class="links">
+        <a href="#intro">Groupe</a>
+        <a href="#brands">Maisons</a>
+        <a href="#universes">Univers</a>
+        <a href="#timeline">Histoire</a>
+        <a href="#contact">Contact</a>
+    </div>
+    <div class="menu-btn">
+        <span class="dot"></span>
+        <span>FR / EN</span>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg">
+        <img src="https://william-sharper.myshopify.com/cdn/shop/files/hf_20260404_003553_32dd8f80-ce83-4d12-9ed9-9575e3f67f81.png" alt="">
+    </div>
+    <div class="hero-content">
+        <div class="hero-top">
+            <span>Holding privé</span>
+            <span>Multi-secteurs</span>
+            <span>Est. 2023</span>
+            <span>France × Maroc</span>
+        </div>
+        <h1 class="hero-title">
+            Osiris<br>
+            <span class="serif">group.</span>
+        </h1>
+        <div class="hero-bottom">
+            <div class="hero-desc">
+                Treize maisons. Trois univers. Un seul groupe.<br>
+                Le holding qui détient, structure et élève les marques de demain.
+            </div>
+            <div class="hero-stats">
+                <div>
+                    <div class="stat-num">13</div>
+                    <div class="stat-label">Maisons</div>
+                </div>
+                <div>
+                    <div class="stat-num">03</div>
+                    <div class="stat-label">Univers</div>
+                </div>
+                <div>
+                    <div class="stat-num">100<sup style="font-size:0.5em">%</sup></div>
+                    <div class="stat-label">Détention</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-indicator">SCROLL</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+    <div class="marquee-track">
+        <span>BUILD</span><span class="serif">·</span>
+        <span>OWN</span><span class="serif">·</span>
+        <span>ELEVATE</span><span class="serif">·</span>
+        <span>BUILD</span><span class="serif">·</span>
+        <span>OWN</span><span class="serif">·</span>
+        <span>ELEVATE</span><span class="serif">·</span>
+        <span>BUILD</span><span class="serif">·</span>
+        <span>OWN</span><span class="serif">·</span>
+        <span>ELEVATE</span><span class="serif">·</span>
+    </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro" id="intro">
+    <div class="intro-label reveal">01 — Le Groupe</div>
+    <h2 class="intro-title reveal">
+        Un <span class="serif">holding</span><br>
+        multi-secteurs,<br>
+        à la <span class="serif">française.</span>
+    </h2>
+    <div class="intro-grid">
+        <div class="intro-text reveal reveal-delay-1">
+            <p>
+                À l'image des grandes maisons mères — LVMH, Kering, Richemont — Osiris Group est un holding privé qui détient l'intégralité de son portefeuille de marques.
+            </p>
+            <p class="mute">
+                Restauration de caractère. Immobilier de prestige. Lifestyle à forte identité. Chaque filiale est conçue pour devenir une référence dans son univers, portée par une vision patrimoniale et un capital interne entièrement dédié à sa croissance.
+            </p>
+            <p class="mute">
+                Pas de levée de fonds. Pas de dilution. Rien que la conviction et la rigueur d'un groupe qui construit pour durer.
+            </p>
+        </div>
+        <div class="intro-stats reveal reveal-delay-2">
+            <div class="stat">
+                <div class="stat-num">13<sup>—</sup></div>
+                <div class="stat-label">Maisons<br>actives</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">03<sup>—</sup></div>
+                <div class="stat-label">Univers<br>stratégiques</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">100<sup>%</sup></div>
+                <div class="stat-label">Capital<br>détenu</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">∞<sup>.</sup></div>
+                <div class="stat-label">Horizon<br>long terme</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BRANDS LIST (Balenciaga-style hover image) -->
+<section class="brands-list" id="brands">
+    <div class="brands-list-head reveal">
+        <h2 class="brands-list-title">Les <span class="serif">maisons</span></h2>
+        <div class="brands-list-count">13 filiales · Portfolio 2026</div>
+    </div>
+    <div class="brand-lines">
+        <a class="brand-line" href="brand.html?b=house-kitchen" data-img="https://house-kitchenn.myshopify.com/cdn/shop/files/preview_images/b46e25df0a464a019c77872ab58ae7a9.thumbnail.0000000000_1920x.jpg" data-video="https://house-kitchenn.myshopify.com/cdn/shop/videos/c/vp/b46e25df0a464a019c77872ab58ae7a9/b46e25df0a464a019c77872ab58ae7a9.SD-480p-0.9Mbps-80215983.mp4">
+            <span class="idx">01</span>
+            <span class="name">House Kitchen</span>
+            <span class="category">Fast Casual</span>
+            <span class="universe">Food & Beverage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=american-hotboyz" data-img="https://hot-boyss.myshopify.com/cdn/shop/files/PHOTO-2025-11-09-12-13-36.jpg" data-video="https://hot-boyss.myshopify.com/cdn/shop/videos/c/vp/4b8ca66048ed45598bcdc7d5ee70fe7b/4b8ca66048ed45598bcdc7d5ee70fe7b.SD-480p-0.9Mbps-62371569.mp4">
+            <span class="idx">02</span>
+            <span class="name">American Hotboyz</span>
+            <span class="category">Hot Dogs</span>
+            <span class="universe">Food & Beverage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=donatello" data-img="https://donatellooo.myshopify.com/cdn/shop/files/bc6560ab-7b6b-481a-bdf5-8f152c5d2eea.png" data-video="https://donatellooo.myshopify.com/cdn/shop/videos/c/vp/c3bd1d3c43c44e218dfbc170b3605434/c3bd1d3c43c44e218dfbc170b3605434.HD-1080p-7.2Mbps-79759135.mp4">
+            <span class="idx">03</span>
+            <span class="name">Donatello</span>
+            <span class="category">Donuts & Pâtisserie</span>
+            <span class="universe">Food & Beverage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=croute-de-pain" data-img="https://croute-de-pain.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-08_at_02.07.11.jpg">
+            <span class="idx">04</span>
+            <span class="name">Croûte de Pain</span>
+            <span class="category">Boulangerie</span>
+            <span class="universe">Food & Beverage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=uncle-coffee" data-img="https://unclecoffee.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-01_at_13.20.35_3.jpg" data-video="https://unclecoffee.myshopify.com/cdn/shop/videos/c/vp/467bc2eb9eaa46a98826e10e06740cbe/467bc2eb9eaa46a98826e10e06740cbe.HD-1080p-7.2Mbps-80052515.mp4">
+            <span class="idx">05</span>
+            <span class="name">Uncle Coffee</span>
+            <span class="category">Coffee Shop</span>
+            <span class="universe">Food & Beverage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=cook-eyes" data-img="https://cook-eyes.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-07_at_03.03.45_1.jpg" data-video="https://cook-eyes.myshopify.com/cdn/shop/videos/c/vp/3bca65432d4f4dd1ac7e942750e44682/3bca65432d4f4dd1ac7e942750e44682.HD-720p-1.6Mbps-80542301.mp4">
+            <span class="idx">06</span>
+            <span class="name">Cook Eyes</span>
+            <span class="category">Restauration</span>
+            <span class="universe">Food & Beverage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=district-juice" data-img="https://district-juice.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-07_at_15.57.26.jpg">
+            <span class="idx">07</span>
+            <span class="name">District Juice</span>
+            <span class="category">Jus pressés</span>
+            <span class="universe">Food & Beverage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=bad-dog" data-img="https://baddoggg.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-04_at_14.24.42_1.jpg" data-video="https://baddoggg.myshopify.com/cdn/shop/videos/c/vp/052091e836c14a02ae989454c6116ae9/052091e836c14a02ae989454c6116ae9.SD-480p-1.5Mbps-80412689.mp4">
+            <span class="idx">08</span>
+            <span class="name">Bad Dog</span>
+            <span class="category">Street Food</span>
+            <span class="universe">Food & Beverage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=williams-harper" data-img="https://william-sharper.myshopify.com/cdn/shop/files/31ea934d-1a0e-424f-a000-30e6911e4b7c.png" data-video="https://william-sharper.myshopify.com/cdn/shop/videos/c/vp/4bd6afff5d2546df850914b430a5b10f/4bd6afff5d2546df850914b430a5b10f.HD-1080p-7.2Mbps-80350248.mp4">
+            <span class="idx">09</span>
+            <span class="name">Williams & Harper</span>
+            <span class="category">Villas de prestige</span>
+            <span class="universe">Luxury Real Estate</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=honore-co" data-img="https://boutiquevillaa.myshopify.com/cdn/shop/files/ChatGPT_Image_16_mars_2026_22_54_27.png" data-video="https://boutiquevillaa.myshopify.com/cdn/shop/videos/c/vp/b22b2fc49beb4acc82d56ef20ff4a619/b22b2fc49beb4acc82d56ef20ff4a619.HD-1080p-2.5Mbps-77995895.mp4">
+            <span class="idx">10</span>
+            <span class="name">Honoré & Co</span>
+            <span class="category">Immobilier prestige</span>
+            <span class="universe">Luxury Real Estate</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=valmont-heritage" data-img="https://valmont-heritage.com/cdn/shop/files/WhatsApp_Image_2026-01-26_at_14.30.06.jpg" data-video="https://valmont-heritage.com/cdn/shop/videos/c/vp/f1ac33ceddaa4ffcb8e5bd615d2317db/f1ac33ceddaa4ffcb8e5bd615d2317db.HD-1080p-7.2Mbps-67787353.mp4">
+            <span class="idx">11</span>
+            <span class="name">Valmont Heritage</span>
+            <span class="category">Lifestyle & Héritage</span>
+            <span class="universe">Lifestyle & Heritage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line" href="brand.html?b=dexys" data-img="https://dexyss.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-09_at_05.28.51.jpg" data-video="https://dexyss.myshopify.com/cdn/shop/videos/c/vp/6ee41ddc36d648368baed765b0ed9298/6ee41ddc36d648368baed765b0ed9298.SD-480p-1.0Mbps-81213748.mp4">
+            <span class="idx">12</span>
+            <span class="name">Dexys</span>
+            <span class="category">Streetwear & Culture</span>
+            <span class="universe">Lifestyle & Heritage</span>
+            <span class="arrow">→</span>
+        </a>
+        <a class="brand-line logo-brand" href="brand.html?b=next" data-img="https://89.116.38.198:3000/img/logo-white.svg">
+            <span class="idx">13</span>
+            <span class="name">Next</span>
+            <span class="category">Réseau social · MRE Connect</span>
+            <span class="universe">Lifestyle & Heritage</span>
+            <span class="arrow">→</span>
+        </a>
+    </div>
+</section>
+
+<!-- UNIVERSES (horizontal scroll) -->
+<section class="universes" id="universes">
+    <div class="universes-head">
+        <h2 class="universes-title reveal">Trois <span class="serif">univers,</span><br>un empire.</h2>
+        <div class="universes-desc reveal reveal-delay-1">
+            Chaque maison appartient à une verticale précise. Ensemble, elles composent un écosystème où l'excellence répond à l'excellence.
+        </div>
+    </div>
+    <div class="universe-strip">
+        <div class="universe-card">
+            <img src="https://house-kitchenn.myshopify.com/cdn/shop/files/preview_images/b46e25df0a464a019c77872ab58ae7a9.thumbnail.0000000000_1920x.jpg" alt="">
+            <div class="universe-card-content">
+                <div class="universe-card-top">
+                    <div class="universe-card-num">Univers 01</div>
+                    <div class="universe-card-count">08<sup>—</sup></div>
+                </div>
+                <div>
+                    <h3 class="universe-card-title">Food<br><span class="serif">& Beverage.</span></h3>
+                    <div class="universe-card-brands">
+                        House Kitchen · American Hotboyz · Donatello<br>
+                        Croûte de Pain · Uncle Coffee · Cook Eyes<br>
+                        District Juice · Bad Dog
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="universe-card">
+            <img src="https://william-sharper.myshopify.com/cdn/shop/files/31ea934d-1a0e-424f-a000-30e6911e4b7c.png" alt="">
+            <div class="universe-card-content">
+                <div class="universe-card-top">
+                    <div class="universe-card-num">Univers 02</div>
+                    <div class="universe-card-count">02<sup>—</sup></div>
+                </div>
+                <div>
+                    <h3 class="universe-card-title">Luxury<br><span class="serif">Real Estate.</span></h3>
+                    <div class="universe-card-brands">
+                        Williams & Harper · Honoré & Co<br>
+                        Villas · Riads · Penthouses<br>
+                        Marrakech · Paris · Côte d'Azur
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="universe-card">
+            <img src="https://dexyss.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-09_at_05.28.51.jpg" alt="">
+            <div class="universe-card-content">
+                <div class="universe-card-top">
+                    <div class="universe-card-num">Univers 03</div>
+                    <div class="universe-card-count">03<sup>—</sup></div>
+                </div>
+                <div>
+                    <h3 class="universe-card-title">Lifestyle<br><span class="serif">& Heritage.</span></h3>
+                    <div class="universe-card-brands">
+                        Valmont · Dexys · Next<br>
+                        Streetwear · Culture · Tech<br>
+                        Art de vivre & diaspora
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EDITORIAL -->
+<section class="editorial">
+    <div class="editorial-img">
+        <img src="https://boutiquevillaa.myshopify.com/cdn/shop/files/ChatGPT_Image_16_mars_2026_22_54_27.png" alt="Marrakech">
+    </div>
+    <div class="editorial-text">
+        <div class="editorial-tag reveal">— Manifeste du groupe</div>
+        <h3 class="editorial-title reveal reveal-delay-1">
+            Nous ne lançons pas<br>
+            des marques.<br>
+            Nous détenons<br>
+            des <span class="serif">maisons.</span>
+        </h3>
+        <div class="editorial-body reveal reveal-delay-2">
+            <p>
+                Chaque maison du groupe est une réponse à une obsession : celle de l'excellence intransigeante. De la croûte d'un pain à la pierre d'un riad, du grain d'un espresso à la coupe d'une pièce streetwear — rien n'est laissé au hasard.
+            </p>
+            <p>
+                Nous construisons sur le temps long. Nous détenons pour élever. Nous restons concentrés sur une chose : faire de chaque filiale une référence que l'on cite, que l'on respecte, que l'on désire.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+    <div class="manifesto-bg">
+        <img src="https://valmont-heritage.com/cdn/shop/files/WhatsApp_Image_2026-01-26_at_14.30.06.jpg" alt="">
+    </div>
+    <div class="manifesto-content">
+        <div class="manifesto-label reveal">— Vision 2030</div>
+        <p class="manifesto-quote reveal reveal-delay-1">
+            « Construire un <span class="serif">empire</span> français<br>
+            d'inspiration LVMH,<br>
+            une <span class="serif">maison</span> à la fois. »
+        </p>
+        <div class="manifesto-sign reveal reveal-delay-2">— Osiris Group, Holding privé</div>
+    </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline" id="timeline">
+    <div class="timeline-head">
+        <div class="intro-label reveal">04 — Trajectoire</div>
+        <h2 class="timeline-title reveal reveal-delay-1">
+            De l'idée<br>
+            à <span class="serif">l'empire.</span>
+        </h2>
+    </div>
+    <div class="timeline-grid">
+        <div class="timeline-item reveal">
+            <div class="timeline-year">2023</div>
+            <div class="timeline-event">Fondation</div>
+            <div class="timeline-desc">Création du holding Osiris Group. Vision : bâtir un groupe multi-secteurs à la française, détenant l'intégralité de ses maisons.</div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-1">
+            <div class="timeline-year">2024</div>
+            <div class="timeline-event">Déploiement F&B</div>
+            <div class="timeline-desc">Lancement des huit premières maisons food & beverage : House Kitchen, Donatello, Uncle Coffee, Croûte de Pain et les autres.</div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-2">
+            <div class="timeline-year">2025</div>
+            <div class="timeline-event">Immobilier & Luxe</div>
+            <div class="timeline-desc">Entrée dans l'immobilier de prestige avec Williams & Harper et Honoré & Co. Marrakech comme tête de pont international.</div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-3">
+            <div class="timeline-year">2026</div>
+            <div class="timeline-event">Consolidation</div>
+            <div class="timeline-desc">13 filiales actives, 3 univers structurés. Osiris s'affirme comme le holding multi-secteurs nouvelle génération, du F&B au digital avec le lancement de Next, le réseau social de la diaspora marocaine.</div>
+        </div>
+    </div>
+</section>
+
+<!-- SHOWCASE — BAD DOG VIDEO -->
+<section class="showcase" id="showcase">
+    <div class="showcase-video">
+        <video autoplay muted loop playsinline preload="metadata" src="https://baddoggg.myshopify.com/cdn/shop/videos/c/vp/c6db0ece70a74cb08672baa2f6a24d97/c6db0ece70a74cb08672baa2f6a24d97.SD-480p-1.2Mbps-80410480.mp4"></video>
+    </div>
+    <div class="showcase-content">
+        <div class="showcase-top reveal">
+            <span class="label">— En mouvement</span>
+            <span>Bad Doggg · Filiale 08</span>
+        </div>
+        <div class="showcase-bottom">
+            <h2 class="showcase-title reveal">
+                Le <span class="serif">geste,</span><br>
+                pas le <span class="serif">discours.</span>
+            </h2>
+            <div class="showcase-meta reveal reveal-delay-1">
+                Chaque maison du groupe se raconte d'abord par ce qu'elle fait. Bad Doggg, fast casual rebelle, en est l'illustration brute.
+                <a href="brand.html?b=bad-dog">Découvrir Bad Doggg →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+    <div class="contact-label reveal">05 — Connectons</div>
+    <h2 class="contact-headline reveal">
+        Bâtissons<br>
+        <span class="serif">ensemble.</span>
+    </h2>
+    <a href="mailto:contact@osirisgroup.com" class="contact-email reveal reveal-delay-1">contact@osirisgroup.com</a>
+    <div class="contact-meta reveal reveal-delay-2">
+        <div>
+            <span class="label">Quartier général</span>
+            Paris · France
+        </div>
+        <div>
+            <span class="label">Antenne</span>
+            Marrakech · Maroc
+        </div>
+        <div>
+            <span class="label">Pour la presse</span>
+            press@osirisgroup.com
+        </div>
+        <div>
+            <span class="label">Carrières</span>
+            hello@osirisgroup.com
+        </div>
+    </div>
+    <div class="contact-social reveal reveal-delay-3">
+        <div class="contact-social-label">Suivez-nous</div>
+        <div class="contact-social-links">
+            <a href="https://instagram.com/osirisgroup" target="_blank" rel="noopener">Instagram<sup>01</sup></a>
+            <a href="https://tiktok.com/@osirisgroup" target="_blank" rel="noopener">TikTok<sup>02</sup></a>
+            <a href="https://linkedin.com/company/osirisgroup" target="_blank" rel="noopener">LinkedIn<sup>03</sup></a>
+            <a href="https://youtube.com/@osirisgroup" target="_blank" rel="noopener">YouTube<sup>04</sup></a>
+            <a href="https://x.com/osirisgroup" target="_blank" rel="noopener">X<sup>05</sup></a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="logo-big">Osiris</div>
+    <div>© 2026 — Holding privé multi-secteurs</div>
+    <div>Build · Own · Elevate</div>
+</footer>
+
+<script>
+// ======= LOADER =======
+const loader = document.getElementById('loader');
+const loadCount = document.getElementById('loadCount');
+let n = 0;
+// Counter ticks during the whole intro (~3.8s) so 100% lands just before the OSIRIS slam-in
+const loadInterval = setInterval(() => {
+    n += Math.floor(Math.random() * 4) + 2;
+    if (n >= 100) {
+        n = 100;
+        clearInterval(loadInterval);
+    }
+    loadCount.textContent = n;
+}, 70);
+// Stage 1 (logo draw + glitch + exit) ends at 2.7s.
+// Stage 2 (OSIRIS letters slam in) ends at 3.95s.
+// Fade loader out just after.
+setTimeout(() => {
+    n = 100; loadCount.textContent = n;
+    loader.classList.add('hidden');
+}, 4200);
+
+// ======= CURSOR =======
+const dot = document.querySelector('.cursor-dot');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+});
+
+function animRing() {
+    rx += (mx - rx) * 0.16;
+    ry += (my - ry) * 0.16;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+}
+animRing();
+
+// Cursor hover states
+document.querySelectorAll('a, .menu-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+});
+
+// ======= BRAND HOVER IMAGE / VIDEO =======
+const hoverImg = document.getElementById('hoverImage');
+const hoverImgTag = hoverImg.querySelector('img');
+const hoverVidTag = hoverImg.querySelector('video');
+let hx = 0, hy = 0, ihx = 0, ihy = 0;
+
+document.querySelectorAll('.brand-line').forEach(line => {
+    line.addEventListener('mouseenter', () => {
+        const vid = line.dataset.video;
+        const src = line.dataset.img;
+        const isLogo = line.classList.contains('logo-brand');
+        hoverImg.classList.remove('is-img', 'is-video', 'is-logo');
+        if (vid) {
+            if (hoverVidTag.src !== vid) hoverVidTag.src = vid;
+            hoverVidTag.currentTime = 0;
+            hoverVidTag.play().catch(() => {});
+            hoverImg.classList.add('active', 'is-video');
+            ring.classList.add('view-mode');
+        } else if (src) {
+            hoverImgTag.src = src;
+            hoverImg.classList.add('active', 'is-img');
+            if (isLogo) hoverImg.classList.add('is-logo');
+            ring.classList.add('view-mode');
+        }
+    });
+    line.addEventListener('mouseleave', () => {
+        hoverImg.classList.remove('active', 'is-img', 'is-video', 'is-logo');
+        try { hoverVidTag.pause(); } catch(e) {}
+        ring.classList.remove('view-mode');
+    });
+});
+
+document.addEventListener('mousemove', e => {
+    hx = e.clientX + 30;
+    hy = e.clientY - 220;
+});
+
+function animHover() {
+    ihx += (hx - ihx) * 0.1;
+    ihy += (hy - ihy) * 0.1;
+    hoverImg.style.transform = `translate(${ihx}px, ${ihy}px)`;
+    requestAnimationFrame(animHover);
+}
+animHover();
+
+// ======= REVEAL ON SCROLL =======
+const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('in');
+        }
+    });
+}, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ======= HORIZONTAL SCROLL HINT =======
+const strip = document.querySelector('.universe-strip');
+if (strip) {
+    let isDown = false, startX, scrollLeft;
+    strip.addEventListener('mousedown', e => {
+        isDown = true;
+        startX = e.pageX - strip.offsetLeft;
+        scrollLeft = strip.scrollLeft;
+        strip.style.cursor = 'grabbing';
+    });
+    strip.addEventListener('mouseup', () => { isDown = false; strip.style.cursor = ''; });
+    strip.addEventListener('mouseleave', () => { isDown = false; });
+    strip.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - strip.offsetLeft;
+        strip.scrollLeft = scrollLeft - (x - startX) * 1.5;
+    });
+}
+
+// ======= SMOOTH PARALLAX ON HERO =======
+const heroImg = document.querySelector('.hero-bg img');
+window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < window.innerHeight && heroImg) {
+        heroImg.style.transform = `scale(1.05) translateY(${y * 0.3}px)`;
+    }
+});
+</script>
+</body>
+</html>

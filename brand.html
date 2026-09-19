@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSIRIS GROUP — Marque</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0908;
+    color: #f4f1ea;
+    overflow-x: hidden;
+    cursor: none;
+}
+a { text-decoration: none; color: inherit; }
+
+:root {
+    --bg: #0a0908;
+    --bg-2: #13100d;
+    --cream: #f4f1ea;
+    --gold: #c9a961;
+    --gold-bright: #e8c874;
+    --muted: #6b6358;
+}
+
+/* Cursor */
+.cursor { position: fixed; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; transition: width 0.3s, height 0.3s; }
+.cursor-ring { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(244, 241, 234, 0.3); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s, height 0.3s; }
+.cursor.hover { width: 0; height: 0; }
+.cursor-ring.hover { width: 80px; height: 80px; background: rgba(201, 169, 97, 0.1); border-color: var(--gold); }
+@media (max-width: 900px) { body { cursor: auto; } .cursor, .cursor-ring { display: none; } }
+
+/* Nav */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.8rem 3rem; display: flex; justify-content: space-between; align-items: center; mix-blend-mode: difference; }
+.nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; letter-spacing: 3px; color: var(--cream); display: flex; align-items: center; gap: 0.8rem; }
+.nav-logo .dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; }
+.nav-back { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--cream); }
+.nav-back::before { content: '←'; }
+@media (max-width: 900px) { nav { padding: 1.5rem; } }
+
+/* Hero brand */
+.brand-hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10rem 3rem 4rem; text-align: center; position: relative; overflow: hidden; }
+.brand-hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.brand-hero-bg img, .brand-hero-bg video { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; filter: grayscale(0.1) contrast(1.05); transform: scale(1.05); }
+.brand-hero-bg.is-logo { background: #0a0a0a; }
+.brand-hero-bg.is-logo img { object-fit: contain; opacity: 0.18; filter: none; transform: scale(1.4); padding: 8rem; }
+.brand-hero-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.9) 100%), linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 40%, rgba(0,0,0,0.85) 100%); }
+.brand-hero > * { position: relative; z-index: 2; }
+.brand-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 30%, rgba(201, 169, 97, 0.12), transparent 55%); z-index: 1; }
+.brand-universe-tag { padding: 0.4rem 1.2rem; border: 1px solid rgba(244,241,234,0.15); border-radius: 100px; font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; display: inline-block; }
+.brand-icon-big { font-size: 6rem; margin-bottom: 2rem; filter: drop-shadow(0 10px 40px rgba(201,169,97,0.3)); }
+.brand-category-big { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; font-weight: 500; }
+.brand-hero h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(3rem, 9vw, 8rem); line-height: 0.9; letter-spacing: -0.04em; color: var(--cream); margin-bottom: 2rem; }
+.brand-hero h1 .italic { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--gold); }
+.brand-tagline { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(1.2rem, 2.2vw, 1.8rem); color: var(--cream); margin-bottom: 2rem; letter-spacing: 0.5px; }
+.brand-desc-big { font-size: 1.05rem; color: rgba(244,241,234,0.7); max-width: 650px; line-height: 1.8; font-weight: 300; margin-bottom: 3rem; }
+.brand-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+.btn-primary, .btn-outline { display: inline-flex; align-items: center; gap: 0.8rem; padding: 1.1rem 2.5rem; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; border-radius: 100px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.btn-primary { background: var(--gold); color: var(--bg); border: 1px solid var(--gold); }
+.btn-primary:hover { background: var(--gold-bright); transform: translateY(-3px); box-shadow: 0 15px 40px rgba(201, 169, 97, 0.25); }
+.btn-outline { color: var(--cream); border: 1px solid rgba(244,241,234,0.2); }
+.btn-outline:hover { border-color: var(--cream); transform: translateY(-3px); }
+.btn-primary::after, .btn-outline::after { content: '→'; transition: transform 0.4s; }
+.btn-primary:hover::after, .btn-outline:hover::after { transform: translateX(5px); }
+
+/* Details */
+.details-section { padding: 8rem 3rem; border-top: 1px solid rgba(244,241,234,0.08); background: var(--bg-2); }
+.section-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 4rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+.section-num { font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 600; color: var(--gold); letter-spacing: 3px; }
+.section-label { font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+.details-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 1200px; margin: 0 auto; }
+.detail-card { padding: 3rem 2rem; background: rgba(244,241,234,0.02); border: 1px solid rgba(244,241,234,0.05); transition: all 0.4s; }
+.detail-card:hover { border-color: rgba(201,169,97,0.2); transform: translateY(-6px); background: rgba(201,169,97,0.04); }
+.detail-card .num { font-family: 'Syne', sans-serif; font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; margin-bottom: 1.5rem; }
+.detail-card h3 { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 1.3rem; color: var(--cream); margin-bottom: 1rem; letter-spacing: -0.01em; }
+.detail-card p { color: rgba(244,241,234,0.6); line-height: 1.7; font-size: 0.95rem; font-weight: 300; }
+
+/* About brand */
+.brand-about { padding: 10rem 3rem; max-width: 1000px; margin: 0 auto; text-align: center; }
+.brand-about h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.1; letter-spacing: -0.03em; color: var(--cream); margin-bottom: 3rem; }
+.brand-about h2 .italic { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--gold); }
+.brand-about p { font-size: 1.15rem; color: rgba(244,241,234,0.75); line-height: 1.9; font-weight: 300; }
+
+/* CTA */
+.brand-cta-section { padding: 8rem 3rem; text-align: center; background: var(--bg-2); border-top: 1px solid rgba(244,241,234,0.08); }
+.brand-cta-section h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1; letter-spacing: -0.03em; color: var(--cream); margin-bottom: 1.5rem; }
+.brand-cta-section h2 .italic { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--gold); }
+.brand-cta-section p { color: rgba(244,241,234,0.6); max-width: 500px; margin: 0 auto 3rem; font-size: 1rem; line-height: 1.7; }
+
+/* Others */
+.other-brands { padding: 8rem 3rem; border-top: 1px solid rgba(244,241,234,0.08); }
+.other-brands h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; color: var(--cream); margin-bottom: 3rem; text-align: center; }
+.other-brands h2 .italic { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--gold); }
+.other-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 1200px; margin: 0 auto; }
+.other-card { display: block; padding: 2rem 1.5rem; background: rgba(244,241,234,0.02); border: 1px solid rgba(244,241,234,0.05); text-align: center; transition: all 0.4s; }
+.other-card:hover { border-color: rgba(201,169,97,0.2); transform: translateY(-5px); background: rgba(201,169,97,0.04); }
+.other-card .icon { font-size: 2rem; margin-bottom: 1rem; }
+.other-card .cat { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; font-weight: 500; }
+.other-card .name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 1rem; color: var(--cream); }
+
+/* Footer */
+footer { padding: 4rem 3rem 2rem; border-top: 1px solid rgba(244,241,234,0.08); }
+.footer-top { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; flex-wrap: wrap; gap: 2rem; }
+.footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2rem; letter-spacing: -0.02em; color: var(--cream); }
+.footer-logo .italic { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--gold); }
+.footer-copy { font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.active { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+
+@media (max-width: 900px) {
+    .details-grid { grid-template-columns: 1fr; }
+    .other-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+    section { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+    .other-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+    <a href="index.html" class="nav-logo">
+        <span class="dot"></span>
+        OSIRIS
+    </a>
+    <a href="index.html#brands" class="nav-back">Retour</a>
+</nav>
+
+<section class="brand-hero" id="brandHero"></section>
+<section class="details-section" id="detailsSection"></section>
+<section class="brand-about reveal" id="brandAbout"></section>
+<section class="brand-cta-section reveal" id="brandCta"></section>
+
+<section class="other-brands">
+    <h2 class="reveal">Les autres <span class="italic">marques</span> du groupe</h2>
+    <div class="other-grid" id="otherBrands"></div>
+</section>
+
+<footer>
+    <div class="footer-top">
+        <a href="index.html" class="footer-logo">Osiris <span class="italic">Group.</span></a>
+        <div class="footer-copy">© 2026 — Build · Own · Elevate</div>
+    </div>
+</footer>
+
+<script>
+const brands = {
+    "house-kitchen": {
+        name: "House Kitchen", icon: "🍗", category: "Restauration · Grill",
+        universe: "Food & Beverage · Univers 01",
+        url: "https://house-kitchenn.myshopify.com",
+        image: "https://house-kitchenn.myshopify.com/cdn/shop/files/preview_images/b46e25df0a464a019c77872ab58ae7a9.thumbnail.0000000000_1920x.jpg",
+        video: "https://house-kitchenn.myshopify.com/cdn/shop/videos/c/vp/b46e25df0a464a019c77872ab58ae7a9/b46e25df0a464a019c77872ab58ae7a9.SD-480p-0.9Mbps-80215983.mp4",
+        tagline: "Plus qu'une cuisine, un univers.",
+        title: ["House", "Kitchen."],
+        desc: "House Kitchen redéfinit la restauration avec son concept signature autour du poulet grillé, des burgers généreux et des hot dogs. Une cuisine moderne, une identité forte, un univers à part.",
+        about: "House Kitchen n'est pas juste un restaurant. C'est un concept, une énergie, une communauté. Du grill au service, chaque détail est pensé pour créer une expérience culinaire mémorable. Les recettes sont simples, les ingrédients sont nobles, et l'exécution est millimétrée.",
+        details: [
+            { num: "01", title: "Le concept", text: "Restauration moderne autour du poulet grillé, burgers et hot dogs signature. Une carte courte, maîtrisée, puissante." },
+            { num: "02", title: "L'identité", text: "Une marque noire et blanche, épurée et affirmée. Chaque élément graphique participe à l'expérience globale." },
+            { num: "03", title: "La vision", text: "Devenir la référence absolue dans la restauration moderne, avec une expansion maîtrisée en France et au-delà." }
+        ]
+    },
+    "american-hotboyz": {
+        name: "American Hotboyz", icon: "🔥", category: "Street Food · Épicé",
+        universe: "Food & Beverage · Univers 01",
+        url: "https://hot-boyss.myshopify.com",
+        image: "https://hot-boyss.myshopify.com/cdn/shop/files/PHOTO-2025-11-09-12-13-36.jpg",
+        video: "https://hot-boyss.myshopify.com/cdn/shop/videos/c/vp/4b8ca66048ed45598bcdc7d5ee70fe7b/4b8ca66048ed45598bcdc7d5ee70fe7b.SD-480p-0.9Mbps-62371569.mp4",
+        tagline: "Plus qu'un poulet, une légende.",
+        title: ["American", "Hotboyz."],
+        desc: "American Hotboyz transforme le poulet frit américain en expérience culturelle. Épicé, audacieux, narratif — avec un univers qui dépasse largement l'assiette.",
+        about: "American Hotboyz a construit plus qu'une marque de restauration : un véritable univers narratif. Avec ses mascottes iconiques (Astro-Rooster Prime, HotCobra, Blaze Ranger), la marque mêle street food, pop culture et storytelling galactique. Une communauté visible, une intention invisible.",
+        details: [
+            { num: "01", title: "Le goût", text: "Poulet frit américain épicé, recettes signature avec différents niveaux de heat. Du croustillant, du goût, de l'attitude." },
+            { num: "02", title: "L'univers", text: "Mascottes, storytelling, esthétique urbaine galactique. American Hotboyz ne vend pas un produit, mais une culture." },
+            { num: "03", title: "La communauté", text: "Une fanbase passionnée autour d'une marque qui ose raconter une histoire et fédérer autour d'une vision." }
+        ]
+    },
+    "donatello": {
+        name: "Donatello", icon: "🍩", category: "Donuts · Lifestyle",
+        universe: "Food & Beverage · Univers 01",
+        url: "https://donatellooo.myshopify.com",
+        image: "https://donatellooo.myshopify.com/cdn/shop/files/bc6560ab-7b6b-481a-bdf5-8f152c5d2eea.png",
+        video: "https://donatellooo.myshopify.com/cdn/shop/videos/c/vp/c3bd1d3c43c44e218dfbc170b3605434/c3bd1d3c43c44e218dfbc170b3605434.HD-1080p-7.2Mbps-79759135.mp4",
+        tagline: "L'Amérique dans chaque bouchée.",
+        title: ["Donatello."],
+        desc: "Des donuts artisanaux préparés chaque jour, un univers coloré peuplé de personnages attachants, et une ligne lifestyle qui transforme les clients en ambassadeurs.",
+        about: "Donatello dépasse le concept de boulangerie pour devenir une véritable marque lifestyle. Avec ses personnages signature — Nono, Alfredo, Samy, Jonys — la marque construit un storytelling qui fédère une communauté passionnée. Made fresh daily, pour que chaque donut soit une invitation au voyage.",
+        details: [
+            { num: "01", title: "Made Fresh Daily", text: "Des donuts préparés artisanalement chaque jour. Pas de surgelé, pas de compromis — juste du fait-maison premium." },
+            { num: "02", title: "L'univers narratif", text: "Personnages iconiques, storytelling coloré, identité visuelle forte. Donatello est une marque qui raconte." },
+            { num: "03", title: "Lifestyle complet", text: "Vêtements, accessoires et merch branded : la marque va bien au-delà du produit pour créer une véritable communauté." }
+        ]
+    },
+    "croute-de-pain": {
+        name: "Croûte de Pain", icon: "🥖", category: "Boulangerie · Pâtisserie",
+        universe: "Food & Beverage · Univers 01",
+        url: "https://croute-de-pain.myshopify.com",
+        image: "https://croute-de-pain.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-08_at_02.07.11.jpg",
+        tagline: "L'Art du Pain, Réinventé.",
+        title: ["Croûte", "de Pain."],
+        desc: "Plus qu'une simple boulangerie. Croûte de Pain perpétue l'héritage artisanal français tout en réinventant chaque pain, chaque viennoiserie, chaque pâtisserie avec exigence.",
+        about: "Croûte de Pain incarne l'excellence de la boulangerie artisanale française. Chaque pain est pétri lentement, fermenté naturellement et cuit avec savoir-faire. Des viennoiseries aux pâtisseries, toute la gamme respecte les traditions tout en apportant une touche contemporaine. Un art, un métier, une passion.",
+        details: [
+            { num: "01", title: "Le savoir-faire", text: "Pétrissage lent, fermentation naturelle, cuisson précise. La tradition boulangère française dans toute sa splendeur." },
+            { num: "02", title: "La sélection", text: "Farines sélectionnées avec soin, matières premières nobles, sourcing responsable. La qualité commence par l'ingrédient." },
+            { num: "03", title: "L'expérience", text: "Pains, viennoiseries, pâtisseries : une gamme complète pour sublimer chaque moment de la journée." }
+        ]
+    },
+    "uncle-coffee": {
+        name: "Uncle Coffee", icon: "☕", category: "Café · Spécialité",
+        universe: "Food & Beverage · Univers 01",
+        url: "https://unclecoffee.myshopify.com",
+        image: "https://unclecoffee.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-01_at_13.20.35_3.jpg",
+        video: "https://unclecoffee.myshopify.com/cdn/shop/videos/c/vp/467bc2eb9eaa46a98826e10e06740cbe/467bc2eb9eaa46a98826e10e06740cbe.HD-1080p-7.2Mbps-80052515.mp4",
+        tagline: "Plus qu'un café, une inspiration dans chaque tasse.",
+        title: ["Uncle", "Coffee."],
+        desc: "Graine de café torréfié artisanalement, milkshakes gourmands, boissons chaudes signature. Uncle Coffee cultive l'art du café de spécialité dans une ambiance chaleureuse.",
+        about: "Uncle Coffee est une ode à la culture café. Chaque grain est sélectionné avec rigueur, torréfié avec passion et servi avec soin par des baristas experts. Au-delà du café, la marque propose tout un univers de boissons et snacks pour faire de chaque visite un moment d'inspiration.",
+        details: [
+            { num: "01", title: "Le café", text: "Grains de spécialité torréfiés artisanalement. Du single-origin aux blends signature, l'expertise dans chaque tasse." },
+            { num: "02", title: "La carte", text: "Café, milkshakes, boissons chaudes, sandwichs : une offre complète pour tous les moments de la journée." },
+            { num: "03", title: "L'ambiance", text: "Un espace chaleureux et inspirant, pensé comme un lieu de vie où travailler, créer, partager." }
+        ]
+    },
+    "cook-eyes": {
+        name: "Cook Eyes", icon: "🍪", category: "Cookies · Café",
+        universe: "Food & Beverage · Univers 01",
+        url: "https://cook-eyes.myshopify.com",
+        image: "https://cook-eyes.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-07_at_03.03.45_1.jpg",
+        video: "https://cook-eyes.myshopify.com/cdn/shop/videos/c/vp/3bca65432d4f4dd1ac7e942750e44682/3bca65432d4f4dd1ac7e942750e44682.HD-720p-1.6Mbps-80542301.mp4",
+        tagline: "Le meilleur moment de la journée commence ici.",
+        title: ["Cook", "Eyes."],
+        desc: "Plus que des cookies. Cook Eyes fusionne l'art du cookie artisanal et du café de spécialité dans un concept contemporain, eco-friendly et digital-first.",
+        about: "Cook Eyes réinvente la pause gourmande. Des cookies frais préparés chaque jour, un café de qualité, une expérience digitale fluide avec click & collect et application mobile. Une esthétique minimaliste, un engagement éco-responsable, et toujours le même objectif : rendre chaque pause exceptionnelle.",
+        details: [
+            { num: "01", title: "Les cookies", text: "Des recettes signature, des ingrédients premium, une cuisson maîtrisée. Plus qu'un cookie, une addiction." },
+            { num: "02", title: "Digital-first", text: "Application mobile, click & collect, expérience fluide. Cook Eyes pense la restauration comme un service moderne." },
+            { num: "03", title: "Eco-friendly", text: "Emballages responsables, sourcing durable, engagements concrets. Être gourmand et éthique, c'est possible." }
+        ]
+    },
+    "district-juice": {
+        name: "District Juice", icon: "🥤", category: "Jus · Wellness",
+        universe: "Food & Beverage · Univers 01",
+        url: "https://district-juice.myshopify.com",
+        image: "https://district-juice.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-07_at_15.57.26.jpg",
+        tagline: "Boostez votre énergie naturellement.",
+        title: ["District", "Juice."],
+        desc: "Plus qu'un simple jus. Des jus pressés à froid, 100% naturels, sans sucre ajouté, pour ceux qui refusent le compromis entre plaisir et bien-être.",
+        about: "District Juice est né de la conviction qu'une boisson peut transformer une journée. Nos jus sont pressés à froid pour préserver vitamines, enzymes et saveurs. Cures détox, boosters énergie, smoothies : chaque bouteille est conçue pour vous donner le meilleur de la nature, sans intermédiaire.",
+        details: [
+            { num: "01", title: "Cold Pressed", text: "Extraction à froid pour préserver tous les nutriments. Zéro concentré, zéro sucre ajouté, 100% jus." },
+            { num: "02", title: "Produits signature", text: "Jus unitaires, cures détox, boosters énergie, smoothies. Une gamme complète pour tous les besoins." },
+            { num: "03", title: "L'engagement", text: "Fruits et légumes sélectionnés avec soin, emballages éco-conçus, transparence totale sur la composition." }
+        ]
+    },
+    "bad-dog": {
+        name: "Bad Doggg", icon: "🌭", category: "Fast Casual · Hot Dogs",
+        universe: "Food & Beverage · Univers 01",
+        url: "https://baddoggg.myshopify.com",
+        image: "https://baddoggg.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-04_at_14.24.42_1.jpg",
+        video: "https://baddoggg.myshopify.com/cdn/shop/videos/c/vp/052091e836c14a02ae989454c6116ae9/052091e836c14a02ae989454c6116ae9.SD-480p-1.5Mbps-80412689.mp4",
+        tagline: "Le fast casual qui ne fait pas de quartier.",
+        title: ["Bad", "Doggg."],
+        desc: "Hot dogs signature, frites originales (paprika, curry, chili cheese), burgers audacieux. Bad Doggg bouscule les codes du fast food avec attitude et exigence.",
+        about: "Bad Doggg revendique une approche rebelle de la restauration rapide. Avec ses frites signature aux épices audacieuses, ses hot dogs gourmands et ses burgers premium, la marque refuse le compromis. Du goût, de l'attitude, et jamais d'ennui. Une expérience rapide qui reste mémorable.",
+        details: [
+            { num: "01", title: "Les signatures", text: "Frites paprika, curry, chili cheese. Hot dogs premium. Burgers qui envoient. Chaque plat est une statement." },
+            { num: "02", title: "L'attitude", text: "Identité rock, packaging qui claque, énergie décomplexée. Bad Doggg n'a pas peur de sortir du rang." },
+            { num: "03", title: "L'exécution", text: "Rapidité de service sans compromis sur la qualité. Le meilleur des deux mondes, tout simplement." }
+        ]
+    },
+    "williams-harper": {
+        name: "Williams & Harper", icon: "🏛️", category: "Villas Prestige · Marrakech",
+        universe: "Luxury Real Estate · Univers 02",
+        url: "https://william-sharper.myshopify.com",
+        image: "https://william-sharper.myshopify.com/cdn/shop/files/31ea934d-1a0e-424f-a000-30e6911e4b7c.png",
+        video: "https://william-sharper.myshopify.com/cdn/shop/videos/c/vp/4bd6afff5d2546df850914b430a5b10f/4bd6afff5d2546df850914b430a5b10f.HD-1080p-7.2Mbps-80350248.mp4",
+        tagline: "Une Réalisation d'Excellence à Marrakech.",
+        title: ["Williams", "& Harper."],
+        desc: "Villas de prestige signées à Marrakech. De la Villa Chloé (1000m²) à la Villa Margaux (2000m+), un savoir-faire immobilier d'exception.",
+        about: "Williams & Harper conçoit et réalise des villas d'exception à Marrakech. Chaque résidence est pensée comme une œuvre architecturale : Villa Chloé (1000m²), Villa Céline (1500m²), Villa Margaux (2000m+). Des réalisations uniques, un savoir-faire reconnu, une adresse qui signe l'excellence.",
+        details: [
+            { num: "01", title: "Les réalisations", text: "Villa Chloé, Villa Céline, Villa Margaux. Des projets uniques de 1000 à 2000+m², chacun pensé comme une signature." },
+            { num: "02", title: "Marrakech", text: "Ville d'art et d'excellence, Marrakech est l'écrin idéal pour ces résidences qui allient tradition et modernité." },
+            { num: "03", title: "L'excellence", text: "Matériaux nobles, artisans locaux, architecture sur-mesure. Chaque villa est une réalisation d'exception." }
+        ]
+    },
+    "honore-co": {
+        name: "Honoré & Co.", icon: "🏡", category: "Résidences d'Exception",
+        universe: "Luxury Real Estate · Univers 02",
+        url: "https://boutiquevillaa.myshopify.com",
+        image: "https://boutiquevillaa.myshopify.com/cdn/shop/files/ChatGPT_Image_16_mars_2026_22_54_27.png",
+        video: "https://boutiquevillaa.myshopify.com/cdn/shop/videos/c/vp/b22b2fc49beb4acc82d56ef20ff4a619/b22b2fc49beb4acc82d56ef20ff4a619.HD-1080p-2.5Mbps-77995895.mp4",
+        tagline: "Les portes des plus belles résidences.",
+        title: ["Honoré", "& Co."],
+        desc: "Honoré & Co. vous ouvre les portes des plus belles résidences. Une sélection curatée de propriétés d'exception, pour une clientèle exigeante.",
+        about: "Honoré & Co. incarne la quintessence du luxe immobilier. Chaque propriété de notre sélection est choisie avec rigueur : localisation exceptionnelle, architecture remarquable, finitions impeccables. Plus qu'une agence, un partenaire de confiance pour celles et ceux qui recherchent l'unique.",
+        details: [
+            { num: "01", title: "La sélection", text: "Des propriétés uniques, choisies pour leur caractère d'exception. Aucune compromission sur la qualité." },
+            { num: "02", title: "Le service", text: "Un accompagnement sur-mesure, discret et expert. La confidentialité et l'efficacité au service de nos clients." },
+            { num: "03", title: "L'expertise", text: "Connaissance approfondie du marché haut de gamme, réseau exclusif, savoir-faire de négociation." }
+        ]
+    },
+    "valmont-heritage": {
+        name: "Valmont Heritage", icon: "👑", category: "Heritage · Premium",
+        universe: "Lifestyle & Heritage · Univers 03",
+        url: "https://valmont-heritage.com",
+        image: "https://valmont-heritage.com/cdn/shop/files/WhatsApp_Image_2026-01-26_at_14.30.06.jpg",
+        video: "https://valmont-heritage.com/cdn/shop/videos/c/vp/f1ac33ceddaa4ffcb8e5bd615d2317db/f1ac33ceddaa4ffcb8e5bd615d2317db.HD-1080p-7.2Mbps-67787353.mp4",
+        tagline: "L'héritage d'un art de vivre.",
+        title: ["Valmont", "Heritage."],
+        desc: "Une maison qui perpétue un savoir-faire d'excellence. Valmont Heritage incarne l'élégance intemporelle et la quête du raffinement absolu.",
+        about: "Valmont Heritage est la signature d'un art de vivre. Produits d'exception, savoir-faire préservé, élégance intemporelle : chaque détail est pensé pour celles et ceux qui refusent le banal. Un héritage à découvrir, un patrimoine à transmettre.",
+        details: [
+            { num: "01", title: "Le patrimoine", text: "Un héritage de savoir-faire, cultivé avec passion. Chaque création porte la trace d'une exigence historique." },
+            { num: "02", title: "L'élégance", text: "Une esthétique intemporelle, des matériaux nobles, des finitions irréprochables. Le luxe discret dans son expression la plus pure." },
+            { num: "03", title: "L'exclusivité", text: "Pièces numérotées, éditions limitées, créations sur-mesure. Valmont Heritage cultive le rare." }
+        ]
+    },
+    "dexys": {
+        name: "Dexys", icon: "⚡", category: "Lifestyle · Mode",
+        universe: "Lifestyle & Heritage · Univers 03",
+        url: "https://dexyss.myshopify.com",
+        image: "https://dexyss.myshopify.com/cdn/shop/files/WhatsApp_Image_2026-04-09_at_05.28.51.jpg",
+        video: "https://dexyss.myshopify.com/cdn/shop/videos/c/vp/6ee41ddc36d648368baed765b0ed9298/6ee41ddc36d648368baed765b0ed9298.SD-480p-1.0Mbps-81213748.mp4",
+        tagline: "Énergie, style, culture.",
+        title: ["Dexys."],
+        desc: "Une marque lifestyle qui fusionne mode, énergie et culture urbaine. Dexys habille ceux qui refusent de se contenter du déjà-vu.",
+        about: "Dexys est née de la culture urbaine et de l'envie de bousculer les codes. Nos collections mêlent streetwear premium, pièces statement et accessoires qui marquent. Une marque pour ceux qui créent leur propre rythme, leur propre style, leur propre énergie.",
+        details: [
+            { num: "01", title: "Le style", text: "Streetwear premium, coupes contemporaines, graphismes qui envoient. Dexys ne suit pas les tendances, elle les écrit." },
+            { num: "02", title: "Les drops", text: "Collections exclusives, éditions limitées, collaborations. Chaque sortie est un événement pour la communauté." },
+            { num: "03", title: "La culture", text: "Ancrée dans le mouvement urbain, Dexys célèbre la création, la musique, l'art et tous ceux qui font bouger les choses." }
+        ]
+    },
+    "next": {
+        name: "Next", icon: "◎", category: "Réseau social · MRE Connect",
+        universe: "Lifestyle & Heritage · Univers 03",
+        url: "https://89.116.38.198:3000/app.html",
+        image: "https://89.116.38.198:3000/img/logo-white.svg",
+        isLogo: true,
+        tagline: "Le réseau de la diaspora.",
+        title: ["Next."],
+        desc: "Le premier réseau social dédié à la diaspora marocaine. Next connecte les MRE dans le monde entier : communautés, agenda, annonces, cartes, services.",
+        about: "Next, c'est MRE Connect — la plateforme qui réunit les Marocains Résidant à l'Étranger autour de ce qui les lie. Messages, Reels, Groupes, Agenda communautaire, Services MRE, Carte, Classement : tous les outils pour que la diaspora vive sa culture, construise ses réseaux et fasse rayonner le Maroc à l'international. Le pivot tech d'Osiris, à la croisée du lifestyle, du heritage et de la nouvelle génération.",
+        details: [
+            { num: "01", title: "La communauté", text: "Messages, Reels, Chat, Groupes, Annuaire. Next rassemble des millions de MRE autour d'une même plateforme : parler, partager, se retrouver." },
+            { num: "02", title: "L'agenda", text: "Iftar, masterclass, forum investisseurs, expo, tournois. Next centralise les événements de la diaspora — France, Belgique, Pays-Bas, Espagne, partout." },
+            { num: "03", title: "Les services", text: "Carte MRE, annonces, services dédiés, classement communautaire. Next est une infrastructure, pas juste un feed." }
+        ]
+    }
+};
+
+const params = new URLSearchParams(window.location.search);
+const slug = params.get('b');
+const brand = brands[slug];
+
+if (!brand) {
+    window.location.href = 'index.html#brands';
+}
+
+document.title = `${brand.name} — OSIRIS GROUP`;
+
+// Hero
+document.getElementById('brandHero').innerHTML = `
+    <div class="brand-hero-bg${brand.isLogo ? ' is-logo' : ''}">${brand.video ? `<video autoplay muted loop playsinline preload="metadata" src="${brand.video}"></video>` : `<img src="${brand.image}" alt="${brand.name}">`}</div>
+    <div class="brand-universe-tag">Filiale Osiris Group · ${brand.universe}</div>
+    <div class="brand-icon-big">${brand.icon}</div>
+    <div class="brand-category-big">${brand.category}</div>
+    <h1>${brand.title.map(t => `<span style="display:block">${t.includes('&') || t.includes('de') ? `<span class="italic">${t}</span>` : t}</span>`).join('')}</h1>
+    <p class="brand-tagline">"${brand.tagline}"</p>
+    <p class="brand-desc-big">${brand.desc}</p>
+    <div class="brand-ctas">
+        <a href="${brand.url}" target="_blank" rel="noopener" class="btn-primary">Visiter le site</a>
+        <a href="index.html#brands" class="btn-outline">Autres marques</a>
+    </div>
+`;
+
+// Details
+document.getElementById('detailsSection').innerHTML = `
+    <div class="section-header">
+        <span class="section-num">→</span>
+        <span class="section-label">Les piliers de la marque</span>
+    </div>
+    <div class="details-grid">
+        ${brand.details.map(d => `
+            <div class="detail-card reveal">
+                <div class="num">— ${d.num}</div>
+                <h3>${d.title}</h3>
+                <p>${d.text}</p>
+            </div>
+        `).join('')}
+    </div>
+`;
+
+// About
+document.getElementById('brandAbout').innerHTML = `
+    <h2>${brand.tagline.replace(/\./g, '<span class="italic">.</span>')}</h2>
+    <p>${brand.about}</p>
+`;
+
+// CTA
+document.getElementById('brandCta').innerHTML = `
+    <h2>Découvrir<br><span class="italic">${brand.name}</span></h2>
+    <p>Visitez le site officiel pour plonger dans l'univers complet de la marque.</p>
+    <a href="${brand.url}" target="_blank" rel="noopener" class="btn-primary">Visiter ${brand.name}</a>
+`;
+
+// Other brands
+document.getElementById('otherBrands').innerHTML = Object.entries(brands)
+    .filter(([s]) => s !== slug)
+    .slice(0, 8)
+    .map(([s, b]) => `
+        <a href="brand.html?b=${s}" class="other-card">
+            <div class="icon">${b.icon}</div>
+            <div class="cat">${b.category}</div>
+            <div class="name">${b.name}</div>
+        </a>
+    `).join('');
+
+// Cursor
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mX = 0, mY = 0, rX = 0, rY = 0;
+document.addEventListener('mousemove', (e) => {
+    mX = e.clientX; mY = e.clientY;
+    cursor.style.left = mX + 'px'; cursor.style.top = mY + 'px';
+});
+(function animR() {
+    rX += (mX - rX) * 0.15; rY += (mY - rY) * 0.15;
+    cursorRing.style.left = rX + 'px'; cursorRing.style.top = rY + 'px';
+    requestAnimationFrame(animR);
+})();
+document.querySelectorAll('a, button, .detail-card, .other-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); cursorRing.classList.add('hover'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); cursorRing.classList.remove('hover'); });
+});
+
+// Reveal
+const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+}, { threshold: 0.1 });
+setTimeout(() => document.querySelectorAll('.reveal').forEach(el => obs.observe(el)), 100);
+</script>
+</body>
+</html>
