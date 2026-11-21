@@ -24,7 +24,7 @@ Ouvrez le dossier décompressé dans Claude Code. Si vous utilisez un chat Claud
 
 ## Essais
 
-Vérifiez l’iris bleu à l’ouverture, changez sa couleur, puis alternez entre la peluche et l’œil agrandi. Enregistrez une observation de démonstration et vérifiez sa présence dans l’historique après redémarrage.
+Vérifiez l’iris bleu à l’ouverture, changez sa couleur, puis alternez entre la peluche et l’œil agrandi. Sur un navigateur compatible, ouvrez Voix et dites « BOOZZO, mets YouTube », « ouvre la caméra », « prends une photo », « affiche une notification », « mets l’iris en violet » ou « affiche l’iris ». Enregistrez une observation de démonstration et vérifiez sa présence dans l’historique après redémarrage.
 
 Le serveur local est accessible depuis l’ordinateur de développement. Pour tester le QR avec un deuxième téléphone, utilisez une instance de test HTTPS privée accessible aux deux appareils. Le QR ouvre une session de test. L’accès aux contacts, l’appel WhatsApp, Safari natif et l’identification faciale sur le matériel nécessitent leurs propres intégrations et validations.
 
