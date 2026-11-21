@@ -6,6 +6,7 @@ Application web de la peluche BOOZZO. La peluche reste immobile : tout se passe 
 
 - **Menu rond** dans l'œil : Appels, YouTube, Photo, Assistant, Histoires, Iris.
 - **Appels vidéo dans l'œil** entre deux appareils : BOOZZO ouvre un appel, le proche scanne un QR code ou ouvre un lien sur son téléphone, sans rien installer. Chacun voit et entend l'autre (WebRTC).
+- **Proches** : on ajoute un proche par son prénom ; il reçoit un lien permanent à garder ouvert sur son téléphone. « BOOZZO, appelle Mamie » fait sonner sa page ; il peut aussi appeler BOOZZO, qui sonne et affiche son prénom dans l'œil (« réponds » ou « refuse » à la voix).
 - **Voix** : bouton micro, ou écoute continue du mot « BOOZZO ». Exemples : « BOOZZO, mets YouTube », « BOOZZO, appelle », « prends une photo », « mets l'iris en violet », « raccroche ».
 - **Assistant** : toute phrase qui n'est pas une commande est envoyée à l'assistant, qui répond à voix haute, phrase par phrase, dans l'œil. « Histoires » lui demande une histoire douce.
 - **YouTube** : lecture d'une vidéo dans l'œil à partir de son lien ; les favoris nommés se lancent à la voix.
@@ -24,7 +25,8 @@ node dev.mjs
 Ouvrir http://127.0.0.1:4174.
 
 - `/?oeil` affiche l'œil seul, en plein écran : c'est la vue destinée à l'écran rond du prototype.
-- `/?appel=<identifiant>` est la page du proche qui répond à un appel.
+- `/?appel=<identifiant>` est la page d'un proche invité à un appel ponctuel.
+- `/?proche=<identifiant>` est la page permanente d'un proche.
 
 ### Brancher l'assistant
 
@@ -50,4 +52,6 @@ La clé reste sur le serveur ; elle n'est jamais envoyée au navigateur. Chaque 
 - Les appels utilisent un serveur STUN public. Sur certains réseaux (4G, Wi-Fi d'entreprise), il faudra ajouter un relais TURN.
 - La reconnaissance vocale dépend du navigateur (Chrome, Safari). L'écoute continue du mot « BOOZZO » est expérimentale.
 - WhatsApp, Spotify et les autres applications tierces ne sont pas intégrés : les appels sont ceux de BOOZZO.
+- Un proche ne reçoit un appel que si sa page est ouverte : il n'y a pas encore de notification sur téléphone verrouillé.
+- Les proches et les favoris sont enregistrés dans le navigateur de l'appareil BOOZZO : ils ne se retrouvent pas encore d'un appareil à l'autre.
 - Pas de reconnaissance faciale ni de comptes utilisateurs pour l'instant.

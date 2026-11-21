@@ -44,9 +44,14 @@ const APPS = [
 const COLORS = { Azur: ['#4aa3df', 30], Émeraude: ['#4fb58a', -25], Ambre: ['#d39a45', 220], Violet: ['#9a7be0', 95] };
 
 const params = new URLSearchParams(location.search);
-const guestCallId = params.get('appel');
+const guestCallId = params.get('appel'); // page d'un proche invité à un appel ponctuel
+const contactId = params.get('proche'); // page permanente d'un proche
+const guestMode = Boolean(guestCallId || contactId);
 const kiosk = params.has('oeil');
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+// Identifiant de cet appareil BOOZZO : ses proches lui sont rattachés.
+const deviceId = store.get('device') || (store.set('device', crypto.randomUUID()), store.get('device'));
 
 const eye = $('#eye');
 const screen = $('#screen');
@@ -61,6 +66,10 @@ const state = {
   camera: null,
   shot: '',
   wake: false,
+  incoming: null, // appel entrant : { contact, name, call }
+  handled: '', // dernier appel entrant accepté ou refusé
+  me: null, // côté proche : sa fiche
+  newContact: null, // proche dont on affiche le lien
 };
 
 // ---------- Outils d'affichage ----------
@@ -110,6 +119,7 @@ function stopCamera() {
 }
 // Ouvre un écran de l'œil. Quitte proprement l'activité en cours.
 function go(name, options = {}) {
+  if (state.incoming && name !== 'call') declineIncoming();
   if (state.screen === 'call' && name !== 'call') endCall(true, false);
   stopCamera();
   stopSpeaking();
@@ -340,7 +350,9 @@ function command(spoken) {
   if (/raccroch|termine l.appel/.test(text)) return state.screen === 'call' ? (endCall(), true) : false;
   if (state.screen === 'photo' && state.camera && /prend|clic|ouistiti|cheese/.test(text)) return snap(), true;
   if (/you ?tube|vid[ée]o/.test(text)) return go('youtube', { spoken }), true;
-  if (/appel|whats ?app|t[ée]l[ée]phone/.test(text)) return go('call', { start: true }), true;
+  if (state.incoming && /r[ée]pond|d[ée]croch|accepte/.test(text)) return acceptIncoming(), true;
+  if (state.incoming && /refuse|non merci/.test(text)) return declineIncoming(), true;
+  if (/appel|whats ?app|t[ée]l[ée]phone/.test(text)) return go('call', { spoken }), true;
   if (/photo|cam[ée]ra/.test(text)) return go('photo'), true;
   if (/histoire|conte\b/.test(text)) return go('story'), true;
   if (/assistant/.test(text)) return go('chat'), true;
@@ -430,38 +442,68 @@ function startWake() {
 }
 
 // ---------- Appels vidéo dans l'œil (WebRTC entre deux appareils) ----------
+// Signalisation : celui qui ouvre l'appel écrit avec le rôle 'eye', celui qui le rejoint avec 'guest'.
+// BOOZZO ouvre l'appel quand il appelle ; le proche l'ouvre quand c'est lui qui appelle BOOZZO.
 
-const call = { id: '', role: '', pc: null, local: null, cursor: '', timer: 0, muted: false, status: '', connected: false, busy: false };
+const call = { id: '', role: '', pc: null, local: null, cursor: '', timer: 0, muted: false, status: '', connected: false, busy: false, ring: '', name: '', polls: 0 };
 const callLink = () => `${location.origin}/?appel=${call.id}`;
+const contactLink = (id) => `${location.origin}/?proche=${id}`;
+const contacts = () => store.get('contacts', []);
+const peerLabel = () => call.name || (guestMode ? 'BOOZZO' : 'ton proche');
 
-function openCall({ start = false } = {}) {
+function openCall({ start = false, spoken = '' } = {}) {
   renderCall();
-  if (start && !guestCallId) startCall('eye');
+  if (guestMode || state.incoming) return;
+  const text = spoken.toLowerCase();
+  const named = text && contacts().find((c) => text.includes(c.name.toLowerCase()));
+  if (named) return startCall('eye', { contact: named });
+  if (start || (spoken && !contacts().length)) return startCall('eye');
+  if (spoken) sayInEye('Qui veux-tu appeler ?', 'Appels');
 }
 function renderCall() {
   const active = Boolean(call.role);
+  const busy = call.busy ? 'disabled' : '';
   let body;
-  if (!active && guestCallId) {
-    body = `<p>${esc(call.status || 'Un proche vous appelle depuis sa peluche BOOZZO.')}</p>
-      <div class="row"><button class="btn" id="answer" type="button" ${call.busy ? 'disabled' : ''}>${ICON.call}Répondre</button></div>
-      <p class="muted">Votre caméra et votre micro seront partagés avec votre proche pendant l’appel.</p>`;
-  } else if (!active) {
-    body = `<p>${esc(call.status || 'Appelez un proche : il vous voit et vous entend, et son visage apparaît dans l’œil de BOOZZO.')}</p>
-      <div class="row"><button class="btn" id="startCall" type="button" ${call.busy ? 'disabled' : ''}>${ICON.call}Appeler un proche</button></div>
-      <p class="muted">Votre proche répond depuis son téléphone, sans rien installer.</p>`;
-  } else {
+  if (active) {
     const invite =
-      call.role === 'eye' && !call.connected
+      !guestMode && !call.ring && call.role === 'eye' && !call.connected
         ? `${qrSvg(callLink())}<p class="muted">Votre proche scanne ce code avec son téléphone, ou ouvre le lien.</p>
-           <div class="row"><button class="btn light" id="share" type="button">Envoyer le lien</button></div>`
+           <div class="row"><button class="btn light" data-share="${esc(callLink())}" type="button">Envoyer le lien</button></div>`
         : '';
     body = `<p><strong>${esc(call.status)}</strong></p>
       <div class="row"><video class="self" id="self" autoplay playsinline muted></video></div>
       <div class="row"><button class="btn danger" id="hangup" type="button">Raccrocher</button><button class="btn light" id="mute" type="button">${call.muted ? 'Réactiver le micro' : 'Couper le micro'}</button></div>
       ${invite}
       <details><summary>Si l’appel ne se connecte pas</summary><p class="muted">Vérifiez que les deux appareils ont autorisé la caméra et le micro. Sur certains réseaux (4G, Wi-Fi d’entreprise), un serveur relais doit être ajouté au projet.</p></details>`;
+  } else if (state.incoming) {
+    body = `<p><strong>${esc(state.incoming.name)} vous appelle…</strong></p>
+      <div class="row"><button class="btn" data-call="accept" type="button" ${busy}>${ICON.call}Répondre</button><button class="btn danger" data-call="decline" type="button">Refuser</button></div>`;
+  } else if (contactId) {
+    body = state.me
+      ? `<p>${esc(call.status || `Bonjour ${state.me.name} ! Vous êtes relié à la peluche BOOZZO.`)}</p>
+         <div class="row"><button class="btn" id="callBoozzo" type="button" ${busy}>${ICON.call}Appeler BOOZZO</button></div>
+         <p class="muted">Gardez cette page ouverte pour recevoir les appels de BOOZZO. Ajoutez-la à l’écran d’accueil de votre téléphone pour la retrouver.</p>`
+      : `<p>${esc(call.status || 'Connexion à BOOZZO…')}</p>`;
+  } else if (guestCallId) {
+    body = `<p>${esc(call.status || 'Un proche vous appelle depuis sa peluche BOOZZO.')}</p>
+      <div class="row"><button class="btn" id="answer" type="button" ${busy}>${ICON.call}Répondre</button></div>
+      <p class="muted">Votre caméra et votre micro seront partagés avec votre proche pendant l’appel.</p>`;
+  } else {
+    const list = contacts();
+    const fresh = state.newContact;
+    body = `<p>${esc(call.status || 'Appelez un proche : son visage apparaît dans l’œil de BOOZZO.')}</p>
+      ${list.length ? `<ul class="favs">${list.map((c) => `<li><button class="btn" type="button" data-contact="${c.id}" ${busy}>${ICON.call}${esc(c.name)}</button><button class="x" type="button" data-link="${c.id}" aria-label="Lien de ${esc(c.name)}" title="Afficher le lien">QR</button><button class="x" type="button" data-forget="${c.id}" aria-label="Retirer ${esc(c.name)}">×</button></li>`).join('')}</ul>` : ''}
+      ${
+        fresh
+          ? `<div class="invite"><p><strong>Lien de ${esc(fresh.name)}</strong></p>${qrSvg(contactLink(fresh.id))}
+             <p class="muted">À ouvrir une seule fois sur le téléphone de ${esc(fresh.name)}, qui garde la page. Ensuite, dites « BOOZZO, appelle ${esc(fresh.name)} ».</p>
+             <div class="row"><button class="btn light" data-share="${esc(contactLink(fresh.id))}" type="button">Envoyer le lien</button></div></div>`
+          : ''
+      }
+      <form class="line" id="contactForm"><input name="name" maxlength="30" required placeholder="Prénom du proche (ex. Mamie)" aria-label="Prénom du proche" autocomplete="off"><button class="btn light">Ajouter</button></form>
+      <div class="row"><button class="btn light" id="startCall" type="button" ${busy}>Appel ponctuel par QR code</button></div>`;
   }
-  panel.innerHTML = `${guestCallId ? '' : backButton}<h2>Appel dans l’œil</h2>${body}`;
+  panel.innerHTML = `${guestMode ? '' : backButton}<h2>Appel dans l’œil</h2>${body}`;
   if ($('#self') && call.local) $('#self').srcObject = call.local;
 }
 function setCallStatus(status) {
@@ -473,10 +515,23 @@ function showLocalInEye(badge) {
   $('video', screen).srcObject = call.local;
 }
 const signal = (type, sdp) => api(`/api/calls/${call.id}/signal`, { from: call.role, type, sdp });
+const setRing = (contact, callId, from) =>
+  fetch(`/api/contacts/${contact}/ring`, {
+    method: 'POST',
+    keepalive: true,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ call: callId, from }),
+  }).catch(() => {});
 
-async function startCall(role) {
+// role 'eye' : ouvrir un appel (et faire sonner `contact` s'il est donné). role 'guest' : rejoindre `callId`.
+async function startCall(role, { callId = '', contact = null } = {}) {
   if (call.role || call.busy) return;
+  if (state.screen !== 'call') {
+    state.screen = 'call';
+    screen.replaceChildren();
+  }
   call.busy = true;
+  call.name = contact?.name || '';
   setCallStatus('Ouverture de la caméra…');
   try {
     call.local = await camera({ video: { facingMode: 'user' }, audio: true });
@@ -490,20 +545,25 @@ async function startCall(role) {
       call.id = (await api('/api/calls', {})).id;
       call.cursor = '';
     } else {
-      call.id = guestCallId;
+      call.id = callId;
       // Ignore les anciens messages si la page a été rechargée.
       call.cursor = (await api(`/api/calls/${call.id}/signal?for=guest`)).cursor;
     }
-    Object.assign(call, { role, busy: false, connected: false, muted: false });
+    Object.assign(call, { role, busy: false, connected: false, muted: false, polls: 0, ring: '' });
     if (role === 'guest') await signal('join');
+    else if (contact) {
+      call.ring = contact.id;
+      await setRing(contact.id, call.id, guestMode ? 'guest' : 'eye');
+    }
   } catch (error) {
     call.local.getTracks().forEach((track) => track.stop());
-    Object.assign(call, { local: null, busy: false, id: '' });
+    Object.assign(call, { local: null, busy: false, id: '', role: '' });
     return setCallStatus(error.status === 404 ? 'Cet appel est terminé ou le lien a expiré.' : 'Impossible d’ouvrir l’appel. Réessayez.');
   }
-  if (role === 'eye' && kiosk) screen.innerHTML = qrSvg(callLink());
-  else showLocalInEye(role === 'eye' ? 'En attente de ton proche' : 'Connexion…');
-  setCallStatus(role === 'eye' ? 'Appel ouvert. En attente de votre proche…' : 'Connexion à BOOZZO…');
+  const waiting = role === 'guest' ? 'Connexion…' : call.ring ? `Appel de ${peerLabel()}…` : 'En attente de ton proche';
+  if (role === 'eye' && kiosk && !call.ring) screen.innerHTML = qrSvg(callLink());
+  else showLocalInEye(waiting);
+  setCallStatus(role === 'guest' ? 'Connexion…' : call.ring ? `Appel de ${peerLabel()}… ça sonne.` : 'Appel ouvert. En attente de votre proche…');
   call.timer = setInterval(pollCall, 1000);
 }
 let polling = false;
@@ -514,6 +574,15 @@ async function pollCall() {
     const { messages, cursor } = await api(`/api/calls/${call.id}/signal?for=${call.role}&after=${encodeURIComponent(call.cursor)}`);
     call.cursor = cursor;
     for (const message of messages) await onSignal(message);
+    // Tant que ça sonne : s'arrêter si le proche refuse ou ne répond pas.
+    if (call.ring && !call.pc && ++call.polls % 3 === 0) {
+      const contact = await api(`/api/contacts/${call.ring}`);
+      if (contact.ring?.call !== call.id) {
+        const name = peerLabel();
+        endCall(false);
+        setCallStatus(`${name} n’a pas répondu.`);
+      }
+    }
   } catch (error) {
     if (error.status === 404) endCall(false);
   } finally {
@@ -554,10 +623,10 @@ function iceComplete(pc) {
 async function onSignal({ type, sdp }) {
   if (type === 'bye') {
     endCall(false);
-    return toast('Votre proche a raccroché.');
+    return toast('L’appel est terminé.');
   }
   if (call.role === 'eye' && type === 'join') {
-    setCallStatus('Votre proche répond…');
+    setCallStatus('Connexion…');
     const pc = newPeer();
     await pc.setLocalDescription(await pc.createOffer());
     await iceComplete(pc);
@@ -582,11 +651,115 @@ function endCall(sendBye = true, show = true) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ from: call.role, type: 'bye' }),
     }).catch(() => {});
+  if (call.ring) setRing(call.ring, null);
   call.pc?.close();
   call.local?.getTracks().forEach((track) => track.stop());
-  Object.assign(call, { id: '', role: '', pc: null, local: null, cursor: '', connected: false, muted: false, status: 'Appel terminé.' });
+  Object.assign(call, { id: '', role: '', pc: null, local: null, cursor: '', connected: false, muted: false, ring: '', name: '', status: 'Appel terminé.' });
   screen.replaceChildren();
   if (show && state.screen === 'call') renderCall();
+}
+
+// ---------- Proches et appels entrants ----------
+
+async function addContact(name) {
+  try {
+    const contact = await api('/api/contacts', { device: deviceId, name });
+    store.set('contacts', [...contacts(), { id: contact.id, name: contact.name }]);
+    state.newContact = contact;
+  } catch {
+    toast('Impossible d’ajouter ce proche pour l’instant.');
+  }
+  renderCall();
+}
+function forgetContact(id) {
+  store.set('contacts', contacts().filter((c) => c.id !== id));
+  if (state.newContact?.id === id) state.newContact = null;
+  api(`/api/contacts/${id}/remove`, { device: deviceId }).catch(() => {});
+  renderCall();
+}
+
+let ringer = null;
+function ringStart() {
+  ringStop();
+  try {
+    const context = new AudioContext();
+    const note = (frequency, at) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.frequency.value = frequency;
+      gain.gain.setValueAtTime(0.0001, context.currentTime + at);
+      gain.gain.exponentialRampToValueAtTime(0.18, context.currentTime + at + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + at + 0.45);
+      oscillator.connect(gain).connect(context.destination);
+      oscillator.start(context.currentTime + at);
+      oscillator.stop(context.currentTime + at + 0.5);
+    };
+    const melody = () => (note(659, 0), note(784, 0.25), note(988, 0.5));
+    ringer = { context, timer: setInterval(melody, 1800) };
+    melody();
+  } catch {}
+}
+function ringStop() {
+  if (!ringer) return;
+  clearInterval(ringer.timer);
+  ringer.context.close().catch(() => {});
+  ringer = null;
+}
+function showIncoming(incoming) {
+  state.incoming = incoming;
+  stopCamera();
+  stopSpeaking();
+  state.screen = 'call';
+  screen.innerHTML = `<div class="say ring"><span><small>Appel</small>${esc(incoming.name)}</span>
+    <div class="answer"><button class="yes" data-call="accept" type="button" aria-label="Répondre">${ICON.call}</button><button class="no" data-call="decline" type="button" aria-label="Refuser">${ICON.call}</button></div></div>`;
+  renderCall();
+  ringStart();
+}
+function clearIncoming() {
+  if (!state.incoming) return;
+  state.incoming = null;
+  ringStop();
+  screen.replaceChildren();
+  if (state.screen === 'call') renderCall();
+}
+function acceptIncoming() {
+  const incoming = state.incoming;
+  if (!incoming) return;
+  state.handled = incoming.call;
+  clearIncoming();
+  startCall('guest', { callId: incoming.call, contact: { name: incoming.name } });
+}
+function declineIncoming() {
+  const incoming = state.incoming;
+  if (!incoming) return;
+  state.handled = incoming.call;
+  setRing(incoming.contact, null);
+  clearIncoming();
+  call.status = 'Appel refusé.';
+  renderCall();
+}
+// Surveille les appels entrants : ceux des proches côté BOOZZO, ceux de BOOZZO côté proche.
+async function watchRings() {
+  if (call.role || call.busy) return;
+  try {
+    let incoming = null;
+    if (contactId) {
+      const me = await api(`/api/contacts/${contactId}`);
+      const first = !state.me;
+      state.me = me;
+      if (me.ring?.from === 'eye') incoming = { contact: me.id, name: 'BOOZZO', call: me.ring.call };
+      if (first && !incoming) renderCall();
+    } else if (contacts().length) {
+      incoming = (await api(`/api/devices/${deviceId}/rings`)).rings[0] || null;
+    }
+    if (incoming && incoming.call !== state.handled && incoming.call !== state.incoming?.call) showIncoming(incoming);
+    if (!incoming && state.incoming) clearIncoming();
+  } catch (error) {
+    if (contactId && error.status === 404) {
+      call.status = 'Ce lien n’est plus valable. Demandez-en un nouveau.';
+      renderCall();
+    }
+  }
 }
 
 // ---------- Événements ----------
@@ -598,6 +771,17 @@ document.addEventListener('click', (event) => {
   if (data.go) return go(data.go, data.go === 'call' ? { start: kiosk } : undefined);
   if ('listen' in data) return listen();
   if (data.color) return setColor(data.color);
+  if (data.call) return data.call === 'accept' ? acceptIncoming() : declineIncoming();
+  if (data.contact) return startCall('eye', { contact: contacts().find((c) => c.id === data.contact) });
+  if (data.link) return (state.newContact = contacts().find((c) => c.id === data.link)), renderCall();
+  if (data.forget) return forgetContact(data.forget);
+  if (data.share) {
+    if (navigator.share) return navigator.share({ title: 'BOOZZO', url: data.share }).catch(() => {});
+    return navigator.clipboard?.writeText(data.share).then(
+      () => toast('Lien copié.'),
+      () => toast(data.share),
+    );
+  }
   if (data.video) return playYoutube(data.video);
   if (data.unfav) {
     store.set('videos', store.get('videos', []).filter((_, i) => i !== Number(data.unfav)));
@@ -614,19 +798,15 @@ document.addEventListener('click', (event) => {
     case 'startCall':
       return startCall('eye');
     case 'answer':
-      return startCall('guest');
+      return startCall('guest', { callId: guestCallId });
     case 'hangup':
       return endCall();
     case 'mute':
       call.muted = !call.muted;
       call.local?.getAudioTracks().forEach((track) => (track.enabled = !call.muted));
       return renderCall();
-    case 'share':
-      if (navigator.share) return navigator.share({ title: 'Appel BOOZZO', url: callLink() }).catch(() => {});
-      return navigator.clipboard?.writeText(callLink()).then(
-        () => toast('Lien copié.'),
-        () => toast(callLink()),
-      );
+    case 'callBoozzo':
+      return startCall('eye', { contact: { id: contactId, name: 'BOOZZO' } });
   }
   // Sur l'écran rond, toucher l'œil pendant une application ramène au menu.
   if (kiosk && !button && event.target.closest('#eye') && !['home', 'menu'].includes(state.screen)) return go('menu');
@@ -642,6 +822,10 @@ document.addEventListener('submit', (event) => {
   if (form.id === 'chatForm') {
     const text = form.text.value.trim();
     if (text) ask(text);
+  }
+  if (form.id === 'contactForm') {
+    const name = form.name.value.trim();
+    if (name) addContact(name);
   }
   if (form.id === 'videoForm') {
     const id = youtubeId(form.link.value);
@@ -668,11 +852,15 @@ window.addEventListener('pagehide', () => {
 applyColor();
 document.body.classList.toggle('kiosk', kiosk);
 setView(kiosk);
-if (guestCallId) {
+if (guestMode) {
   state.screen = 'call';
   renderCall();
 } else {
   go('home');
+}
+if (!guestCallId) {
+  watchRings();
+  setInterval(watchRings, 3000);
 }
 api('/api/config')
   .then((config) => {

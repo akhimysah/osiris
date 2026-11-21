@@ -94,6 +94,67 @@ async function calls(req, env, parts) {
   return json({ messages, cursor: keys.length ? keys[keys.length - 1] : after });
 }
 
+// Proches : chaque proche a un lien permanent. Une « sonnerie » relie un appel à un proche.
+// ring.from vaut 'eye' quand BOOZZO appelle le proche, 'guest' quand le proche appelle BOOZZO.
+const RING_MS = 45000;
+const publicContact = (c) => ({
+  id: c.id,
+  name: c.name,
+  ring: c.ring && Date.now() - c.ring.at < RING_MS ? { call: c.ring.call, from: c.ring.from } : null,
+});
+async function readContact(bucket, id) {
+  if (!UUID.test(id)) return null;
+  const saved = await bucket.get('contacts/' + id);
+  const contact = saved && (await saved.json());
+  return contact && !contact.removed ? contact : null;
+}
+async function contacts(req, env, parts) {
+  const bucket = env.BUCKET;
+  const post = req.method === 'POST';
+
+  // POST /api/contacts : ajouter un proche à un appareil BOOZZO
+  if (parts.length === 0) {
+    if (!post) return json({}, 405);
+    const d = await req.json();
+    const name = typeof d.name === 'string' ? d.name.trim().slice(0, 30) : '';
+    if (!UUID.test(d.device) || !name) return json({}, 400);
+    const contact = { id: crypto.randomUUID(), name, device: d.device, ring: null };
+    await bucket.put('contacts/' + contact.id, JSON.stringify(contact));
+    await bucket.put('devices/' + d.device + '/contacts/' + contact.id, '1');
+    return json(publicContact(contact), 201);
+  }
+
+  const contact = await readContact(bucket, parts[0]);
+  if (!contact) return json({ error: 'proche_introuvable' }, 404);
+  if (parts.length === 1) return post ? json({}, 405) : json(publicContact(contact));
+  if (!post || parts.length !== 2) return json({}, 404);
+  const d = await req.json();
+
+  // POST /api/contacts/:id/ring : faire sonner (call) ou arrêter la sonnerie (call: null)
+  if (parts[1] === 'ring') {
+    if (d.call !== null && !(UUID.test(d.call) && PEERS.includes(d.from))) return json({}, 400);
+    contact.ring = d.call ? { call: d.call, from: d.from, at: Date.now() } : null;
+  } else if (parts[1] === 'remove') {
+    if (d.device !== contact.device) return json({}, 403);
+    contact.removed = true;
+  } else return json({}, 404);
+  await bucket.put('contacts/' + contact.id, JSON.stringify(contact));
+  return json(publicContact(contact));
+}
+// GET /api/devices/:device/rings : appels entrants des proches pour cet appareil BOOZZO
+async function deviceRings(env, device) {
+  if (!UUID.test(device)) return json({}, 400);
+  const prefix = 'devices/' + device + '/contacts/';
+  const listed = await env.BUCKET.list({ prefix });
+  const rings = [];
+  for (const { key } of listed.objects) {
+    const contact = await readContact(env.BUCKET, key.slice(prefix.length));
+    const ring = contact && publicContact(contact).ring;
+    if (ring?.from === 'guest') rings.push({ contact: contact.id, name: contact.name, call: ring.call });
+  }
+  return json({ rings });
+}
+
 async function api(req, env, path) {
   const post = req.method === 'POST';
   if (req.method !== 'GET' && !post) return json({}, 405);
@@ -105,6 +166,10 @@ async function api(req, env, path) {
   if (path === '/api/chat') return post ? chat(req, env) : json({}, 405);
   if (path === '/api/calls' || path.startsWith('/api/calls/'))
     return calls(req, env, path.split('/').slice(3).filter(Boolean));
+  if (path === '/api/contacts' || path.startsWith('/api/contacts/'))
+    return contacts(req, env, path.split('/').slice(3).filter(Boolean));
+  const rings = path.match(/^\/api\/devices\/([^/]+)\/rings$/);
+  if (rings) return post ? json({}, 405) : deviceRings(env, rings[1]);
   return json({}, 404);
 }
 
