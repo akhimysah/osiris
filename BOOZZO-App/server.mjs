@@ -1,5 +1,6 @@
 // Serveur BOOZZO, au format « worker » : export default { fetch(req, env) }.
 // env.BUCKET   stockage clé/valeur (R2 en ligne, SQLite en local via dev.mjs)
+// env.TURN     relais facultatif pour les appels : { urls, username, credential }
 // env.ASSISTANT fonction async (messages) => { reply } fournie par l'hôte, absente si non configurée
 // FILES est injecté par build.mjs (contenu du dossier ui/).
 
@@ -162,7 +163,11 @@ async function api(req, env, path) {
   if (post && origin && origin !== new URL(req.url).origin) return json({}, 403);
   if (post && Number(req.headers.get('content-length')) > 100000) return json({}, 413);
 
-  if (path === '/api/config') return json({ assistant: Boolean(env.ASSISTANT) });
+  if (path === '/api/config')
+    return json({
+      assistant: Boolean(env.ASSISTANT),
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, ...(env.TURN ? [env.TURN] : [])],
+    });
   if (path === '/api/chat') return post ? chat(req, env) : json({}, 405);
   if (path === '/api/calls' || path.startsWith('/api/calls/'))
     return calls(req, env, path.split('/').slice(3).filter(Boolean));

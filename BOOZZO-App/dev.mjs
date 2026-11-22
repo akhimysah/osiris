@@ -7,8 +7,10 @@ process.chdir(fileURLToPath(new URL('.',import.meta.url)));
 await import('./build.mjs');
 const {default:worker}=await import('./dist/server/index.js');
 const {createAssistant}=await import('./assistant.mjs');const assistant=createAssistant();
-mkdirSync('.local',{recursive:true});
-const db=new DatabaseSync('.local/boozzo.sqlite');
+// Relais TURN facultatif pour les appels sur réseaux mobiles : TURN_URLS (séparées par des virgules), TURN_USERNAME, TURN_CREDENTIAL.
+const turn=process.env.TURN_URLS?{urls:process.env.TURN_URLS.split(',').map(u=>u.trim()).filter(Boolean),username:process.env.TURN_USERNAME||'',credential:process.env.TURN_CREDENTIAL||''}:null;
+const dataDir=process.env.DATA_DIR||'.local';mkdirSync(dataDir,{recursive:true});
+const db=new DatabaseSync(dataDir+'/boozzo.sqlite');
 db.exec('CREATE TABLE IF NOT EXISTS objects (key TEXT PRIMARY KEY, value BLOB NOT NULL, mime TEXT, etag TEXT NOT NULL)');
 const read=db.prepare('SELECT * FROM objects WHERE key=?');
 const bucket={
@@ -19,10 +21,12 @@ const bucket={
   if((test?.etagDoesNotMatch==='*'&&old)||(test?.etagMatches&&test.etagMatches!==old?.etag))return null;
   const etag=randomUUID();db.prepare('INSERT OR REPLACE INTO objects VALUES(?,?,?,?)').run(key,Buffer.from(value),options.httpMetadata?.contentType||null,etag);return {etag}}
 };
+const env={BUCKET:bucket,...(assistant?{ASSISTANT:assistant}:{}),...(turn?{TURN:turn}:{})};
 const port=Number(process.env.PORT||4174),origin='http://127.0.0.1:'+port;
 http.createServer(async(req,res)=>{try{
  const parts=[];let size=0;for await(const part of req){size+=part.length;if(size>6000000){res.writeHead(413).end();return}parts.push(part)}
- const request=new Request(new URL(req.url,origin),{method:req.method,headers:req.headers,body:parts.length?Buffer.concat(parts):undefined});
- const response=await worker.fetch(request,assistant?{BUCKET:bucket,ASSISTANT:assistant}:{BUCKET:bucket});
+ const proto=String(req.headers['x-forwarded-proto']||'http').split(',')[0].trim()==='https'?'https':'http';
+ const request=new Request(new URL(req.url,proto+'://'+(req.headers.host||'127.0.0.1:'+port)),{method:req.method,headers:req.headers,body:parts.length?Buffer.concat(parts):undefined});
+ const response=await worker.fetch(request,env);
  res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));
-}catch{res.writeHead(500).end('Erreur du serveur local.')}}).listen(port,'127.0.0.1',()=>console.log('BOOZZO · '+origin+(assistant?' · assistant actif':' · assistant non configuré (ANTHROPIC_API_KEY absent)')));
+}catch{res.writeHead(500).end('Erreur du serveur local.')}}).listen(port,process.env.HOST||'127.0.0.1',()=>console.log('BOOZZO · '+origin+(assistant?' · assistant actif':' · assistant non configuré (ANTHROPIC_API_KEY absent)')));

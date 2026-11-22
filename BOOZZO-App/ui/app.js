@@ -30,6 +30,8 @@ const ICON = {
   story: svg('<path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M8 8h8"/>'),
   iris: svg('<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
   home: svg('<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>'),
+  music: svg('<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>'),
+  clip: svg('<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 9v6l4.5-3z"/>'),
   mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
 };
 const APPS = [
@@ -40,6 +42,15 @@ const APPS = [
   ['story', 'Histoires', 'c-story'],
   ['iris', 'Iris', 'c-iris'],
 ];
+// Applications officielles : BOOZZO ne les intègre pas, il les ouvre. Sur un appareil Android,
+// le lien lance l'application installée ; ailleurs, il ouvre son site dans un nouvel onglet.
+const EXTERNAL = [
+  ['whatsapp', 'WhatsApp', 'c-wa', 'chat', 'https://wa.me/'],
+  ['spotify', 'Spotify', 'c-spotify', 'music', 'https://open.spotify.com/'],
+  ['tiktok', 'TikTok', 'c-tiktok', 'clip', 'https://www.tiktok.com/'],
+];
+const externalTile = ([, label, color, icon, url], cls = '') =>
+  `<a class="${cls}" href="${url}" target="_blank" rel="noopener"><i class="${color}">${ICON[icon]}</i>${label}</a>`;
 // Couleur du bouton et rotation de teinte appliquée à l'image de l'iris.
 const COLORS = { Azur: ['#4aa3df', 30], Émeraude: ['#4fb58a', -25], Ambre: ['#d39a45', 220], Violet: ['#9a7be0', 95] };
 
@@ -62,6 +73,7 @@ const state = {
   screen: 'home', // home | menu | call | youtube | photo | chat | iris
   color: COLORS[store.get('color')] ? store.get('color') : 'Azur',
   assistant: false,
+  iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
   talk: [], // conversation avec l'assistant : { role, content }
   camera: null,
   shot: '',
@@ -140,13 +152,13 @@ function openMenu() {
   const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   screen.innerHTML = `<div class="menu"><div class="clock">${time}</div><div class="grid">${APPS.map(
     ([id, label, color]) => `<button class="app" data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`,
-  ).join('')}</div><div class="dock"><button data-go="home" type="button" aria-label="Revenir à l’iris">${ICON.home}</button><button data-listen type="button" aria-label="Parler à BOOZZO">${ICON.mic}</button></div></div>`;
+  ).join('')}${EXTERNAL.map((app) => externalTile(app, 'app')).join('')}</div><div class="dock"><button data-go="home" type="button" aria-label="Revenir à l’iris">${ICON.home}</button><button data-listen type="button" aria-label="Parler à BOOZZO">${ICON.mic}</button></div></div>`;
   renderHome();
 }
 function renderHome() {
   panel.innerHTML = `<h2>Bonjour, je suis BOOZZO</h2>
     <p class="muted">Touchez mon œil ou choisissez une application. Vous pouvez aussi me parler.</p>
-    <div class="apps">${APPS.map(([id, label, color]) => `<button data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}</div>
+    <div class="apps">${APPS.map(([id, label, color]) => `<button data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.map((app) => externalTile(app)).join('')}</div>
     <div class="row"><button class="btn" data-listen type="button">${ICON.mic}Parler à BOOZZO</button></div>
     ${
       SpeechRecognition
@@ -154,6 +166,11 @@ function renderHome() {
            <p class="muted">Exemples : « BOOZZO, mets YouTube », « BOOZZO, appelle », « BOOZZO, raconte une histoire ».</p>`
         : '<p class="muted">La reconnaissance vocale n’est pas disponible dans ce navigateur. Utilisez Chrome ou Safari, ou écrivez à l’assistant.</p>'
     }`;
+}
+
+// Une commande vocale ne peut pas ouvrir une autre application toute seule : on affiche un lien à toucher.
+function offerExternal([, label, , , url]) {
+  screen.innerHTML = `<div class="say"><a class="open" href="${url}" target="_blank" rel="noopener"><small>Touchez pour ouvrir</small>${label}</a></div>`;
 }
 
 // ---------- Iris ----------
@@ -352,7 +369,9 @@ function command(spoken) {
   if (/you ?tube|vid[ée]o/.test(text)) return go('youtube', { spoken }), true;
   if (state.incoming && /r[ée]pond|d[ée]croch|accepte/.test(text)) return acceptIncoming(), true;
   if (state.incoming && /refuse|non merci/.test(text)) return declineIncoming(), true;
-  if (/appel|whats ?app|t[ée]l[ée]phone/.test(text)) return go('call', { spoken }), true;
+  const external = EXTERNAL.find(([id]) => text.replace(/\s/g, '').includes(id));
+  if (external) return go('home'), offerExternal(external), true;
+  if (/appel|t[ée]l[ée]phone/.test(text)) return go('call', { spoken }), true;
   if (/photo|cam[ée]ra/.test(text)) return go('photo'), true;
   if (/histoire|conte\b/.test(text)) return go('story'), true;
   if (/assistant/.test(text)) return go('chat'), true;
@@ -492,7 +511,7 @@ function renderCall() {
     const list = contacts();
     const fresh = state.newContact;
     body = `<p>${esc(call.status || 'Appelez un proche : son visage apparaît dans l’œil de BOOZZO.')}</p>
-      ${list.length ? `<ul class="favs">${list.map((c) => `<li><button class="btn" type="button" data-contact="${c.id}" ${busy}>${ICON.call}${esc(c.name)}</button><button class="x" type="button" data-link="${c.id}" aria-label="Lien de ${esc(c.name)}" title="Afficher le lien">QR</button><button class="x" type="button" data-forget="${c.id}" aria-label="Retirer ${esc(c.name)}">×</button></li>`).join('')}</ul>` : ''}
+      ${list.length ? `<ul class="favs">${list.map((c) => `<li><button class="btn" type="button" data-contact="${c.id}" ${busy}>${ICON.call}${esc(c.name)}</button>${c.phone ? `<a class="btn light wa" href="https://wa.me/${c.phone}" target="_blank" rel="noopener">WhatsApp</a>` : ''}<button class="x" type="button" data-link="${c.id}" aria-label="Lien de ${esc(c.name)}" title="Afficher le lien">QR</button><button class="x" type="button" data-forget="${c.id}" aria-label="Retirer ${esc(c.name)}">×</button></li>`).join('')}</ul>` : ''}
       ${
         fresh
           ? `<div class="invite"><p><strong>Lien de ${esc(fresh.name)}</strong></p>${qrSvg(contactLink(fresh.id))}
@@ -500,7 +519,7 @@ function renderCall() {
              <div class="row"><button class="btn light" data-share="${esc(contactLink(fresh.id))}" type="button">Envoyer le lien</button></div></div>`
           : ''
       }
-      <form class="line" id="contactForm"><input name="name" maxlength="30" required placeholder="Prénom du proche (ex. Mamie)" aria-label="Prénom du proche" autocomplete="off"><button class="btn light">Ajouter</button></form>
+      <form class="stack" id="contactForm"><input name="name" maxlength="30" required placeholder="Prénom du proche (ex. Mamie)" aria-label="Prénom du proche" autocomplete="off"><input name="phone" type="tel" maxlength="20" placeholder="Numéro WhatsApp, facultatif (ex. +33 6 12 34 56 78)" aria-label="Numéro WhatsApp, facultatif" autocomplete="off"><button class="btn light">Ajouter ce proche</button></form>
       <div class="row"><button class="btn light" id="startCall" type="button" ${busy}>Appel ponctuel par QR code</button></div>`;
   }
   panel.innerHTML = `${guestMode ? '' : backButton}<h2>Appel dans l’œil</h2>${body}`;
@@ -591,7 +610,7 @@ async function pollCall() {
 }
 function newPeer() {
   call.pc?.close();
-  const pc = (call.pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }));
+  const pc = (call.pc = new RTCPeerConnection({ iceServers: state.iceServers }));
   call.local.getTracks().forEach((track) => pc.addTrack(track, call.local));
   pc.ontrack = (event) => {
     if (pc !== call.pc || $('video.remote', screen)) return;
@@ -661,10 +680,11 @@ function endCall(sendBye = true, show = true) {
 
 // ---------- Proches et appels entrants ----------
 
-async function addContact(name) {
+// Le numéro WhatsApp reste sur cet appareil : il n'est pas envoyé au serveur.
+async function addContact(name, phone = '') {
   try {
     const contact = await api('/api/contacts', { device: deviceId, name });
-    store.set('contacts', [...contacts(), { id: contact.id, name: contact.name }]);
+    store.set('contacts', [...contacts(), { id: contact.id, name: contact.name, phone }]);
     state.newContact = contact;
   } catch {
     toast('Impossible d’ajouter ce proche pour l’instant.');
@@ -825,7 +845,7 @@ document.addEventListener('submit', (event) => {
   }
   if (form.id === 'contactForm') {
     const name = form.name.value.trim();
-    if (name) addContact(name);
+    if (name) addContact(name, form.phone.value.replace(/\D/g, '').slice(0, 15));
   }
   if (form.id === 'videoForm') {
     const id = youtubeId(form.link.value);
@@ -865,6 +885,7 @@ if (!guestCallId) {
 api('/api/config')
   .then((config) => {
     state.assistant = Boolean(config.assistant);
+    if (Array.isArray(config.iceServers)) state.iceServers = config.iceServers;
     if (state.screen === 'chat') renderChat();
   })
   .catch(() => {});

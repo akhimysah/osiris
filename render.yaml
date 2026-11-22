@@ -1,0 +1,17 @@
+# Déploiement de l'application BOOZZO sur Render (https://render.com).
+services:
+  - type: web
+    name: boozzo
+    runtime: node
+    plan: free
+    rootDir: BOOZZO-App
+    buildCommand: npm ci --omit=dev
+    startCommand: node dev.mjs
+    healthCheckPath: /api/config
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: NODE_VERSION
+        value: 22.13.0
+      - key: ANTHROPIC_API_KEY
+        sync: false
