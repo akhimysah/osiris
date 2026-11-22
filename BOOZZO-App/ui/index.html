@@ -19,14 +19,15 @@
   <section class="stage" id="stage" aria-label="BOOZZO">
     <div class="plushBox">
       <img class="plush" src="/exploratrice.jpeg" alt="Peluche BOOZZO en tenue d’exploration, avec un chapeau et un sac à dos">
-      <div class="eye" id="eye">
+      <div class="eye" id="eye" role="button" tabindex="0" aria-label="Œil de BOOZZO : ouvrir le menu">
         <div class="iris" id="iris" role="img" aria-label="Iris de BOOZZO"></div>
         <div class="screen" id="screen"></div>
+        <button class="exit" data-go="menu" type="button" aria-label="Revenir au menu">‹ Menu</button>
       </div>
     </div>
   </section>
 
-  <section class="panel" id="panel" aria-live="polite"></section>
+  <section class="panel" id="panel"></section>
 </main>
 
 <div id="toast" role="status"></div>

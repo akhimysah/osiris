@@ -7,17 +7,31 @@
 const json = (data, status = 200) =>
   Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
 
+// Corps JSON de la requête, ou null s'il est absent ou invalide.
+const body = (req) => req.json().then((d) => (d && typeof d === 'object' ? d : null), () => null);
+
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const CALL_LIFETIME_MS = 60 * 60 * 1000;
+const MAX_SIGNALS = 40; // messages de signalisation par appel
 const SIGNAL_TYPES = ['join', 'offer', 'answer', 'bye'];
 const PEERS = ['eye', 'guest'];
 
-// Limite simple contre les abus de l'assistant : par instance du serveur.
-const chatWindow = { start: 0, count: 0 };
-function chatAllowed() {
-  const now = Date.now();
-  if (now - chatWindow.start > 60000) Object.assign(chatWindow, { start: now, count: 0 });
-  return ++chatWindow.count <= 30;
+// Limites de l'assistant, tenues dans le stockage pour valoir sur toutes les instances du serveur.
+const CHAT_PER_DEVICE_PER_MINUTE = 10;
+const CHAT_PER_DAY = 2000;
+async function bump(bucket, key, limit) {
+  const saved = await bucket.get(key);
+  const count = saved ? Number((await saved.json()).count) || 0 : 0;
+  if (count >= limit) return false;
+  await bucket.put(key, JSON.stringify({ count: count + 1 }));
+  return true;
+}
+async function chatAllowed(bucket, device) {
+  const now = new Date().toISOString();
+  return (
+    (await bump(bucket, `rate/${device}/${now.slice(0, 16)}`, CHAT_PER_DEVICE_PER_MINUTE)) &&
+    (await bump(bucket, `rate/day/${now.slice(0, 10)}`, CHAT_PER_DAY))
+  );
 }
 
 async function readCall(bucket, id) {
@@ -25,18 +39,21 @@ async function readCall(bucket, id) {
   const saved = await bucket.get('calls/' + id);
   if (!saved) return null;
   const call = await saved.json();
-  return Date.now() > call.expires ? null : call;
+  return call.ended || Date.now() > call.expires ? null : call;
 }
 
 async function chat(req, env) {
   if (!env.ASSISTANT) return json({ error: 'assistant_non_configure' }, 503);
-  if (!chatAllowed()) return json({ error: 'trop_de_demandes' }, 429);
-  const body = await req.json();
-  const messages = body?.messages;
+  // Seule la page de l'application, depuis un appareil BOOZZO identifié, peut parler à l'assistant.
+  if (!req.headers.get('origin')) return json({}, 403);
+  const d = await body(req);
+  if (!UUID.test(d?.device)) return json({ error: 'demande_invalide' }, 400);
+  if (!(await chatAllowed(env.BUCKET, d.device))) return json({ error: 'trop_de_demandes' }, 429);
+  const messages = d.messages;
   const valid =
     Array.isArray(messages) &&
     messages.length > 0 &&
-    messages.length <= 24 &&
+    messages.length <= 12 &&
     messages[0].role === 'user' &&
     messages.every(
       (m) =>
@@ -70,9 +87,12 @@ async function calls(req, env, parts) {
 
   // POST /api/calls/:id/signal : déposer un message de signalisation
   if (post) {
-    const d = await req.json();
-    const sdpOk = d.sdp === undefined || (typeof d.sdp === 'string' && d.sdp.length <= 30000);
-    if (!PEERS.includes(d.from) || !SIGNAL_TYPES.includes(d.type) || !sdpOk) return json({}, 400);
+    const d = await body(req);
+    const sdpOk = d?.sdp === undefined || (typeof d.sdp === 'string' && d.sdp.length <= 30000);
+    if (!d || !PEERS.includes(d.from) || !SIGNAL_TYPES.includes(d.type) || !sdpOk) return json({}, 400);
+    if ((await bucket.list({ prefix })).objects.length >= MAX_SIGNALS) return json({}, 429);
+    // Après un « bye », l'appel est clos : personne ne peut plus le rejoindre.
+    if (d.type === 'bye') await bucket.put('calls/' + call.id, JSON.stringify({ ...call, ended: true }));
     const key = prefix + String(Date.now()).padStart(15, '0') + '-' + crypto.randomUUID();
     await bucket.put(key, JSON.stringify({ from: d.from, type: d.type, sdp: d.sdp }));
     return json({ ok: true }, 201);
@@ -116,9 +136,9 @@ async function contacts(req, env, parts) {
   // POST /api/contacts : ajouter un proche à un appareil BOOZZO
   if (parts.length === 0) {
     if (!post) return json({}, 405);
-    const d = await req.json();
-    const name = typeof d.name === 'string' ? d.name.trim().slice(0, 30) : '';
-    if (!UUID.test(d.device) || !name) return json({}, 400);
+    const d = await body(req);
+    const name = typeof d?.name === 'string' ? d.name.trim().slice(0, 30) : '';
+    if (!UUID.test(d?.device) || !name) return json({}, 400);
     const contact = { id: crypto.randomUUID(), name, device: d.device, ring: null };
     await bucket.put('contacts/' + contact.id, JSON.stringify(contact));
     await bucket.put('devices/' + d.device + '/contacts/' + contact.id, '1');
@@ -129,12 +149,20 @@ async function contacts(req, env, parts) {
   if (!contact) return json({ error: 'proche_introuvable' }, 404);
   if (parts.length === 1) return post ? json({}, 405) : json(publicContact(contact));
   if (!post || parts.length !== 2) return json({}, 404);
-  const d = await req.json();
+  const d = await body(req);
+  if (!d) return json({}, 400);
 
-  // POST /api/contacts/:id/ring : faire sonner (call) ou arrêter la sonnerie (call: null)
+  // POST /api/contacts/:id/ring : faire sonner ({ call, from }) ou arrêter la sonnerie de cet appel ({ call: null, if })
   if (parts[1] === 'ring') {
-    if (d.call !== null && !(UUID.test(d.call) && PEERS.includes(d.from))) return json({}, 400);
-    contact.ring = d.call ? { call: d.call, from: d.from, at: Date.now() } : null;
+    if (d.call === null) {
+      // On n'efface que la sonnerie de l'appel nommé : l'autre côté a pu en lancer une autre entre-temps.
+      if (!UUID.test(d.if)) return json({}, 400);
+      if (contact.ring?.call !== d.if) return json(publicContact(contact));
+      contact.ring = null;
+    } else {
+      if (!UUID.test(d.call) || !PEERS.includes(d.from)) return json({}, 400);
+      contact.ring = { call: d.call, from: d.from, at: Date.now() };
+    }
   } else if (parts[1] === 'remove') {
     if (d.device !== contact.device) return json({}, 403);
     contact.removed = true;
