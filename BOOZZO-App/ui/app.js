@@ -32,6 +32,8 @@ const ICON = {
   home: svg('<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>'),
   music: svg('<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>'),
   clip: svg('<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 9v6l4.5-3z"/>'),
+  phone: svg('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
+  next: svg('<path d="M9 6l6 6-6 6"/>'),
   mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
 };
 const APPS = [
@@ -40,6 +42,7 @@ const APPS = [
   ['photo', 'Photo', 'c-photo'],
   ['chat', 'Assistant', 'c-chat'],
   ['story', 'Histoires', 'c-story'],
+  ['phone', 'Téléphone', 'c-phone'],
   ['iris', 'Iris', 'c-iris'],
 ];
 // Applications officielles : BOOZZO ne les intègre pas, il les ouvre. Sur un appareil Android,
@@ -85,7 +88,8 @@ const state = {
   incoming: null, // appel entrant : { contact, name, call }
   handled: '', // dernier appel entrant accepté ou refusé
   me: null, // côté proche : sa fiche
-  newContact: null, // proche dont on affiche le lien
+  newContact: null,
+  menuPage: 0, // proche dont on affiche le lien
 };
 
 // ---------- Outils d'affichage ----------
@@ -153,17 +157,23 @@ function go(name, options = {}) {
   }
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: openYoutube, photo: openPhoto, chat: openChat, iris: openIris })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: openYoutube, photo: openPhoto, chat: openChat, iris: openIris, phone: openPhone })[name](options);
 }
 
 function openHome() {
   renderHome();
 }
-function openMenu() {
+// Le menu de l'œil tient sur deux pages de six grandes tuiles, lisibles sur un petit écran rond.
+function openMenu({ page = 0 } = {}) {
   const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  screen.innerHTML = `<div class="menu"><div class="clock">${time}</div><div class="grid">${APPS.map(
-    ([id, label, color]) => `<button class="app" data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`,
-  ).join('')}${EXTERNAL.map((app) => externalTile(app, 'app')).join('')}</div><div class="dock"><button data-go="home" type="button" aria-label="Revenir à l’iris">${ICON.home}</button><button data-listen type="button" aria-label="Parler à BOOZZO">${ICON.mic}</button></div></div>`;
+  const tiles = [
+    ...APPS.map(([id, label, color]) => `<button class="app" data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`),
+    ...EXTERNAL.map((app) => externalTile(app, 'app')),
+  ];
+  const pages = Math.ceil(tiles.length / 6);
+  state.menuPage = ((page % pages) + pages) % pages;
+  screen.innerHTML = `<div class="menu"><div class="clock">${time}</div><div class="grid">${tiles.slice(state.menuPage * 6, state.menuPage * 6 + 6).join('')}</div>
+    <div class="dock"><button data-go="home" type="button" aria-label="Revenir à l’iris">${ICON.home}</button><button data-listen type="button" aria-label="Parler à BOOZZO">${ICON.mic}</button><button data-page type="button" aria-label="Autres applications">${ICON.next}</button></div></div>`;
   renderHome();
 }
 function renderHome() {
@@ -182,6 +192,19 @@ function renderHome() {
 // Une commande vocale ne peut pas ouvrir une autre application toute seule : on affiche un lien à toucher.
 function offerExternal([, label, , , url]) {
   screen.innerHTML = `<div class="say"><a class="open" href="${url}" target="_blank" rel="noopener"><small>Touchez pour ouvrir</small>${label}</a></div>`;
+}
+
+// ---------- Téléphone : afficher l'écran du téléphone dans l'œil ----------
+// La recopie d'écran est assurée par la carte de la peluche (voir peluche/README.md), pas par cette page :
+// quand le téléphone lance la recopie, son écran passe au-dessus de l'œil ; quand il l'arrête, l'œil revient.
+
+function openPhone() {
+  sayInEye('Sur le téléphone, lancez la recopie de l’écran vers BOOZZO.', 'Téléphone');
+  panel.innerHTML = `${backButton}<h2>Mon téléphone dans l’œil</h2>
+    <p>Affichez l’écran de votre téléphone dans l’œil de BOOZZO pour y retrouver toutes vos applications.</p>
+    <p><strong>iPhone</strong><br>Ouvrez le Centre de contrôle, touchez « Recopie de l’écran », puis choisissez « BOOZZO ». Pour arrêter, touchez « Arrêter la recopie ».</p>
+    <p><strong>Android</strong><br>Reliez le téléphone à la peluche par câble USB, ou en Wi-Fi après l’avoir autorisé une première fois (voir le guide d’installation).</p>
+    <p class="muted">La recopie fonctionne uniquement sur la peluche, une fois sa carte installée avec le kit du dossier « peluche ». Le téléphone et la peluche doivent être sur le même Wi-Fi.</p>`;
 }
 
 // ---------- Iris ----------
@@ -386,8 +409,10 @@ const VOICE_COLORS = [[/\b(azur|bleue?)\b/, 'Azur'], [/\b([ée]meraude|verte?)\b
 const ORDER = /\b(mets?|mettre|lance|ouvre|montre|affiche|joue|d[ée]marre|va sur)\b/;
 // Exécute une commande reconnue. Renvoie false si la phrase n'en est pas une.
 // Les motifs exigent une forme d'ordre : une phrase banale doit aller à l'assistant, pas lancer une application.
+// Minuscules sans accents : les limites de mots des motifs ne reconnaissent que les lettres non accentuées.
+const plain = (spoken) => spoken.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/œ/g, 'oe');
 function command(spoken) {
-  const text = spoken.toLowerCase();
+  const text = plain(spoken);
   const order = ORDER.test(text);
   const color = VOICE_COLORS.find(([pattern]) => pattern.test(text));
   if (/\braccroche[rz]?\b|termine l.appel/.test(text)) return call.role || call.busy ? (endCall(), true) : false;
@@ -396,7 +421,8 @@ function command(spoken) {
   if (/you ?tube/.test(text) || (order && /\bvid[ée]o\b/.test(text))) return go('youtube', { spoken }), true;
   const external = EXTERNAL.find(([id]) => text.replace(/\s/g, '').includes(id));
   if (external) return go('home'), offerExternal(external), true;
-  if (/(?<![mts]['’])\b(appelle|appeler|appelez)\b|\bt[ée]l[ée]phone à\b/.test(text)) return go('call', { spoken }), true;
+  if (order && /\b(t[ée]l[ée]phone|portable|iphone)\b/.test(text) && !/\btelephone a\b/.test(text)) return go('phone'), true;
+  if (/(?<![mts]['’])\b(appelle|appeler|appelez)\b|\btelephone a\b/.test(text)) return go('call', { spoken }), true;
   if (/\b(photo|cam[ée]ra)\b/.test(text) && (order || /\bprend/.test(text))) return go('photo'), true;
   if (/\b(raconte|lis|dis)\b.*\b(histoire|conte)\b/.test(text)) return go('story'), true;
   if (order && /\bassistant\b/.test(text)) return go('chat'), true;
@@ -410,7 +436,7 @@ function heard(spoken) {
   if (!text) return;
   // Pendant une sonnerie, la voix ne sert qu'à répondre ou refuser.
   if (state.incoming) {
-    const low = text.toLowerCase();
+    const low = plain(text);
     if (/\b(refuse|non)\b/.test(low)) declineIncoming();
     else if (/r[ée]pond|d[ée]croch|accepte|\boui\b|all[oô]/.test(low)) acceptIncoming();
     return;
@@ -866,6 +892,7 @@ document.addEventListener('click', (event) => {
   // Sur l'écran rond (sans panneau), l'icône Appels ouvre directement l'appel.
   if (data.go) return go(data.go, data.go === 'call' ? { start: kiosk } : undefined);
   if ('listen' in data) return listen();
+  if ('page' in data) return openMenu({ page: state.menuPage + 1 });
   if (data.color) return setColor(data.color);
   if (data.call) return data.call === 'accept' ? acceptIncoming() : declineIncoming();
   if (data.contact) return startCall('eye', { contact: contacts().find((c) => c.id === data.contact) });

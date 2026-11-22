@@ -12,6 +12,7 @@ Application web de la peluche BOOZZO. La peluche reste immobile : tout se passe 
 - **YouTube** : lecture d'une vidéo dans l'œil à partir de son lien ; les favoris nommés se lancent à la voix.
 - **Photo** : retour caméra dans l'œil, prise de vue, dernières photos gardées sur l'appareil.
 - **Iris** : quatre couleurs, azur par défaut.
+- **Téléphone** : sur la peluche, l'écran d'un téléphone peut être recopié dans l'œil pour y utiliser ses propres applications. Voir `peluche/README.md` (kit d'installation de la carte, pas encore essayé sur du matériel).
 - **WhatsApp, Spotify, TikTok** : ces tuiles ouvrent l'application officielle. BOOZZO ne les intègre pas : sur un appareil Android, le lien lance l'application installée ; ailleurs, il ouvre son site. Un proche peut avoir un numéro WhatsApp, gardé sur l'appareil.
 
 ## Démarrer
@@ -66,6 +67,8 @@ Variables d'environnement :
 - `server.mjs` : routes HTTP au format « worker » (`fetch(req, env)`), stockage via `env.BUCKET`.
 - `assistant.mjs` : appel à l'API Claude (SDK officiel) et personnalité de BOOZZO.
 - `dev.mjs` : serveur local, stockage SQLite dans `.local/`.
+- `peluche/` : kit d'installation de la carte de la peluche (œil au démarrage, recopie d'écran du téléphone).
+- `docs/briques-open-source.md` : briques open source recensées et choix techniques.
 - `build.mjs` : assemble `ui/` et `server.mjs` dans `dist/server/index.js`.
 
 ## Limites connues
