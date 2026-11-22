@@ -34,6 +34,7 @@ const ICON = {
   tiktok: svg('<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 9v6l4.5-3z"/>'),
   phone: svg('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
   next: svg('<path d="M9 6l6 6-6 6"/>'),
+  face: svg('<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 10v1M15 10v1M9 15c1.8 1.4 4.2 1.4 6 0"/>'),
   esim: svg('<path d="M7 3h7l4 4v14H7z"/><rect x="10" y="11" width="5" height="6" rx="1"/>'),
   mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
 };
@@ -46,6 +47,7 @@ const APPS = [
   ['story', 'Histoires', 'c-story'],
   ['phone', 'Téléphone', 'c-phone'],
   ['iris', 'Iris', 'c-iris'],
+  ['face', 'Visages', 'c-face'],
   ['esim', 'Forfait', 'c-esim'],
 ];
 // Applications officielles : BOOZZO ne les intègre pas, il les ouvre. Sur un appareil Android,
@@ -83,6 +85,7 @@ const state = {
   screen: 'home', // home (iris) | menu | call | youtube | tiktok | photo | chat | iris | phone
   color: COLORS[store.get('color')] ? store.get('color') : 'Azur',
   assistant: false,
+  youtube: false, // la recherche YouTube est-elle disponible sur ce serveur ?
   server: true, // faux quand la page est servie seule, sans le serveur BOOZZO (démonstration)
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
   talk: [], // conversation avec l'assistant : { role, content }
@@ -159,14 +162,9 @@ function go(name, options = {}) {
   endCall(true, false);
   stopCamera();
   stopSpeaking();
-  if (name === 'story') {
-    setScreen('chat');
-    renderChat();
-    return ask('Raconte-moi une courte histoire douce.');
-  }
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, phone: openPhone, esim: openEsim })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, face: openFaces, phone: openPhone, esim: openEsim })[name](options);
 }
 
 function openHome() {
@@ -214,6 +212,114 @@ function openPhone() {
     <p><strong>iPhone</strong><br>Ouvrez le Centre de contrôle, touchez « Recopie de l’écran », puis choisissez « BOOZZO ». Pour arrêter, touchez « Arrêter la recopie ».</p>
     <p><strong>Android</strong><br>Reliez le téléphone à la peluche par câble USB, ou en Wi-Fi après l’avoir autorisé une première fois (voir le guide d’installation).</p>
     <p class="muted">La recopie fonctionne uniquement sur la peluche, une fois sa carte installée avec le kit du dossier « peluche ». Le téléphone et la peluche doivent être sur le même Wi-Fi.</p>`;
+}
+
+// ---------- Visages : reconnaître les personnes enregistrées ----------
+// Tout se passe sur l'appareil : la bibliothèque face-api (open source, MIT) calcule une empreinte du visage,
+// gardée uniquement dans le navigateur de cet appareil. Aucune image ni empreinte n'est envoyée ailleurs.
+// Chaque personne s'enregistre elle-même, avec son accord (celui d'un parent pour un enfant).
+
+const FACE_MATCH = 0.5; // distance maximale entre deux empreintes d'une même personne
+const faces = () => store.get('faces', []);
+const faceDistance = (a, b) => Math.sqrt(a.reduce((sum, v, i) => sum + (v - b[i]) ** 2, 0));
+// Renvoie la personne enregistrée la plus proche de l'empreinte, ou null si aucune n'est assez proche.
+function matchFace(descriptor, known = faces()) {
+  let best = null;
+  for (const person of known) {
+    const distance = faceDistance(descriptor, person.d);
+    if (distance < FACE_MATCH && (!best || distance < best.distance)) best = { name: person.name, distance };
+  }
+  return best;
+}
+function loadFaceLibrary() {
+  return (loadFaceLibrary.loading ??= (async () => {
+    await new Promise((resolve, reject) => {
+      document.head.append(Object.assign(document.createElement('script'), { src: 'face/face-api.js', onload: resolve, onerror: reject }));
+    });
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri('face'),
+      faceapi.nets.faceLandmark68TinyNet.loadFromUri('face'),
+      faceapi.nets.faceRecognitionNet.loadFromUri('face'),
+    ]);
+  })());
+}
+// Empreinte du visage visible dans la vidéo, ou null s'il n'y en a pas.
+async function readFace(video) {
+  const found = await faceapi
+    .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 }))
+    .withFaceLandmarks(true)
+    .withFaceDescriptor();
+  return found ? Array.from(found.descriptor, (v) => Math.round(v * 1e4) / 1e4) : null;
+}
+const faceState = { ready: false, status: 'Préparation…', last: '' };
+function renderFaces() {
+  const list = faces();
+  panel.innerHTML = `${backButton}<h2>Visages</h2>
+    <p>BOOZZO reconnaît les personnes qui se sont enregistrées et les salue par leur prénom.</p>
+    <p class="notice">Chaque personne s’enregistre elle-même, avec son accord (celui d’un parent pour un enfant). L’empreinte du visage reste sur cet appareil et peut être effacée à tout moment.</p>
+    <p><strong id="faceStatus">${esc(faceState.status)}</strong></p>
+    <form class="line" id="faceForm"><input name="name" maxlength="30" required placeholder="Prénom à enregistrer" aria-label="Prénom" autocomplete="off"><button class="btn" ${faceState.ready ? '' : 'disabled'}>Enregistrer ce visage</button></form>
+    ${list.length ? `<p class="muted">Personnes enregistrées</p><ul class="favs">${list.map((person, i) => `<li><span class="btn light">${esc(person.name)}</span><button class="x" type="button" data-unface="${i}" aria-label="Effacer ${esc(person.name)}">×</button></li>`).join('')}</ul>` : '<p class="muted">Personne n’est encore enregistré.</p>'}`;
+}
+function faceStatus(text) {
+  faceState.status = text;
+  if ($('#faceStatus')) $('#faceStatus').textContent = text;
+  const badge = $('.badge', screen);
+  if (badge) badge.textContent = text;
+}
+async function openFaces() {
+  Object.assign(faceState, { ready: false, status: 'Préparation de la reconnaissance…', last: '' });
+  renderFaces();
+  sayInEye('Je me prépare…', 'Visages');
+  try {
+    const [stream] = await Promise.all([camera({ video: { facingMode: 'user' }, audio: false }), loadFaceLibrary()]);
+    if (state.screen !== 'face' || state.camera) return stream.getTracks().forEach((track) => track.stop());
+    state.camera = stream;
+  } catch (error) {
+    if (state.screen !== 'face') return;
+    const message = error?.name ? cameraError(error) : 'La reconnaissance des visages n’a pas pu se charger.';
+    sayInEye(message, 'Visages');
+    return faceStatus(message);
+  }
+  screen.innerHTML = '<video class="mirror" autoplay playsinline muted></video><span class="badge"></span>';
+  const video = $('video', screen);
+  showStream(video, state.camera);
+  focusEye();
+  faceState.ready = true;
+  renderFaces();
+  faceStatus('Regardez l’œil…');
+  // Reconnaissance en continu tant que l'écran Visages est ouvert.
+  const stream = state.camera;
+  while (state.screen === 'face' && state.camera === stream) {
+    try {
+      if (video.videoWidth) {
+        const descriptor = await readFace(video);
+        if (state.screen !== 'face' || state.camera !== stream) break;
+        faceState.descriptor = descriptor;
+        const match = descriptor && matchFace(descriptor);
+        const name = match?.name || '';
+        faceStatus(!descriptor ? 'Aucun visage devant l’œil.' : name ? `Bonjour, ${name} !` : faces().length ? 'Visage non reconnu.' : 'Visage détecté. Enregistrez-le avec votre prénom.');
+        // Salue à voix haute une seule fois à chaque nouvelle personne reconnue.
+        if (name && name !== faceState.last && window.speechSynthesis && !window.speechSynthesis.speaking) {
+          const hello = new SpeechSynthesisUtterance(`Bonjour, ${name} !`);
+          hello.lang = 'fr-FR';
+          hello.voice = frenchVoice() || null;
+          window.speechSynthesis.speak(hello);
+        }
+        faceState.last = name;
+      }
+    } catch {
+      faceStatus('La reconnaissance a rencontré un problème.');
+    }
+    await new Promise((resolve) => setTimeout(resolve, 700));
+  }
+}
+function enrollFace(name) {
+  if (!faceState.descriptor) return toast('Placez votre visage bien en face de l’œil, puis réessayez.');
+  store.set('faces', [...faces().filter((person) => person.name.toLowerCase() !== name.toLowerCase()), { name, d: faceState.descriptor }].slice(-12));
+  faceState.last = '';
+  renderFaces();
+  toast(`Visage de ${name} enregistré sur cet appareil.`);
 }
 
 // ---------- Forfait eSIM : aperçu ----------
@@ -317,6 +423,37 @@ function playVideo(app, id) {
   screen.innerHTML = `<iframe title="${VIDEO[app].label}" allow="autoplay; encrypted-media" playsinline src="${VIDEO[app].src(id)}"></iframe>`;
   focusEye();
 }
+// Recherche YouTube : par le serveur BOOZZO, qui détient la clé de l'API YouTube.
+const search = { q: '', videos: [], message: '' };
+function searchResultsHtml() {
+  if (search.message) return `<p class="muted">${esc(search.message)}${search.q ? ` <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(search.q)}" target="_blank" rel="noopener">Ouvrir la recherche sur YouTube</a>, puis copiez le lien de la vidéo.` : ''}</p>`;
+  if (!search.videos.length) return '';
+  return `<p class="muted">Résultats pour « ${esc(search.q)} »</p><ul class="favs">${search.videos.map((v) => `<li><button class="btn light" type="button" data-video="${esc(v.id)}">${ICON.youtube}<span>${esc(v.title)}</span></button></li>`).join('')}</ul>`;
+}
+// Cherche des vidéos et lance la première dans l'œil.
+async function searchYoutube(q) {
+  Object.assign(search, { q, videos: [], message: 'Recherche…' });
+  const show = () => $('#searchResults') && ($('#searchResults').innerHTML = searchResultsHtml());
+  show();
+  await serverReady;
+  if (!state.youtube) {
+    search.message = state.server ? 'La recherche demande une clé YouTube sur le serveur.' : 'La recherche demande la version complète, avec son serveur.';
+    sayInEye('La recherche YouTube n’est pas encore branchée.', 'YouTube');
+    return show();
+  }
+  try {
+    const { videos } = await api('api/youtube?q=' + encodeURIComponent(q));
+    Object.assign(search, { videos, message: videos.length ? '' : 'Aucune vidéo trouvée.' });
+    if (state.screen !== 'youtube') return;
+    show();
+    if (videos.length) playVideo('youtube', videos[0].id);
+  } catch (error) {
+    search.message = error.message === 'youtube_quota' ? 'Le nombre de recherches du jour est atteint.' : 'La recherche n’a pas abouti.';
+    show();
+  }
+}
+// Mots à retirer d'une phrase comme « BOOZZO, mets des comptines sur YouTube » pour garder la recherche.
+const SEARCH_NOISE = /\b(boozzo|bouzo|mets?|mettre|lance|ouvre|montre|affiche|joue|cherche|trouve|moi|nous|sur|dans|you ?tube|videos?|une?|des|du|de la|de|les?|la|l|s il te plait|stp)\b/g;
 function openVideo(app, { spoken = '' } = {}) {
   const { label, hint, placeholder, starters } = VIDEO[app];
   const favorites = store.get(videoKey(app), []);
@@ -326,12 +463,22 @@ function openVideo(app, { spoken = '' } = {}) {
     <p class="muted">${hint} Donnez-lui un nom pour la retrouver et la lancer à la voix.</p>
     <form class="stack" id="videoForm"><input name="link" type="url" required placeholder="${placeholder}" aria-label="Lien de la vidéo"><input name="name" maxlength="40" placeholder="Nom du favori (facultatif)" aria-label="Nom du favori"><button class="btn">Lire dans l’œil</button></form>
     <p class="error" id="videoError"></p>
+    ${
+      app === 'youtube'
+        ? `<form class="line" id="searchForm"><input name="q" maxlength="80" required placeholder="Chercher une vidéo (ex. comptines)" aria-label="Chercher sur YouTube" autocomplete="off"><button class="btn light">Chercher</button></form>
+           <div id="searchResults">${searchResultsHtml()}</div>`
+        : ''
+    }
     ${favorites.length ? `<p class="muted">Mes favoris</p><ul class="favs">${favorites.map((v, i) => item(v, true, i)).join('')}</ul>` : ''}
     ${starters.length ? `<p class="muted">Exemples</p><ul class="favs">${starters.map((v) => item(v, false)).join('')}</ul>` : ''}
     <p class="muted">Le fil d’accueil de ${label} ne peut pas s’afficher dans une page web : ${label} ne l’autorise que dans sa propre application. Sur la peluche, il s’affichera dans l’œil par la recopie du téléphone.</p>`;
   // L'œil ne reste pas vide : on lance le favori demandé, sinon le premier favori ou le premier exemple.
   const text = spoken.toLowerCase();
-  const pick = (text && favorites.find((v) => text.includes(v.name.toLowerCase()))) || favorites[0] || starters[0];
+  const named = text && favorites.find((v) => text.includes(v.name.toLowerCase()));
+  // « Mets des comptines sur YouTube » : ce qui reste de la phrase devient une recherche.
+  const query = app === 'youtube' && !named ? plain(spoken).replace(/[’']/g, ' ').replace(SEARCH_NOISE, ' ').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim() : '';
+  if (query.length > 1) return searchYoutube(query);
+  const pick = named || favorites[0] || starters[0];
   if (pick) playVideo(app, pick.id);
   else sayInEye('Collez le lien d’une vidéo pour la voir ici.', label);
 }
@@ -403,14 +550,17 @@ function showShot(dataUrl) {
 let speechRun = 0;
 function stopSpeaking() {
   speechRun++;
-  window.speechSynthesis?.cancel();
+  const synth = window.speechSynthesis;
+  if (synth && (synth.speaking || synth.pending)) synth.cancel();
   eye.classList.remove('listening', 'thinking');
 }
 // Sur iPhone, la synthèse vocale doit avoir été lancée une première fois depuis un geste.
 function primeSpeech() {
   if (primeSpeech.done || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
   primeSpeech.done = true;
-  window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+  const silent = new SpeechSynthesisUtterance(' ');
+  silent.volume = 0;
+  window.speechSynthesis.speak(silent);
 }
 function frenchVoice() {
   const voices = window.speechSynthesis?.getVoices() || [];
@@ -460,9 +610,18 @@ function renderChat() {
 // Ce n'est pas une intelligence artificielle : ce qui n'est pas prévu ici reçoit une réponse d'attente.
 
 const STORIES = [
-  'Il était une fois une petite peluche qui s’appelait BOOZZO. Elle avait un grand œil tout rond, qui brillait comme la lune. Chaque soir, quand la maison devenait silencieuse, son œil s’allumait doucement. Dedans, on voyait des étoiles, des nuages et parfois un petit bateau. Un soir, le bateau emmena BOOZZO jusqu’à une île où les arbres chantaient des berceuses. BOOZZO écouta, ferma son grand œil, et rapporta la plus douce des chansons. Depuis, quand un enfant a du mal à s’endormir, BOOZZO la fredonne tout bas. Bonne nuit.',
-  'Un matin, BOOZZO mit son chapeau d’explorateur et son sac à dos. Aujourd’hui, dit-il, je pars découvrir le jardin. Il rencontra une fourmi très pressée, qui portait une miette plus grosse qu’elle. Puis un escargot, qui prenait tout son temps et saluait chaque fleur. BOOZZO apprit de la fourmi qu’on peut porter de grandes choses à plusieurs. Il apprit de l’escargot qu’on voit plus de merveilles quand on va doucement. Le soir, il rangea ces deux secrets dans son sac. Et il les garde pour toi.',
-  'Tout en haut de la colline vivait un nuage qui avait peur de pleuvoir. Il croyait que ses gouttes feraient de la peine aux fleurs. BOOZZO leva son grand œil vers lui et lui dit : regarde en bas. Le nuage regarda, et vit des fleurs qui ouvraient leurs pétales en l’attendant. Alors il laissa tomber une petite pluie, toute fine, toute tiède. Les fleurs dansèrent, la terre sentit bon, et un arc-en-ciel apparut. Le nuage comprit que ce qu’il avait à donner était un cadeau. Et il n’eut plus jamais peur.',
+  {
+    title: 'Le bateau de la lune',
+    text: 'Il était une fois une petite peluche qui s’appelait BOOZZO. Elle avait un grand œil tout rond, qui brillait comme la lune. Chaque soir, quand la maison devenait silencieuse, son œil s’allumait doucement. Dedans, on voyait des étoiles, des nuages et parfois un petit bateau. Un soir, le bateau emmena BOOZZO jusqu’à une île où les arbres chantaient des berceuses. BOOZZO écouta, ferma son grand œil, et rapporta la plus douce des chansons. Depuis, quand un enfant a du mal à s’endormir, BOOZZO la fredonne tout bas. Bonne nuit.',
+  },
+  {
+    title: 'L’explorateur du jardin',
+    text: 'Un matin, BOOZZO mit son chapeau d’explorateur et son sac à dos. Aujourd’hui, dit-il, je pars découvrir le jardin. Il rencontra une fourmi très pressée, qui portait une miette plus grosse qu’elle. Puis un escargot, qui prenait tout son temps et saluait chaque fleur. BOOZZO apprit de la fourmi qu’on peut porter de grandes choses à plusieurs. Il apprit de l’escargot qu’on voit plus de merveilles quand on va doucement. Le soir, il rangea ces deux secrets dans son sac. Et il les garde pour toi.',
+  },
+  {
+    title: 'Le nuage qui avait peur de pleuvoir',
+    text: 'Tout en haut de la colline vivait un nuage qui avait peur de pleuvoir. Il croyait que ses gouttes feraient de la peine aux fleurs. BOOZZO leva son grand œil vers lui et lui dit : regarde en bas. Le nuage regarda, et vit des fleurs qui ouvraient leurs pétales en l’attendant. Alors il laissa tomber une petite pluie, toute fine, toute tiède. Les fleurs dansèrent, la terre sentit bon, et un arc-en-ciel apparut. Le nuage comprit que ce qu’il avait à donner était un cadeau. Et il n’eut plus jamais peur.',
+  },
 ];
 const JOKES = [
   'Que dit une peluche qui a bien mangé ? Je suis rembourrée !',
@@ -471,12 +630,33 @@ const JOKES = [
 ];
 let storyIndex = 0;
 let jokeIndex = 0;
+// Écran Histoires : chaque histoire démarre au toucher, directement dans l'œil.
+function openStories({ play = false } = {}) {
+  renderStories();
+  if (play) return playStory(storyIndex++ % STORIES.length);
+  sayInEye('Choisis une histoire.', 'Histoire');
+}
+function renderStories(playing = -1) {
+  panel.innerHTML = `${backButton}<h2>Histoires</h2>
+    <p class="muted">Touchez une histoire : BOOZZO la raconte à voix haute, et elle défile dans son œil.</p>
+    <ul class="favs">${STORIES.map((story, i) => `<li><button class="btn ${i === playing ? '' : 'light'}" type="button" data-story="${i}">${ICON.story}${story.title}</button></li>`).join('')}</ul>
+    <div class="row"><button class="btn light" id="quiet" type="button">Arrêter l’histoire</button></div>
+    ${state.assistant ? '<div class="row"><button class="btn light" id="newStory" type="button">Inventer une nouvelle histoire</button></div>' : ''}`;
+}
+function playStory(index) {
+  const story = STORIES[index];
+  if (!story) return;
+  if (state.screen !== 'story') setScreen('story');
+  renderStories(index);
+  focusEye();
+  speak(story.text, 'Histoire');
+}
 async function builtInReply(spoken) {
   const text = plain(spoken);
   await new Promise((resolve) => setTimeout(resolve, 500));
   const now = new Date();
   const reply = /\b(histoire|conte|raconte)\b/.test(text)
-    ? STORIES[storyIndex++ % STORIES.length]
+    ? STORIES[storyIndex++ % STORIES.length].text
     : /\b(blague|rigol|rire|drole)\b/.test(text)
       ? JOKES[jokeIndex++ % JOKES.length]
       : /quelle heure|l.heure\b/.test(text)
@@ -562,9 +742,10 @@ function command(spoken) {
   if (order && /\b(t[ée]l[ée]phone|portable|iphone)\b/.test(text) && !/\btelephone a\b/.test(text)) return go('phone'), true;
   if (/(?<![mts]['’])\b(appelle|appeler|appelez)\b|\btelephone a\b/.test(text)) return go('call', { spoken }), true;
   if (/\b(photo|cam[ée]ra)\b/.test(text) && (order || /\bprend/.test(text))) return go('photo'), true;
-  if (/\b(raconte|lis|dis)\b.*\b(histoire|conte)\b/.test(text)) return go('story'), true;
+  if (/\b(raconte|lis|dis)\b.*\b(histoire|conte)\b/.test(text)) return go('story', { play: true }), true;
   if (order && /\bassistant\b/.test(text)) return go('chat'), true;
   if (order && /\b(forfait|abonnement|esim)\b/.test(text)) return go('esim'), true;
+  if (/\b(reconnais|qui suis.je|visages?)\b/.test(text)) return go('face'), true;
   if (color && (/\b(iris|œil|oeil|yeux|couleur)\b/.test(text) || /\ben\s/.test(text))) return go('home'), setColor(color[1]), true;
   if (order && /\b(iris|œil|oeil)\b/.test(text)) return go('home'), true;
   if (order && /\b(menu|applications?)\b/.test(text)) return setView(true), go('menu'), true;
@@ -1366,6 +1547,8 @@ document.addEventListener('click', (event) => {
   if ('listen' in data) return listen();
   if ('page' in data) return openMenu({ page: state.menuPage + 1 });
   if (data.color) return setColor(data.color);
+  if (data.story) return playStory(Number(data.story));
+  if (data.unface) return store.set('faces', faces().filter((_, i) => i !== Number(data.unface))), renderFaces();
   if (data.esimWho || data.esimOffer) {
     store.set('esim', { ...store.get('esim', {}), ...(data.esimWho ? { who: data.esimWho } : { offer: data.esimOffer }) });
     return openEsim();
@@ -1394,7 +1577,10 @@ document.addEventListener('click', (event) => {
     case 'snap':
       return snap();
     case 'quiet':
-      return stopSpeaking();
+      stopSpeaking();
+      return state.screen === 'story' ? (renderStories(), sayInEye('Choisis une histoire.', 'Histoire')) : undefined;
+    case 'newStory':
+      return ask('Raconte-moi une courte histoire douce.');
     case 'deviceTest':
       return testDevices();
     case 'deviceStop':
@@ -1430,6 +1616,14 @@ document.addEventListener('submit', (event) => {
     store.set('turn', turn.urls ? turn : null);
     toast(turn.urls ? 'Relais vidéo enregistré.' : 'Relais vidéo retiré.');
   }
+  if (form.id === 'searchForm') {
+    const q = form.q.value.trim();
+    if (q) searchYoutube(q);
+  }
+  if (form.id === 'faceForm') {
+    const name = form.name.value.trim();
+    if (name) enrollFace(name);
+  }
   if (form.id === 'contactForm') {
     const name = form.name.value.trim();
     if (name) addContact(name, form.phone.value.replace(/\D/g, '').slice(0, 15));
@@ -1464,6 +1658,7 @@ window.addEventListener('pagehide', () => {
 const serverReady = api('api/config')
   .then((config) => {
     state.assistant = Boolean(config.assistant);
+    state.youtube = Boolean(config.youtube);
     if (Array.isArray(config.iceServers)) state.iceServers = config.iceServers;
     if (state.screen === 'chat') renderChat();
   })
