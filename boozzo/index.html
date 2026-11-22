@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e4">
+<title>BOOZZO</title>
+<link rel="stylesheet" href="style.css">
+<body>
+<header class="top">
+  <a class="brand" href="./" aria-label="Accueil BOOZZO">
+    <svg viewBox="0 0 44 32" aria-hidden="true"><path fill="currentColor" d="M0 16Q21-12 44 16Q22 44 0 16Z"/><circle cx="22" cy="16" r="10" fill="#f6f1e4"/><circle cx="22" cy="16" r="5.5" fill="#2f7fb8"/><circle cx="24.5" cy="13.5" r="1.8" fill="#fff"/></svg>
+    BOOZZO
+  </a>
+  <span class="tools"><button class="ghost mic" data-listen type="button" aria-label="Parler à BOOZZO"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+  <button class="ghost" id="viewToggle" type="button">Agrandir l’œil</button></span>
+</header>
+
+<main>
+  <section class="stage" id="stage" aria-label="BOOZZO">
+    <div class="plushBox">
+      <img class="plush" src="exploratrice.jpeg" alt="Peluche BOOZZO en tenue d’exploration, avec un chapeau et un sac à dos">
+      <div class="eye" id="eye" role="button" tabindex="0" aria-label="Œil de BOOZZO : ouvrir le menu">
+        <div class="iris" id="iris" role="img" aria-label="Iris de BOOZZO"></div>
+        <div class="screen" id="screen"></div>
+        <button class="exit" data-go="menu" type="button" aria-label="Revenir au menu">‹ Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel"></section>
+</main>
+
+<div id="toast" role="status"></div>
+<script src="qr.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
