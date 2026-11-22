@@ -9,11 +9,11 @@ Application web de la peluche BOOZZO. La peluche reste immobile : tout se passe 
 - **Proches** : on ajoute un proche par son prénom ; il reçoit un lien permanent à garder ouvert sur son téléphone. « BOOZZO, appelle Mamie » fait sonner sa page ; il peut aussi appeler BOOZZO, qui sonne et affiche son prénom dans l'œil (« réponds » ou « refuse » à la voix).
 - **Voix** : bouton micro, ou écoute continue du mot « BOOZZO ». Exemples : « BOOZZO, mets YouTube », « BOOZZO, appelle », « prends une photo », « mets l'iris en violet », « raccroche ».
 - **Assistant** : toute phrase qui n'est pas une commande est envoyée à l'assistant, qui répond à voix haute, phrase par phrase, dans l'œil. « Histoires » lui demande une histoire douce.
-- **YouTube** : lecture d'une vidéo dans l'œil à partir de son lien ; les favoris nommés se lancent à la voix.
+- **YouTube et TikTok** : lecture dans l'œil à partir du lien d'une vidéo (ou d'une playlist YouTube) ; les favoris nommés se lancent à la voix. Le fil d'accueil de ces services ne peut pas être intégré dans une page web.
 - **Photo** : retour caméra dans l'œil, prise de vue, dernières photos gardées sur l'appareil.
 - **Iris** : quatre couleurs, azur par défaut.
 - **Téléphone** : sur la peluche, l'écran d'un téléphone peut être recopié dans l'œil pour y utiliser ses propres applications. Voir `peluche/README.md` (kit d'installation de la carte, pas encore essayé sur du matériel).
-- **WhatsApp, Spotify, TikTok** : ces tuiles ouvrent l'application officielle. BOOZZO ne les intègre pas : sur un appareil Android, le lien lance l'application installée ; ailleurs, il ouvre son site. Un proche peut avoir un numéro WhatsApp, gardé sur l'appareil.
+- **WhatsApp, Spotify** : ces tuiles ouvrent l'application officielle. BOOZZO ne les intègre pas : sur un appareil Android, le lien lance l'application installée ; ailleurs, il ouvre son site. Un proche peut avoir un numéro WhatsApp, gardé sur l'appareil.
 
 ## Démarrer
 
