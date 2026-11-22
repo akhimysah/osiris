@@ -6,6 +6,7 @@ Application web de la peluche BOOZZO. La peluche reste immobile : tout se passe 
 
 - **Menu rond** dans l'œil : Appels, YouTube, Photo, Assistant, Histoires, Iris.
 - **Appels vidéo dans l'œil** entre deux appareils : BOOZZO ouvre un appel, le proche scanne un QR code ou ouvre un lien sur son téléphone, sans rien installer. Chacun voit et entend l'autre (WebRTC).
+- **Appel par lien WhatsApp** : BOOZZO ouvre un appel et prépare un message WhatsApp contenant un lien. Le proche touche le lien, l'appel démarre tout seul et son visage apparaît dans l'œil. L'appel lui-même est celui de BOOZZO (WebRTC), pas un appel WhatsApp : WhatsApp sert à envoyer le lien.
 - **Proches** : on ajoute un proche par son prénom ; il reçoit un lien permanent à garder ouvert sur son téléphone. « BOOZZO, appelle Mamie » fait sonner sa page ; il peut aussi appeler BOOZZO, qui sonne et affiche son prénom dans l'œil (« réponds » ou « refuse » à la voix).
 - **Voix** : bouton micro, ou écoute continue du mot « BOOZZO ». Exemples : « BOOZZO, mets YouTube », « BOOZZO, appelle », « prends une photo », « mets l'iris en violet », « raccroche ».
 - **Assistant** : toute phrase qui n'est pas une commande est envoyée à l'assistant, qui répond à voix haute, phrase par phrase, dans l'œil. « Histoires » lui demande une histoire douce.
@@ -60,6 +61,10 @@ Variables d'environnement :
 | `HOST`, `PORT` | adresse d'écoute (`0.0.0.0` en ligne) |
 | `DATA_DIR` | dossier de la base SQLite (`.local` par défaut) |
 | `TURN_URLS`, `TURN_USERNAME`, `TURN_CREDENTIAL` | relais pour les appels sur réseaux mobiles |
+
+## Sans serveur BOOZZO (démonstration)
+
+Le dossier `ui/` peut être servi seul, par exemple sur GitHub Pages. Dans ce cas l'appel par lien fonctionne quand même : la mise en relation passe par le relais public de PeerJS (`ui/peerjs.min.js`, open source, licence MIT). Ce relais public n'offre aucune garantie de disponibilité ; pour un produit, utiliser le serveur BOOZZO ou son propre relais PeerServer (`window.BOOZZO_PEER = { host, port, path, secure }`). Les proches avec sonnerie et l'assistant, eux, demandent le serveur BOOZZO.
 
 ## Organisation
 
