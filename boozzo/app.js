@@ -566,7 +566,7 @@ function startWake() {
 // Signalisation : celui qui ouvre l'appel écrit avec le rôle 'eye', celui qui le rejoint avec 'guest'.
 // BOOZZO ouvre l'appel quand il appelle ; le proche l'ouvre quand c'est lui qui appelle BOOZZO.
 
-const call = { id: '', role: '', pc: null, local: null, cursor: '', timer: 0, muted: false, status: '', connected: false, busy: false, ring: '', name: '', polls: 0, run: 0 };
+const call = { id: '', role: '', pc: null, local: null, cursor: '', timer: 0, muted: false, status: '', connected: false, busy: false, ring: '', name: '', polls: 0, run: 0, peer: null, conns: [], remote: '', media: null, wa: null };
 // Adresse de la page sans ses paramètres : l'application peut être servie dans un sous-dossier.
 const pageUrl = location.origin + location.pathname;
 const callLink = () => `${pageUrl}?appel=${call.id}`;
@@ -589,10 +589,13 @@ function renderCall() {
   const busy = call.busy ? 'disabled' : '';
   let body;
   if (active) {
+    // Message WhatsApp prêt à envoyer : le proche touche le lien et l'appel démarre.
+    const message = encodeURIComponent(`Appel vidéo BOOZZO : touche ce lien pour me rejoindre. ${callLink()}`);
     const invite =
       !guestMode && !call.ring && call.role === 'eye' && !call.connected
-        ? `${qrSvg(callLink())}<p class="muted">Votre proche scanne ce code avec son téléphone, ou ouvre le lien.</p>
-           <div class="row"><button class="btn light" data-share="${esc(callLink())}" type="button">Envoyer le lien</button></div>`
+        ? `<div class="row"><a class="btn" href="https://wa.me/${call.wa?.phone || ''}?text=${message}" target="_blank" rel="noopener">${ICON.chat}Envoyer${call.wa ? ' à ' + esc(call.wa.name) : ''} par WhatsApp</a>
+           <button class="btn light" data-share="${esc(callLink())}" type="button">Autre envoi</button></div>
+           <p class="muted">Dès que votre proche touche le lien, l’appel démarre. Il peut aussi scanner ce code.</p>${qrSvg(callLink())}`
         : '';
     body = `<p><strong>${esc(call.status)}</strong></p>
       <div class="row"><video class="self" id="self" autoplay playsinline muted></video></div>
@@ -616,7 +619,7 @@ function renderCall() {
     const list = contacts();
     const fresh = state.newContact;
     body = `<p>${esc(call.status || 'Appelez un proche : son visage apparaît dans l’œil de BOOZZO.')}</p>
-      ${list.length ? `<ul class="favs">${list.map((c) => `<li><button class="btn" type="button" data-contact="${c.id}" ${busy}>${ICON.call}${esc(c.name)}</button>${c.phone ? `<a class="btn light wa" href="https://wa.me/${c.phone}" target="_blank" rel="noopener">WhatsApp</a>` : ''}<button class="x" type="button" data-link="${c.id}" aria-label="Lien de ${esc(c.name)}" title="Afficher le lien">QR</button><button class="x" type="button" data-forget="${c.id}" aria-label="Retirer ${esc(c.name)}">×</button></li>`).join('')}</ul>` : ''}
+      ${list.length ? `<ul class="favs">${list.map((c) => `<li><button class="btn" type="button" data-contact="${c.id}" ${busy}>${ICON.call}${esc(c.name)}</button>${c.phone ? `<button class="btn light wa" type="button" data-wa="${c.id}" ${busy} title="Ouvrir un appel et envoyer le lien par WhatsApp">Lien WhatsApp</button>` : ''}<button class="x" type="button" data-link="${c.id}" aria-label="Lien de ${esc(c.name)}" title="Afficher le lien">QR</button><button class="x" type="button" data-forget="${c.id}" aria-label="Retirer ${esc(c.name)}">×</button></li>`).join('')}</ul>` : ''}
       ${
         fresh
           ? `<div class="invite"><p><strong>Lien de ${esc(fresh.name)}</strong></p>${qrSvg(contactLink(fresh.id))}
@@ -625,7 +628,8 @@ function renderCall() {
           : ''
       }
       <form class="stack" id="contactForm"><input name="name" maxlength="30" required placeholder="Prénom du proche (ex. Mamie)" aria-label="Prénom du proche" autocomplete="off"><input name="phone" type="tel" maxlength="20" placeholder="Numéro WhatsApp, facultatif (ex. +33 6 12 34 56 78)" aria-label="Numéro WhatsApp, facultatif" autocomplete="off"><button class="btn light">Ajouter ce proche</button></form>
-      <div class="row"><button class="btn light" id="startCall" type="button" ${busy}>Appel ponctuel par QR code</button></div>`;
+      <div class="row"><button class="btn" id="startCall" type="button" ${busy}>${ICON.call}Appeler avec un lien WhatsApp</button></div>
+      <p class="muted">BOOZZO ouvre l’appel et prépare un message WhatsApp avec un lien. Votre proche le touche, et son visage apparaît dans l’œil.</p>`;
   }
   panel.innerHTML = `${guestMode ? '' : backButton}<h2>Appel dans l’œil</h2>${body}`;
   if ($('#self') && call.local) $('#self').srcObject = call.local;
@@ -651,7 +655,7 @@ const setRing = (contact, callId) => postRing(contact, { call: callId, from: myR
 const clearRing = (contact, callId) => postRing(contact, { call: null, if: callId });
 
 // role 'eye' : ouvrir un appel (et faire sonner `contact` s'il est donné). role 'guest' : rejoindre `callId`.
-async function startCall(role, { callId = '', contact = null } = {}) {
+async function startCall(role, { callId = '', contact = null, wa = null } = {}) {
   if (call.role || call.busy) return;
   stopCamera();
   stopSpeaking();
@@ -664,7 +668,16 @@ async function startCall(role, { callId = '', contact = null } = {}) {
   const run = ++call.run;
   call.busy = true;
   call.name = contact?.name || '';
+  call.wa = wa;
   setCallStatus('Ouverture de la caméra…');
+  await serverReady;
+  if (run !== call.run) return;
+  // Sans serveur BOOZZO, l'appel par lien passe par le relais public PeerJS ; la sonnerie d'un proche, elle, a besoin du serveur.
+  const viaRelay = role === 'eye' ? !state.server : callId.startsWith(RELAY_PREFIX);
+  if (viaRelay && contact?.id) {
+    call.busy = false;
+    return setCallStatus(DEMO_ONLY);
+  }
   let stream;
   try {
     stream = await camera({ video: { facingMode: 'user' }, audio: true });
@@ -676,6 +689,7 @@ async function startCall(role, { callId = '', contact = null } = {}) {
   }
   if (run !== call.run) return stream.getTracks().forEach((track) => track.stop());
   call.local = stream;
+  if (viaRelay) return startRelayCall(role, callId, run);
   try {
     let id = callId;
     let cursor = '';
@@ -698,8 +712,84 @@ async function startCall(role, { callId = '', contact = null } = {}) {
   const waiting = role === 'guest' ? 'Connexion…' : call.ring ? `Appel de ${peerLabel()}…` : 'En attente de ton proche';
   if (role === 'eye' && kiosk && !call.ring) screen.innerHTML = qrSvg(callLink());
   else showLocalInEye(waiting);
-  setCallStatus(role === 'guest' ? 'Connexion…' : call.ring ? `Appel de ${peerLabel()}… ça sonne.` : 'Appel ouvert. En attente de votre proche…');
+  setCallStatus(role === 'guest' ? 'Connexion…' : call.ring ? `Appel de ${peerLabel()}… ça sonne.` : 'Appel ouvert. Envoyez le lien à votre proche.');
   call.timer = setInterval(pollCall, 1000);
+}
+
+// ---------- Appel par lien sans serveur BOOZZO : relais public PeerJS (open source, MIT) ----------
+// L'identifiant de l'appel est celui de BOOZZO sur le relais ; le proche qui ouvre le lien l'appelle directement.
+// Pour utiliser son propre relais PeerServer : définir window.BOOZZO_PEER = { host, port, path, secure }.
+
+const RELAY_PREFIX = 'boozzo-';
+function loadRelayLibrary() {
+  return (loadRelayLibrary.loading ??= new Promise((resolve, reject) => {
+    const script = Object.assign(document.createElement('script'), { src: 'peerjs.min.js', onload: resolve, onerror: reject });
+    document.head.append(script);
+  }));
+}
+async function startRelayCall(role, callId, run) {
+  const id = role === 'eye' ? RELAY_PREFIX + uuid() : callId;
+  let peer;
+  try {
+    await loadRelayLibrary();
+    if (run !== call.run) return;
+    peer = call.peer = new Peer(role === 'eye' ? id : undefined, window.BOOZZO_PEER || {});
+    await new Promise((resolve, reject) => {
+      peer.once('open', resolve);
+      peer.once('error', reject);
+      setTimeout(() => reject(new Error('timeout')), 12000);
+    });
+    if (run !== call.run) return peer.destroy();
+  } catch {
+    if (run !== call.run) return;
+    endCall(false, false);
+    return setCallStatus('Impossible d’ouvrir l’appel. Vérifiez la connexion Internet et réessayez.');
+  }
+  Object.assign(call, { id, role, busy: false, connected: false, muted: false, ring: '' });
+  const attach = (media) => {
+    call.media = media;
+    media.on('stream', showRemote);
+    media.on('close', () => call.media === media && endCall(false));
+  };
+  // Canal de messages : seul le « bye » du correspondant en appel compte (un second appareil peut ouvrir le lien).
+  const listen = (conn) => {
+    call.conns.push(conn);
+    conn.on('data', (data) => {
+      if (data !== 'bye' || conn.peer !== call.remote) return;
+      endCall(false);
+      toast('L’appel est terminé.');
+    });
+  };
+  peer.on('error', (error) => {
+    if (peer !== call.peer || error.type !== 'peer-unavailable') return;
+    endCall(false);
+    setCallStatus('Cet appel est terminé ou le lien a expiré.');
+  });
+  if (role === 'eye') {
+    peer.on('connection', listen);
+    peer.on('call', (media) => {
+      // Un second appareil qui ouvre le même lien ne doit pas casser l'appel en cours.
+      if (call.media) return media.close();
+      call.remote = media.peer;
+      media.answer(call.local);
+      attach(media);
+    });
+    if (kiosk) screen.innerHTML = qrSvg(callLink());
+    else showLocalInEye('En attente de ton proche');
+    setCallStatus('Appel ouvert. Envoyez le lien à votre proche.');
+  } else {
+    call.remote = id;
+    listen(peer.connect(id));
+    attach(peer.call(id, call.local));
+    showLocalInEye('Connexion…');
+    setCallStatus('Connexion…');
+    // Lien d'un appel déjà terminé : ne pas laisser le proche attendre avec la caméra allumée.
+    setTimeout(() => {
+      if (peer !== call.peer || call.connected) return;
+      endCall(false);
+      setCallStatus('Cet appel est terminé ou le lien a expiré.');
+    }, 15000);
+  }
 }
 let polling = false;
 async function pollCall() {
@@ -735,19 +825,21 @@ async function pollCall() {
     polling = false;
   }
 }
+function showRemote(stream) {
+  if (!$('video.remote', screen)) screen.innerHTML = '<video class="remote" autoplay playsinline></video>';
+  const video = $('video.remote', screen);
+  // Chaque piste (son, image) relance cet appel : ne pas recharger la vidéo pour le même flux.
+  if (video.srcObject !== stream) video.srcObject = stream;
+  video.play().catch(() => toast('Touchez l’œil pour activer le son.'));
+  call.connected = true;
+  setCallStatus('En appel');
+}
 function newPeer() {
   call.pc?.close();
   const pc = (call.pc = new RTCPeerConnection({ iceServers: state.iceServers }));
   call.local.getTracks().forEach((track) => pc.addTrack(track, call.local));
   pc.ontrack = (event) => {
-    if (pc !== call.pc) return;
-    if (!$('video.remote', screen)) screen.innerHTML = '<video class="remote" autoplay playsinline></video>';
-    const video = $('video.remote', screen);
-    // Chaque piste (son, image) déclenche cet événement : ne pas recharger la vidéo pour le même flux.
-    if (video.srcObject !== event.streams[0]) video.srcObject = event.streams[0];
-    video.play().catch(() => toast('Touchez l’œil pour activer le son.'));
-    call.connected = true;
-    setCallStatus('En appel');
+    if (pc === call.pc) showRemote(event.streams[0]);
   };
   pc.onconnectionstatechange = () => {
     if (pc !== call.pc) return;
@@ -795,7 +887,13 @@ function endCall(sendBye = true, show = true) {
   const active = Boolean(call.role);
   if (!active && !call.busy && !call.local) return;
   clearInterval(call.timer);
-  if (active && sendBye)
+  if (call.peer) {
+    const peer = call.peer;
+    try {
+      if (active && sendBye) call.conns.forEach((conn) => conn.open && conn.send('bye'));
+    } catch {}
+    setTimeout(() => peer.destroy(), 300); // laisse partir le « bye »
+  } else if (active && sendBye)
     fetch(`api/calls/${call.id}/signal`, {
       method: 'POST',
       keepalive: true,
@@ -805,7 +903,7 @@ function endCall(sendBye = true, show = true) {
   if (call.ring) clearRing(call.ring, call.id);
   call.pc?.close();
   call.local?.getTracks().forEach((track) => track.stop());
-  Object.assign(call, { id: '', role: '', pc: null, local: null, cursor: '', connected: false, muted: false, busy: false, ring: '', name: '', status: 'Appel terminé.' });
+  Object.assign(call, { id: '', role: '', pc: null, local: null, cursor: '', connected: false, muted: false, busy: false, ring: '', name: '', peer: null, conns: [], remote: '', media: null, wa: null, status: 'Appel terminé.' });
   screen.replaceChildren();
   if (show && state.screen === 'call') renderCall();
   if (state.wake) startWake();
@@ -956,6 +1054,7 @@ document.addEventListener('click', (event) => {
   if (data.contact) return startCall('eye', { contact: contacts().find((c) => c.id === data.contact) });
   if (data.link) return (state.newContact = contacts().find((c) => c.id === data.link)), renderCall();
   if (data.forget) return forgetContact(data.forget);
+  if (data.wa) return startCall('eye', { wa: contacts().find((c) => c.id === data.wa) });
   if (data.share) {
     if (navigator.share) return navigator.share({ title: 'BOOZZO', url: data.share }).catch(() => {});
     return navigator.clipboard?.writeText(data.share).then(
@@ -1032,23 +1131,8 @@ window.addEventListener('pagehide', () => {
 
 // ---------- Démarrage ----------
 
-applyColor();
-document.body.classList.toggle('kiosk', kiosk);
-document.body.classList.toggle('guest', guestMode);
-if (guestMode) $('.brand').href = location.href;
-setView(kiosk);
-if (guestMode) {
-  setScreen('call');
-  renderCall();
-} else {
-  // L'œil s'ouvre sur ses applications ; le bouton maison du menu ramène à l'iris.
-  go('menu');
-}
-if (!guestCallId) {
-  watchRings();
-  setInterval(watchRings, 3000);
-}
-api('api/config')
+// Le serveur BOOZZO répond-il ? Sinon la page tourne seule (démonstration) et les appels passent par le relais.
+const serverReady = api('api/config')
   .then((config) => {
     state.assistant = Boolean(config.assistant);
     if (Array.isArray(config.iceServers)) state.iceServers = config.iceServers;
@@ -1057,3 +1141,22 @@ api('api/config')
   .catch(() => {
     state.server = false;
   });
+
+applyColor();
+document.body.classList.toggle('kiosk', kiosk);
+document.body.classList.toggle('guest', guestMode);
+if (guestMode) $('.brand').href = location.href;
+setView(kiosk);
+if (guestMode) {
+  setScreen('call');
+  renderCall();
+  // Le lien d'appel suffit : l'appel démarre dès l'ouverture de la page.
+  if (guestCallId) startCall('guest', { callId: guestCallId });
+} else {
+  // L'œil s'ouvre sur ses applications ; le bouton maison du menu ramène à l'iris.
+  go('menu');
+}
+if (!guestCallId) {
+  watchRings();
+  setInterval(watchRings, 3000);
+}
