@@ -31,7 +31,7 @@ const ICON = {
   iris: svg('<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
   home: svg('<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>'),
   music: svg('<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>'),
-  clip: svg('<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 9v6l4.5-3z"/>'),
+  tiktok: svg('<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 9v6l4.5-3z"/>'),
   phone: svg('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
   next: svg('<path d="M9 6l6 6-6 6"/>'),
   mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
@@ -39,6 +39,7 @@ const ICON = {
 const APPS = [
   ['call', 'Appels', 'c-call'],
   ['youtube', 'YouTube', 'c-yt'],
+  ['tiktok', 'TikTok', 'c-tiktok'],
   ['photo', 'Photo', 'c-photo'],
   ['chat', 'Assistant', 'c-chat'],
   ['story', 'Histoires', 'c-story'],
@@ -51,7 +52,6 @@ const EXTERNAL = [
   // WhatsApp Web gère les appels audio et vidéo depuis 2026 ; sur téléphone, le lien ouvre l'application.
   ['whatsapp', 'WhatsApp', 'c-wa', 'chat', /Android|iPhone|iPad/i.test(navigator.userAgent) ? 'https://wa.me/' : 'https://web.whatsapp.com/'],
   ['spotify', 'Spotify', 'c-spotify', 'music', 'https://open.spotify.com/'],
-  ['tiktok', 'TikTok', 'c-tiktok', 'clip', 'https://www.tiktok.com/'],
 ];
 const externalTile = ([, label, color, icon, url], cls = '') =>
   `<a class="${cls}" href="${url}" target="_blank" rel="noopener"><i class="${color}">${ICON[icon]}</i>${label}</a>`;
@@ -78,7 +78,7 @@ const stage = $('#stage');
 
 const DEMO_ONLY = 'Démonstration : cette fonction demande la version complète, avec son serveur.';
 const state = {
-  screen: 'home', // home | menu | call | youtube | photo | chat | iris
+  screen: 'home', // home (iris) | menu | call | youtube | tiktok | photo | chat | iris | phone
   color: COLORS[store.get('color')] ? store.get('color') : 'Azur',
   assistant: false,
   server: true, // faux quand la page est servie seule, sans le serveur BOOZZO (démonstration)
@@ -131,7 +131,7 @@ function qrSvg(text) {
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) path += `M${c + 2} ${r + 2}h1v1h-1z`;
   return `<svg class="qr" viewBox="0 0 ${n + 4} ${n + 4}" shape-rendering="crispEdges" role="img" aria-label="QR code de l’appel"><rect width="100%" height="100%" fill="#fff"/><path fill="#000" d="${path}"/></svg>`;
 }
-const backButton = '<button class="back" data-go="home" type="button">‹ Accueil BOOZZO</button>';
+const backButton = '<button class="back" data-go="menu" type="button">‹ Accueil BOOZZO</button>';
 
 // ---------- Navigation ----------
 
@@ -159,7 +159,7 @@ function go(name, options = {}) {
   }
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: openYoutube, photo: openPhoto, chat: openChat, iris: openIris, phone: openPhone })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, phone: openPhone })[name](options);
 }
 
 function openHome() {
@@ -224,38 +224,77 @@ function setColor(name) {
   if (state.screen === 'iris') openIris();
 }
 
-// ---------- YouTube ----------
+// ---------- Vidéos dans l'œil : YouTube et TikTok ----------
+// Les deux se lisent dans l'œil avec leur lecteur officiel intégré. Ni YouTube ni TikTok ne laissent
+// intégrer leur page d'accueil ou leur fil : il faut le lien d'une vidéo (ou d'une playlist YouTube).
 
-function youtubeId(link) {
+const VIDEO = {
+  youtube: {
+    label: 'YouTube',
+    hint: 'Collez le lien d’une vidéo ou d’une playlist YouTube.',
+    placeholder: 'https://youtu.be/…',
+    error: 'Lien YouTube non reconnu. Collez le lien complet de la vidéo ou de la playlist.',
+    // Renvoie l'identifiant de la vidéo, ou « list:… » pour une playlist.
+    parse(url, host) {
+      if (host !== 'youtu.be' && host !== 'youtube.com' && host !== 'youtube-nocookie.com') return '';
+      const video = host === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v') || url.pathname.match(/\/(?:shorts|embed|live)\/([\w-]+)/)?.[1];
+      if (/^[\w-]{11}$/.test(video || '')) return video;
+      const list = url.searchParams.get('list');
+      return /^[\w-]{12,64}$/.test(list || '') ? 'list:' + list : '';
+    },
+    src: (id) =>
+      id.startsWith('list:')
+        ? `https://www.youtube-nocookie.com/embed/videoseries?list=${id.slice(5)}&autoplay=1&playsinline=1&rel=0`
+        : `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0`,
+    // Exemples proposés tant qu'aucun favori n'est enregistré.
+    starters: [
+      { id: 'XqZsoesa55w', name: 'Baby Shark' },
+      { id: 'aqz-KE-bpKQ', name: 'Big Buck Bunny' },
+    ],
+  },
+  tiktok: {
+    label: 'TikTok',
+    hint: 'Collez le lien complet d’une vidéo TikTok (tiktok.com/@compte/video/…).',
+    placeholder: 'https://www.tiktok.com/@…/video/…',
+    error: 'Lien TikTok non reconnu. Dans TikTok : Partager, Copier le lien, puis ouvrez-le une fois pour obtenir le lien complet.',
+    parse(url, host) {
+      const id = host === 'tiktok.com' ? url.pathname.match(/\/(?:video|player\/v1)\/(\d{10,25})/)?.[1] : '';
+      return id || '';
+    },
+    src: (id) => `https://www.tiktok.com/player/v1/${id}?autoplay=1&description=0&music_info=0&rel=0`,
+    starters: [],
+  },
+};
+const videoKey = (app) => (app === 'youtube' ? 'videos' : 'videos.' + app);
+function videoId(app, link) {
   try {
     const url = new URL(link.trim());
-    const host = url.hostname.toLowerCase().replace(/^(www\.|m\.|music\.)/, '');
-    const id =
-      host === 'youtu.be'
-        ? url.pathname.slice(1)
-        : host === 'youtube.com' || host === 'youtube-nocookie.com'
-          ? url.searchParams.get('v') || url.pathname.match(/\/(?:shorts|embed|live)\/([\w-]+)/)?.[1]
-          : '';
-    return /^[\w-]{11}$/.test(id || '') ? id : '';
+    return VIDEO[app].parse(url, url.hostname.toLowerCase().replace(/^(www\.|m\.|music\.)/, ''));
   } catch {
     return '';
   }
 }
-function playYoutube(id) {
-  screen.innerHTML = `<iframe title="YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0"></iframe>`;
+function playVideo(app, id) {
+  if (!/^(list:)?[\w-]{10,64}$/.test(id)) return;
+  screen.innerHTML = `<iframe title="${VIDEO[app].label}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen src="${VIDEO[app].src(id)}"></iframe>`;
 }
-function openYoutube({ spoken = '' } = {}) {
-  const favorites = store.get('videos', []);
-  panel.innerHTML = `${backButton}<h2>YouTube dans l’œil</h2>
-    <p class="muted">Collez le lien d’une vidéo. Donnez-lui un nom pour la retrouver et la lancer à la voix.</p>
-    <form class="stack" id="videoForm"><input name="link" type="url" required placeholder="https://youtu.be/…" aria-label="Lien de la vidéo"><input name="name" maxlength="40" placeholder="Nom du favori (facultatif)" aria-label="Nom du favori"><button class="btn">Lire dans l’œil</button></form>
+function openVideo(app, { spoken = '' } = {}) {
+  const { label, hint, placeholder, starters } = VIDEO[app];
+  const favorites = store.get(videoKey(app), []);
+  const item = (v, removable, i) =>
+    `<li><button class="btn light" type="button" data-video="${esc(v.id)}">${ICON[app]}${esc(v.name)}</button>${removable ? `<button class="x" type="button" data-unfav="${i}" aria-label="Retirer ${esc(v.name)}">×</button>` : ''}</li>`;
+  panel.innerHTML = `${backButton}<h2>${label} dans l’œil</h2>
+    <p class="muted">${hint} Donnez-lui un nom pour la retrouver et la lancer à la voix.</p>
+    <form class="stack" id="videoForm"><input name="link" type="url" required placeholder="${placeholder}" aria-label="Lien de la vidéo"><input name="name" maxlength="40" placeholder="Nom du favori (facultatif)" aria-label="Nom du favori"><button class="btn">Lire dans l’œil</button></form>
     <p class="error" id="videoError"></p>
-    ${favorites.length ? `<ul class="favs">${favorites.map((v, i) => `<li><button class="btn light" type="button" data-video="${esc(v.id)}">${ICON.youtube}${esc(v.name)}</button><button class="x" type="button" data-unfav="${i}" aria-label="Retirer ${esc(v.name)}">×</button></li>`).join('')}</ul>` : ''}`;
-  if (!spoken) return;
+    ${favorites.length ? `<p class="muted">Mes favoris</p><ul class="favs">${favorites.map((v, i) => item(v, true, i)).join('')}</ul>` : ''}
+    ${starters.length ? `<p class="muted">Exemples</p><ul class="favs">${starters.map((v) => item(v, false)).join('')}</ul>` : ''}
+    <p class="muted">Le fil d’accueil de ${label} ne peut pas s’afficher dans une page web : ${label} ne l’autorise que dans sa propre application. Sur la peluche, il s’affichera dans l’œil par la recopie du téléphone.</p>`;
+  // L'œil ne reste pas vide : on lance le favori demandé, sinon le premier favori ou le premier exemple.
   const text = spoken.toLowerCase();
-  const match = favorites.find((v) => text.includes(v.name.toLowerCase())) || favorites[0];
-  if (match) playYoutube(match.id);
-  else sayInEye('Ajoutez une vidéo favorite pour la lancer à la voix.', 'YouTube');
+  const pick = (text && favorites.find((v) => text.includes(v.name.toLowerCase()))) || favorites[0] || starters[0];
+  if (pick) playVideo(app, pick.id);
+  else sayInEye('Collez le lien d’une vidéo pour la voir ici.', label);
 }
 
 // ---------- Photo ----------
@@ -421,6 +460,7 @@ function command(spoken) {
   if (/\b(arr[êe]te|stop|ferme|accueil|silence|tais-toi)\b/.test(text)) return go('home'), true;
   if (state.screen === 'photo' && state.camera && /\b(prends|prendre|clic|ouistiti|cheese)\b/.test(text)) return snap(), true;
   if (/you ?tube/.test(text) || (order && /\bvid[ée]o\b/.test(text))) return go('youtube', { spoken }), true;
+  if (/tik ?tok/.test(text)) return go('tiktok', { spoken }), true;
   const external = EXTERNAL.find(([id]) => text.replace(/\s/g, '').includes(id));
   if (external) return go('home'), offerExternal(external), true;
   if (order && /\b(t[ée]l[ée]phone|portable|iphone)\b/.test(text) && !/\btelephone a\b/.test(text)) return go('phone'), true;
@@ -891,6 +931,19 @@ async function watchRings() {
 
 // ---------- Événements ----------
 
+// En vue peluche, l'œil est trop petit pour viser une tuile : le premier toucher l'agrandit seulement.
+document.addEventListener(
+  'click',
+  (event) => {
+    if (kiosk || stage.classList.contains('eyeView') || !event.target.closest('#eye')) return;
+    if (!['home', 'menu'].includes(state.screen)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setView(true);
+    if (state.screen === 'home') go('menu');
+  },
+  true,
+);
 document.addEventListener('click', (event) => {
   const button = event.target.closest('button, a');
   const data = button?.dataset || {};
@@ -910,10 +963,10 @@ document.addEventListener('click', (event) => {
       () => toast(data.share),
     );
   }
-  if (data.video) return playYoutube(data.video);
+  if (data.video) return playVideo(state.screen, data.video);
   if (data.unfav) {
-    store.set('videos', store.get('videos', []).filter((_, i) => i !== Number(data.unfav)));
-    return openYoutube();
+    store.set(videoKey(state.screen), store.get(videoKey(state.screen), []).filter((_, i) => i !== Number(data.unfav)));
+    return openVideo(state.screen);
   }
   if (data.shot) return showShot(store.get('shots', [])[Number(data.shot)]), renderPhoto();
   switch (button?.id) {
@@ -938,11 +991,8 @@ document.addEventListener('click', (event) => {
   }
   // Toucher l'œil pendant un appel : relancer le son si le navigateur l'avait bloqué.
   if (!button && call.connected && event.target.closest('#eye')) return $('video.remote', screen)?.play().catch(() => {});
-  // Toucher l'œil au repos : l'agrandir et ouvrir le menu.
-  if (!button && event.target.closest('#eye') && (state.screen === 'home' || state.screen === 'menu')) {
-    setView(true);
-    go(state.screen === 'menu' ? 'home' : 'menu');
-  }
+  // Toucher l'iris : ouvrir le menu des applications.
+  if (!button && event.target.closest('#eye') && state.screen === 'home') go('menu');
 });
 document.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -956,13 +1006,14 @@ document.addEventListener('submit', (event) => {
     const name = form.name.value.trim();
     if (name) addContact(name, form.phone.value.replace(/\D/g, '').slice(0, 15));
   }
-  if (form.id === 'videoForm') {
-    const id = youtubeId(form.link.value);
-    if (!id) return ($('#videoError').textContent = 'Lien YouTube non reconnu. Collez le lien complet de la vidéo.');
+  if (form.id === 'videoForm' && VIDEO[state.screen]) {
+    const app = state.screen;
+    const id = videoId(app, form.link.value);
+    if (!id) return ($('#videoError').textContent = VIDEO[app].error);
     const name = form.name.value.trim();
-    if (name) store.set('videos', [{ id, name }, ...store.get('videos', []).filter((v) => v.id !== id)].slice(0, 12));
-    openYoutube();
-    playYoutube(id);
+    if (name) store.set(videoKey(app), [{ id, name }, ...store.get(videoKey(app), []).filter((v) => v.id !== id)].slice(0, 12));
+    openVideo(app);
+    playVideo(app, id);
   }
 });
 document.addEventListener('change', (event) => {
@@ -990,7 +1041,8 @@ if (guestMode) {
   setScreen('call');
   renderCall();
 } else {
-  go('home');
+  // L'œil s'ouvre sur ses applications ; le bouton maison du menu ramène à l'iris.
+  go('menu');
 }
 if (!guestCallId) {
   watchRings();
