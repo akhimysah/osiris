@@ -166,6 +166,7 @@ function go(name, options = {}) {
   if (name === 'call' && (call.role || call.busy || state.incoming)) return renderCall();
   if (state.incoming) declineIncoming();
   if (state.screen === 'torch') keepAwake(false);
+  $('.flood')?.remove();
   endCall(true, false);
   stopCamera();
   stopSpeaking();
@@ -262,7 +263,16 @@ function openClock() {
 // L'écran de l'œil passe en blanc (ou en veilleuse orangée). Sur un téléphone Android, la vraie lampe
 // du téléphone s'allume en plus ; l'iPhone ne permet pas à une page web de l'allumer.
 
-const torch = { mode: 'white', lamp: false };
+const torch = { mode: 'white', lamp: false, flood: true };
+// Sur un téléphone, l'œil seul éclaire peu : la torche occupe tout l'écran, comme une lampe de poche.
+function floodLight() {
+  $('.flood')?.remove();
+  if (state.screen !== 'torch' || !torch.flood || kiosk) return;
+  document.body.insertAdjacentHTML(
+    'beforeend',
+    `<div class="flood flood-${torch.mode}"><div class="row"><button class="btn" data-go="menu" type="button">Éteindre</button><button class="btn light" type="button" data-torch="${torch.mode === 'white' ? 'night' : 'white'}">${torch.mode === 'white' ? 'Veilleuse' : 'Lumière blanche'}</button><button class="btn light" id="torchEye" type="button">Voir dans l’œil</button></div></div>`,
+  );
+}
 async function phoneLamp(on) {
   const track = state.camera?.getVideoTracks()[0];
   if (!on) return stopCamera();
@@ -288,12 +298,13 @@ function renderTorch() {
       <button class="btn ${torch.mode === 'white' ? '' : 'light'}" type="button" data-torch="white" aria-pressed="${torch.mode === 'white'}">Lumière blanche</button>
       <button class="btn ${torch.mode === 'night' ? '' : 'light'}" type="button" data-torch="night" aria-pressed="${torch.mode === 'night'}">Veilleuse</button>
     </div>
-    <div class="row"><button class="btn light" data-go="menu" type="button">Éteindre</button></div>
+    <div class="row"><button class="btn" id="torchFull" type="button">Éclairer en plein écran</button><button class="btn light" data-go="menu" type="button">Éteindre</button></div>
     <p class="muted">Sur la peluche, une vraie petite lampe LED pourra être ajoutée à côté de l’écran et commandée de la même façon.</p>`;
 }
 function openTorch({ mode = 'white' } = {}) {
-  Object.assign(torch, { mode, lamp: false });
+  Object.assign(torch, { mode, lamp: false, flood: true });
   renderTorch();
+  floodLight();
   focusEye();
   keepAwake(true);
   phoneLamp(true);
@@ -1828,7 +1839,7 @@ document.addEventListener('click', (event) => {
   if ('page' in data) return openMenu({ page: state.menuPage + 1 });
   if (data.color) return setColor(data.color);
   if (data.story) return playStory(Number(data.story));
-  if (data.torch) return (torch.mode = data.torch), renderTorch();
+  if (data.torch) return (torch.mode = data.torch), renderTorch(), floodLight();
   if (data.unface) return store.set('faces', faces().filter((_, i) => i !== Number(data.unface))), renderFaces();
   if (data.esimWho || data.esimOffer) {
     store.set('esim', { ...store.get('esim', {}), ...(data.esimWho ? { who: data.esimWho } : { offer: data.esimOffer }) });
@@ -1862,6 +1873,12 @@ document.addEventListener('click', (event) => {
       return state.screen === 'story' ? (renderStories(), sayInEye('Choisis une histoire.', 'Histoire')) : undefined;
     case 'newStory':
       return ask('Raconte-moi une courte histoire douce.');
+    case 'torchEye':
+      torch.flood = false;
+      return floodLight();
+    case 'torchFull':
+      torch.flood = true;
+      return floodLight();
     case 'locate':
       return useMyPosition();
     case 'mapToggle':
