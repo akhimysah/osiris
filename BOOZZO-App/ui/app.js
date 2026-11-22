@@ -699,7 +699,8 @@ function newPeer() {
     if (pc !== call.pc) return;
     if (!$('video.remote', screen)) screen.innerHTML = '<video class="remote" autoplay playsinline></video>';
     const video = $('video.remote', screen);
-    video.srcObject = event.streams[0];
+    // Chaque piste (son, image) déclenche cet événement : ne pas recharger la vidéo pour le même flux.
+    if (video.srcObject !== event.streams[0]) video.srcObject = event.streams[0];
     video.play().catch(() => toast('Touchez l’œil pour activer le son.'));
     call.connected = true;
     setCallStatus('En appel');
