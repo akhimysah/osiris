@@ -72,6 +72,13 @@ main { max-width: 980px; margin: 0 auto; padding: 8px 16px 40px; display: grid; 
 .sky-snow { background: linear-gradient(#7f97b8, #c6d6ea); }
 .sky small { font-size: 5.2cqw; font-weight: 700; letter-spacing: .04em; } .sky svg { width: 34cqw; }
 .sky strong { font-size: 17cqw; line-height: 1; } .sky span { font-size: 5.4cqw; font-weight: 600; } .sky em { font-style: normal; font-size: 4.4cqw; opacity: .9; }
+/* Carte météo animée : 3 × 3 tuiles, chacune large comme la moitié de l'œil. */
+.map { position: absolute; inset: 0; overflow: hidden; background: #a9c7de; }
+.map .tiles { position: absolute; width: 150%; height: 150%; }
+.map .tiles img { position: absolute; width: 33.4%; height: 33.4%; object-fit: fill; background: none; }
+.map .frame { position: absolute; inset: 0; opacity: 0; }
+.map .frame.on { opacity: .8; }
+.map .pin { position: absolute; left: 50%; top: 50%; width: 4cqw; height: 4cqw; margin: -2cqw; border-radius: 50%; background: #e0362c; border: .8cqw solid #fff; box-shadow: 0 0 2cqw #0006; }
 .day { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 10px; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 6px 12px; }
 .day i { display: grid; background: linear-gradient(#3f9be8, #8fd0ff); border-radius: 10px; } .day span::first-letter { text-transform: uppercase; }
 /* Histoire : ciel de nuit étoilé dans l'œil, texte plus grand. */

@@ -278,7 +278,7 @@ const SKY = {
   storm: '<path d="M30 52h38a14 14 0 0 0 2.3-27.8A20 20 0 0 0 31 29a11.5 11.5 0 0 0-1 23z" fill="#c9d1db"/><path d="M53 54l-9 13h8l-4 11 12-15h-8z" fill="#ffd34d"/>',
 };
 const skyIcon = (kind) => `<svg viewBox="0 0 100 84" aria-hidden="true">${SKY[kind]}</svg>`;
-const weather = { place: store.get('place', null), data: null, message: '' };
+const weather = { place: store.get('place', null), data: null, message: '', view: 'card', frames: null, layer: '' };
 async function loadWeather() {
   if (!weather.place) return;
   weather.message = 'Je regarde le ciel…';
@@ -328,13 +328,77 @@ function useMyPosition() {
     { timeout: 10000 },
   );
 }
+// ---------- Carte météo animée ----------
+// Fond de carte : OpenStreetMap. Images animées : RainViewer (nuages vus par satellite quand ils sont
+// disponibles, sinon les pluies vues par radar). Les deux demandent une mention de leur origine.
+
+const MAP_ZOOM = 6; // vue régionale : environ 1 200 km de large
+// Position d'un lieu en nombre de tuiles, à ce niveau de zoom.
+function tilePosition({ latitude, longitude }) {
+  const n = 2 ** MAP_ZOOM;
+  const rad = (latitude * Math.PI) / 180;
+  return { x: ((longitude + 180) / 360) * n, y: ((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2) * n };
+}
+async function loadMapFrames() {
+  try {
+    const response = await fetch('https://api.rainviewer.com/public/weather-maps.json');
+    const data = await response.json();
+    const clouds = data.satellite?.infrared || [];
+    const rain = [...(data.radar?.past || []), ...(data.radar?.nowcast || [])];
+    const useClouds = clouds.length > 2;
+    const list = (useClouds ? clouds : rain).slice(-8);
+    if (!list.length) throw new Error('frames');
+    weather.layer = useClouds ? 'Nuages' : 'Pluies';
+    weather.frames = list.map((frame) => ({ time: frame.time, base: data.host + frame.path, suffix: useClouds ? '/0/0_0.png' : '/2/1_1.png' }));
+  } catch {
+    weather.frames = [];
+  }
+}
+let mapTimer = 0;
+async function showWeatherMap() {
+  clearInterval(mapTimer);
+  if (!weather.place) return;
+  screen.innerHTML = '<div class="say"><span><small>Carte météo</small>Je charge la carte…</span></div>';
+  if (!weather.frames?.length) await loadMapFrames();
+  if (state.screen !== 'weather' || weather.view !== 'map') return;
+  if (!weather.frames.length) {
+    screen.innerHTML = '<div class="say"><span><small>Carte météo</small>La carte n’est pas disponible pour l’instant.</span></div>';
+    return;
+  }
+  const { x, y } = tilePosition(weather.place);
+  const [tx, ty] = [Math.floor(x), Math.floor(y)];
+  const n = 2 ** MAP_ZOOM;
+  // Grille de 3 × 3 tuiles, chacune large comme la moitié de l'œil, centrée sur le lieu.
+  const cells = [];
+  for (let row = -1; row <= 1; row++) for (let col = -1; col <= 1; col++) cells.push({ col, row, tx: (((tx + col) % n) + n) % n, ty: ty + row });
+  const place = (cell) => `style="left:${(cell.col + 1) * 33.3334}%;top:${(cell.row + 1) * 33.3334}%"`;
+  const layer = (frame, i) =>
+    `<div class="frame${i === weather.frames.length - 1 ? ' on' : ''}">${cells.map((cell) => `<img alt="" ${place(cell)} src="${frame.base}/256/${MAP_ZOOM}/${cell.tx}/${cell.ty}${frame.suffix}">`).join('')}</div>`;
+  screen.innerHTML = `<div class="map"><div class="tiles" style="left:${50 - (1 + x - tx) * 50}%;top:${50 - (1 + y - ty) * 50}%">
+      ${cells.map((cell) => `<img alt="" ${place(cell)} src="https://tile.openstreetmap.org/${MAP_ZOOM}/${cell.tx}/${cell.ty}.png">`).join('')}
+      ${weather.frames.map(layer).join('')}
+    </div><i class="pin"></i><span class="badge" id="mapTime"></span></div>`;
+  let index = weather.frames.length - 1;
+  const step = () => {
+    const frames = document.querySelectorAll('#screen .frame');
+    if (state.screen !== 'weather' || weather.view !== 'map' || !frames.length) return clearInterval(mapTimer);
+    index = (index + 1) % frames.length;
+    frames.forEach((frame, i) => frame.classList.toggle('on', i === index));
+    const time = new Date(weather.frames[index].time * 1000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    $('#mapTime').textContent = `${weather.layer} · ${time}`;
+  };
+  step();
+  // Pause plus longue sur la dernière image, comme à la télévision.
+  mapTimer = setInterval(step, 650);
+}
 function renderWeather() {
   if (state.screen !== 'weather') return;
   const { place, data } = weather;
   const now = data?.current;
   const [, label, kind] = weatherKind(now?.weather_code);
-  // Dans l'œil : la carte météo du lieu.
-  screen.innerHTML = now
+  // Dans l'œil : la carte animée, ou la fiche du temps qu'il fait.
+  if (weather.view === 'map' && place) showWeatherMap();
+  else screen.innerHTML = now
     ? `<div class="sky sky-${kind}"><small>${esc(place.name)}</small>${skyIcon(kind)}<strong>${Math.round(now.temperature_2m)}°</strong><span>${label}</span><em>${Math.round(data.daily.temperature_2m_min[0])}° / ${Math.round(data.daily.temperature_2m_max[0])}°</em></div>`
     : `<div class="say"><span><small>Météo</small>${esc(weather.message || 'Où habitez-vous ?')}</span></div>`;
   const days = data
@@ -349,12 +413,15 @@ function renderWeather() {
     : '';
   panel.innerHTML = `${backButton}<h2>Météo</h2>
     ${now ? `<p><strong>${esc(place.name)}</strong>${place.region ? ', ' + esc(place.region) : ''} : ${label.toLowerCase()}, ${Math.round(now.temperature_2m)}° maintenant.</p>` : `<p>${esc(weather.message || 'Indiquez la ville où vous habitez : BOOZZO affiche le temps qu’il y fait dans son œil.')}</p>`}
+    ${place ? `<div class="row"><button class="btn" id="mapToggle" type="button">${weather.view === 'map' ? 'Voir la météo du jour' : 'Voir la carte animée'}</button></div>` : ''}
+    ${weather.view === 'map' ? '<p class="muted">Les nuages ou les pluies des dernières heures défilent dans l’œil, autour de votre ville.</p>' : ''}
     ${days ? `<ul class="favs">${days}</ul>` : ''}
     <form class="line" id="placeForm"><input name="city" maxlength="60" required placeholder="Votre ville (ex. Lyon)" aria-label="Votre ville" value="${place && place.name !== 'Ma position' ? esc(place.name) : ''}" autocomplete="off"><button class="btn">Valider</button></form>
     <div class="row"><button class="btn light" id="locate" type="button">Utiliser ma position</button></div>
-    <p class="muted">La ville est gardée sur cet appareil. Données météo : Open-Meteo.</p>`;
+    <p class="muted">La ville est gardée sur cet appareil. Données météo : Open-Meteo. Carte : © contributeurs OpenStreetMap, images RainViewer.</p>`;
 }
-function openWeather() {
+function openWeather({ map = false } = {}) {
+  weather.view = map ? 'map' : 'card';
   focusEye();
   renderWeather();
   if (weather.place) loadWeather();
@@ -910,7 +977,7 @@ function command(spoken) {
   if (/\b(photo|cam[ée]ra)\b/.test(text) && (order || /\bprend/.test(text))) return go('photo'), true;
   if (/\b(raconte|lis|dis)\b.*\b(histoire|conte)\b/.test(text)) return go('story', { play: true }), true;
   if (/quelle heure|\bl.heure\b|\bhorloge\b/.test(text)) return go('clock'), true;
-  if (/\b(meteo|quel temps|temps qu.il fait|il fait beau|pleut)\b/.test(text)) return go('weather'), true;
+  if (/\b(meteo|quel temps|temps qu.il fait|il fait beau|pleut|nuages)\b/.test(text)) return go('weather', { map: /\b(carte|nuages|radar)\b/.test(text) }), true;
   if (order && /\bassistant\b/.test(text)) return go('chat'), true;
   if (order && /\b(forfait|abonnement|esim)\b/.test(text)) return go('esim'), true;
   if (/\b(reconnais|qui suis.je|visages?)\b/.test(text)) return go('face'), true;
@@ -1751,6 +1818,10 @@ document.addEventListener('click', (event) => {
       return ask('Raconte-moi une courte histoire douce.');
     case 'locate':
       return useMyPosition();
+    case 'mapToggle':
+      weather.view = weather.view === 'map' ? 'card' : 'map';
+      focusEye();
+      return renderWeather();
     case 'deviceTest':
       return testDevices();
     case 'deviceStop':
