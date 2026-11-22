@@ -754,10 +754,20 @@ async function startRelayCall(role, callId, run) {
     return setCallStatus('Impossible d’ouvrir l’appel. Vérifiez la connexion Internet et réessayez.');
   }
   Object.assign(call, { id, role, busy: false, connected: false, muted: false, ring: '' });
+  // Une liaison qui tombe ne termine pas l'appel : seul un « bye » ou une absence prolongée le fait.
+  // Chaque côté définit dans `dropped` comment il attend ou relance la liaison.
+  let dropped = () => {};
   const attach = (media) => {
     call.media = media;
     media.on('stream', showRemote);
-    media.on('close', () => call.media === media && endCall(false));
+    media.on('close', () => {
+      if (call.media !== media || peer !== call.peer) return;
+      call.media = null;
+      call.connected = false;
+      showLocalInEye('Reconnexion…');
+      setCallStatus('La liaison a été interrompue. Reconnexion…');
+      dropped();
+    });
   };
   // Canal de messages : seul le « bye » du correspondant en appel compte (un second appareil peut ouvrir le lien).
   const listen = (conn) => {
@@ -775,9 +785,20 @@ async function startRelayCall(role, callId, run) {
   });
   if (role === 'eye') {
     peer.on('connection', listen);
+    // Après une coupure, on laisse trente secondes au proche pour rappeler avant de terminer l'appel.
+    let giveUp = 0;
+    dropped = () => {
+      clearTimeout(giveUp);
+      giveUp = setTimeout(() => {
+        if (peer !== call.peer || call.media) return;
+        endCall(false);
+        setCallStatus('L’appel a été coupé.');
+      }, 30000);
+    };
     peer.on('call', (media) => {
       // Un second appareil qui ouvre le même lien ne doit pas casser l'appel en cours.
       if (call.connected && media.peer !== call.remote) return media.close();
+      clearTimeout(giveUp);
       // Le proche rappelle tant qu'il n'a pas de réponse : la nouvelle tentative remplace l'ancienne.
       const previous = call.media;
       call.media = null;
@@ -791,15 +812,22 @@ async function startRelayCall(role, callId, run) {
     setCallStatus('Appel ouvert. Envoyez le lien, puis revenez sur cette page.');
   } else {
     call.remote = id;
-    // BOOZZO peut être momentanément en veille : on rappelle toutes les quelques secondes pendant deux minutes.
-    const deadline = Date.now() + 120000;
+    // BOOZZO peut être momentanément en veille : on rappelle pendant deux minutes. Une tentative a vingt
+    // secondes pour aboutir : la relancer plus tôt couperait une connexion en train de s'établir.
+    let deadline = Date.now() + 120000;
+    let failure = 'BOOZZO ne répond pas. Demandez un nouveau lien.';
     let retry = 0;
+    dropped = () => {
+      deadline = Date.now() + 30000;
+      failure = 'L’appel a été coupé.';
+      dial();
+    };
     const dial = () => {
       clearTimeout(retry);
       if (peer !== call.peer || call.connected) return;
       if (Date.now() > deadline) {
         endCall(false);
-        return setCallStatus('BOOZZO ne répond pas. Demandez un nouveau lien.');
+        return setCallStatus(failure);
       }
       const previous = call.media;
       call.media = null;
@@ -808,7 +836,7 @@ async function startRelayCall(role, callId, run) {
         listen(peer.connect(id));
         attach(peer.call(id, call.local));
       }
-      retry = setTimeout(dial, 6000);
+      retry = setTimeout(dial, 20000);
     };
     peer.on('error', (error) => {
       if (peer !== call.peer || call.connected || error.type !== 'peer-unavailable') return;
@@ -825,6 +853,7 @@ async function startRelayCall(role, callId, run) {
 document.addEventListener('visibilitychange', () => {
   const peer = call.peer;
   if (!document.hidden && peer && !peer.destroyed && peer.disconnected) peer.reconnect();
+  if (!document.hidden && call.role) keepAwake(true);
 });
 
 let polling = false;
@@ -861,6 +890,20 @@ async function pollCall() {
     polling = false;
   }
 }
+// Empêche l'écran de se mettre en veille pendant un appel (la veille coupe la caméra et la liaison).
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && !wakeLock && !document.hidden) {
+      wakeLock = await navigator.wakeLock?.request('screen');
+      wakeLock?.addEventListener('release', () => (wakeLock = null));
+    } else if (!on && wakeLock) {
+      const lock = wakeLock;
+      wakeLock = null;
+      await lock.release();
+    }
+  } catch {}
+}
 function showRemote(stream) {
   if (!$('video.remote', screen)) screen.innerHTML = '<video class="remote" autoplay playsinline></video>';
   const video = $('video.remote', screen);
@@ -869,6 +912,7 @@ function showRemote(stream) {
   video.play().catch(() => toast('Touchez l’œil pour activer le son.'));
   call.connected = true;
   setCallStatus('En appel');
+  keepAwake(true);
 }
 function newPeer() {
   call.pc?.close();
@@ -941,6 +985,7 @@ function endCall(sendBye = true, show = true) {
   call.local?.getTracks().forEach((track) => track.stop());
   Object.assign(call, { id: '', role: '', pc: null, local: null, cursor: '', connected: false, muted: false, busy: false, ring: '', name: '', peer: null, conns: [], remote: '', media: null, wa: null, status: 'Appel terminé.' });
   screen.replaceChildren();
+  keepAwake(false);
   if (show && state.screen === 'call') renderCall();
   if (state.wake) startWake();
 }
