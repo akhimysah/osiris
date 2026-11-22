@@ -128,6 +128,8 @@ form.line input { flex: 1; min-width: 0; padding: 12px 14px; border-radius: 14px
 .answer svg { width: 55%; height: 55%; }
 .answer .yes { background: #1faf4b; animation: pulse 1.1s ease-in-out infinite; }
 .answer .no { background: #d5392b; } .answer .no svg { transform: rotate(135deg); }
+.diag { border-top: 1.5px solid var(--line); margin-top: 12px; padding-top: 10px; }
+.diag ul { margin: 0 0 10px; padding-left: 18px; font-size: .92rem; }
 details { margin-top: 10px; } summary { cursor: pointer; font-weight: 600; color: var(--green); }
 label.check { display: flex; gap: 10px; align-items: center; margin: 10px 0; font-weight: 600; }
 label.check input { width: 20px; height: 20px; accent-color: var(--green); }
