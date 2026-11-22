@@ -14,6 +14,7 @@ Application web de la peluche BOOZZO. La peluche reste immobile : tout se passe 
 - **Photo** : retour caméra dans l'œil, prise de vue, dernières photos gardées sur l'appareil.
 - **Iris** : quatre couleurs, azur par défaut.
 - **Téléphone** : sur la peluche, l'écran d'un téléphone peut être recopié dans l'œil pour y utiliser ses propres applications. Voir `peluche/README.md` (kit d'installation de la carte, pas encore essayé sur du matériel).
+- **Forfait (eSIM)** : écran d'aperçu de l'abonnement mobile de la peluche, souscrit par un parent pour son enfant ou pour lui-même. Rien n'est vendu : les offres sont des exemples (`ESIM_OFFERS` dans `ui/app.js`). Pour l'ouvrir vraiment, il faut un modem 4G avec eSIM dans la peluche, un partenaire eSIM disposant d'une API de revente, un paiement en ligne et des conditions de vente.
 - **WhatsApp, Spotify** : ces tuiles ouvrent l'application officielle. BOOZZO ne les intègre pas : sur un appareil Android, le lien lance l'application installée ; ailleurs, il ouvre son site. Un proche peut avoir un numéro WhatsApp, gardé sur l'appareil.
 
 ## Démarrer
