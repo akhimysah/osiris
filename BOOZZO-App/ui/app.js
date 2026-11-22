@@ -76,10 +76,12 @@ const screen = $('#screen');
 const panel = $('#panel');
 const stage = $('#stage');
 
+const DEMO_ONLY = 'Démonstration : cette fonction demande la version complète, avec son serveur.';
 const state = {
   screen: 'home', // home | menu | call | youtube | photo | chat | iris
   color: COLORS[store.get('color')] ? store.get('color') : 'Azur',
   assistant: false,
+  server: true, // faux quand la page est servie seule, sans le serveur BOOZZO (démonstration)
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
   talk: [], // conversation avec l'assistant : { role, content }
   camera: null,
@@ -389,7 +391,7 @@ async function ask(text) {
   eye.classList.add('thinking');
   sayInEye('…', 'Je réfléchis');
   try {
-    const { reply } = await api('/api/chat', { device: deviceId, messages: state.talk.slice(-12).filter((m, i, list) => i > 0 || m.role === 'user') });
+    const { reply } = await api('api/chat', { device: deviceId, messages: state.talk.slice(-12).filter((m, i, list) => i > 0 || m.role === 'user') });
     state.talk.push({ role: 'assistant', content: reply });
     if (state.screen !== 'chat' || run !== speechRun) return;
     renderChat();
@@ -399,7 +401,7 @@ async function ask(text) {
     if (state.screen !== 'chat') return;
     eye.classList.remove('thinking');
     renderChat();
-    sayInEye(CHAT_ERRORS[error.message] || 'Je n’arrive pas à répondre pour l’instant.', 'Assistant');
+    sayInEye(CHAT_ERRORS[error.message] || (state.server ? 'Je n’arrive pas à répondre pour l’instant.' : DEMO_ONLY), 'Assistant');
   }
 }
 
@@ -525,8 +527,10 @@ function startWake() {
 // BOOZZO ouvre l'appel quand il appelle ; le proche l'ouvre quand c'est lui qui appelle BOOZZO.
 
 const call = { id: '', role: '', pc: null, local: null, cursor: '', timer: 0, muted: false, status: '', connected: false, busy: false, ring: '', name: '', polls: 0, run: 0 };
-const callLink = () => `${location.origin}/?appel=${call.id}`;
-const contactLink = (id) => `${location.origin}/?proche=${id}`;
+// Adresse de la page sans ses paramètres : l'application peut être servie dans un sous-dossier.
+const pageUrl = location.origin + location.pathname;
+const callLink = () => `${pageUrl}?appel=${call.id}`;
+const contactLink = (id) => `${pageUrl}?proche=${id}`;
 const contacts = () => store.get('contacts', []);
 const myRingSide = guestMode ? 'guest' : 'eye';
 const peerLabel = () => call.name || (guestMode ? 'BOOZZO' : 'ton proche');
@@ -594,9 +598,9 @@ function showLocalInEye(badge) {
   screen.innerHTML = `<video class="mirror" autoplay playsinline muted></video><span class="badge">${esc(badge)}</span>`;
   $('video', screen).srcObject = call.local;
 }
-const signal = (type, sdp) => api(`/api/calls/${call.id}/signal`, { from: call.role, type, sdp });
+const signal = (type, sdp) => api(`api/calls/${call.id}/signal`, { from: call.role, type, sdp });
 const postRing = (contact, body) =>
-  fetch(`/api/contacts/${contact}/ring`, {
+  fetch(`api/contacts/${contact}/ring`, {
     method: 'POST',
     keepalive: true,
     headers: { 'Content-Type': 'application/json' },
@@ -635,9 +639,9 @@ async function startCall(role, { callId = '', contact = null } = {}) {
   try {
     let id = callId;
     let cursor = '';
-    if (role === 'eye') id = (await api('/api/calls', {})).id;
+    if (role === 'eye') id = (await api('api/calls', {})).id;
     // Ignore les anciens messages si la page a été rechargée.
-    else cursor = (await api(`/api/calls/${id}/signal?for=guest`)).cursor;
+    else cursor = (await api(`api/calls/${id}/signal?for=guest`)).cursor;
     if (run !== call.run) return;
     Object.assign(call, { id, cursor, role, busy: false, connected: false, muted: false, polls: 0, ring: '' });
     if (role === 'guest') await signal('join');
@@ -649,7 +653,7 @@ async function startCall(role, { callId = '', contact = null } = {}) {
   } catch (error) {
     if (run !== call.run) return;
     endCall(false, false);
-    return setCallStatus(error.status === 404 ? 'Cet appel est terminé ou le lien a expiré.' : 'Impossible d’ouvrir l’appel. Réessayez.');
+    return setCallStatus(error.status === 404 ? 'Cet appel est terminé ou le lien a expiré.' : state.server ? 'Impossible d’ouvrir l’appel. Réessayez.' : DEMO_ONLY);
   }
   const waiting = role === 'guest' ? 'Connexion…' : call.ring ? `Appel de ${peerLabel()}…` : 'En attente de ton proche';
   if (role === 'eye' && kiosk && !call.ring) screen.innerHTML = qrSvg(callLink());
@@ -662,14 +666,14 @@ async function pollCall() {
   if (polling || !call.role) return;
   polling = true;
   try {
-    const { messages, cursor } = await api(`/api/calls/${call.id}/signal?for=${call.role}&after=${encodeURIComponent(call.cursor)}`);
+    const { messages, cursor } = await api(`api/calls/${call.id}/signal?for=${call.role}&after=${encodeURIComponent(call.cursor)}`);
     call.cursor = cursor;
     for (const message of messages) await onSignal(message);
     if (call.pc || !call.role) return;
     call.polls++;
     // Tant que ça sonne : s'arrêter si le proche refuse ou ne répond pas.
     if (call.ring && call.polls % 3 === 0) {
-      const contact = await api(`/api/contacts/${call.ring}`);
+      const contact = await api(`api/contacts/${call.ring}`);
       if (!call.role || contact.ring?.call === call.id) return;
       const name = call.name;
       const theirs = contact.ring && contact.ring.from !== myRingSide ? contact.ring.call : '';
@@ -752,7 +756,7 @@ function endCall(sendBye = true, show = true) {
   if (!active && !call.busy && !call.local) return;
   clearInterval(call.timer);
   if (active && sendBye)
-    fetch(`/api/calls/${call.id}/signal`, {
+    fetch(`api/calls/${call.id}/signal`, {
       method: 'POST',
       keepalive: true,
       headers: { 'Content-Type': 'application/json' },
@@ -772,18 +776,18 @@ function endCall(sendBye = true, show = true) {
 // Le numéro WhatsApp reste sur cet appareil : il n'est pas envoyé au serveur.
 async function addContact(name, phone = '') {
   try {
-    const contact = await api('/api/contacts', { device: deviceId, name });
+    const contact = await api('api/contacts', { device: deviceId, name });
     store.set('contacts', [...contacts(), { id: contact.id, name: contact.name, phone }]);
     state.newContact = contact;
   } catch {
-    toast('Impossible d’ajouter ce proche pour l’instant.');
+    toast(state.server ? 'Impossible d’ajouter ce proche pour l’instant.' : DEMO_ONLY);
   }
   renderCall();
 }
 function forgetContact(id) {
   store.set('contacts', contacts().filter((c) => c.id !== id));
   if (state.newContact?.id === id) state.newContact = null;
-  api(`/api/contacts/${id}/remove`, { device: deviceId }).catch(() => {});
+  api(`api/contacts/${id}/remove`, { device: deviceId }).catch(() => {});
   renderCall();
 }
 
@@ -866,13 +870,13 @@ async function watchRings() {
   try {
     let incoming = null;
     if (contactId) {
-      const me = await api(`/api/contacts/${contactId}`);
+      const me = await api(`api/contacts/${contactId}`);
       const first = !state.me;
       state.me = me;
       if (me.ring?.from === 'eye') incoming = { contact: me.id, name: 'BOOZZO', call: me.ring.call };
       if (first && !incoming) renderCall();
     } else if (contacts().length) {
-      incoming = (await api(`/api/devices/${deviceId}/rings`)).rings[0] || null;
+      incoming = (await api(`api/devices/${deviceId}/rings`)).rings[0] || null;
     }
     if (call.role || call.busy) return;
     if (incoming && incoming.call !== state.handled && incoming.call !== state.incoming?.call) showIncoming(incoming);
@@ -992,10 +996,12 @@ if (!guestCallId) {
   watchRings();
   setInterval(watchRings, 3000);
 }
-api('/api/config')
+api('api/config')
   .then((config) => {
     state.assistant = Boolean(config.assistant);
     if (Array.isArray(config.iceServers)) state.iceServers = config.iceServers;
     if (state.screen === 'chat') renderChat();
   })
-  .catch(() => {});
+  .catch(() => {
+    state.server = false;
+  });
