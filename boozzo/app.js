@@ -37,6 +37,7 @@ const ICON = {
   face: svg('<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 10v1M15 10v1M9 15c1.8 1.4 4.2 1.4 6 0"/>'),
   clock: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'),
   weather: svg('<circle cx="8" cy="8" r="3"/><path d="M8 2v1M2 8h1M3.8 3.8l.7.7M12.2 3.8l-.7.7"/><path d="M8.5 20h8a3.5 3.5 0 0 0 .6-6.9 5 5 0 0 0-9.5 1.3A2.8 2.8 0 0 0 8.5 20z"/>'),
+  torch: svg('<path d="M8 3h8l-1.5 5v12a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V8z"/><path d="M9.5 8h5M12 12v3"/>'),
   esim: svg('<path d="M7 3h7l4 4v14H7z"/><rect x="10" y="11" width="5" height="6" rx="1"/>'),
   mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
 };
@@ -49,6 +50,7 @@ const APPS = [
   ['chat', 'Assistant', 'c-chat'],
   ['clock', 'Heure', 'c-clock'],
   ['weather', 'Météo', 'c-weather'],
+  ['torch', 'Torche', 'c-torch'],
   ['face', 'Visages', 'c-face'],
   ['phone', 'Téléphone', 'c-phone'],
   ['iris', 'Iris', 'c-iris'],
@@ -163,12 +165,13 @@ function go(name, options = {}) {
   // Pendant un appel ou une sonnerie, l'écran d'appel garde la main.
   if (name === 'call' && (call.role || call.busy || state.incoming)) return renderCall();
   if (state.incoming) declineIncoming();
+  if (state.screen === 'torch') keepAwake(false);
   endCall(true, false);
   stopCamera();
   stopSpeaking();
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, face: openFaces, phone: openPhone, esim: openEsim })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim })[name](options);
 }
 
 function openHome() {
@@ -253,6 +256,47 @@ function openClock() {
   panel.innerHTML = `${backButton}<h2>Heure</h2>
     <p>Il est ${now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}, ${now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.</p>
     <p class="muted">L’heure s’affiche dans l’œil en grands chiffres rouges. Dites « BOOZZO, quelle heure est-il ? » pour l’afficher.</p>`;
+}
+
+// ---------- Torche : l'œil éclaire ----------
+// L'écran de l'œil passe en blanc (ou en veilleuse orangée). Sur un téléphone Android, la vraie lampe
+// du téléphone s'allume en plus ; l'iPhone ne permet pas à une page web de l'allumer.
+
+const torch = { mode: 'white', lamp: false };
+async function phoneLamp(on) {
+  const track = state.camera?.getVideoTracks()[0];
+  if (!on) return stopCamera();
+  if (track || !/Android/i.test(navigator.userAgent)) return;
+  try {
+    const stream = await camera({ video: { facingMode: 'environment' }, audio: false });
+    if (state.screen !== 'torch') return stream.getTracks().forEach((t) => t.stop());
+    state.camera = stream;
+    const [video] = stream.getVideoTracks();
+    if (!video.getCapabilities?.().torch) return stopCamera();
+    await video.applyConstraints({ advanced: [{ torch: true }] });
+    torch.lamp = true;
+    renderTorch();
+  } catch {
+    stopCamera();
+  }
+}
+function renderTorch() {
+  screen.innerHTML = `<div class="beam beam-${torch.mode}"></div>`;
+  panel.innerHTML = `${backButton}<h2>Torche</h2>
+    <p>L’œil de BOOZZO éclaire. ${torch.lamp ? 'La lampe du téléphone est allumée aussi.' : 'Montez la luminosité de l’écran au maximum pour plus de lumière.'}</p>
+    <div class="row">
+      <button class="btn ${torch.mode === 'white' ? '' : 'light'}" type="button" data-torch="white" aria-pressed="${torch.mode === 'white'}">Lumière blanche</button>
+      <button class="btn ${torch.mode === 'night' ? '' : 'light'}" type="button" data-torch="night" aria-pressed="${torch.mode === 'night'}">Veilleuse</button>
+    </div>
+    <div class="row"><button class="btn light" data-go="menu" type="button">Éteindre</button></div>
+    <p class="muted">Sur la peluche, une vraie petite lampe LED pourra être ajoutée à côté de l’écran et commandée de la même façon.</p>`;
+}
+function openTorch({ mode = 'white' } = {}) {
+  Object.assign(torch, { mode, lamp: false });
+  renderTorch();
+  focusEye();
+  keepAwake(true);
+  phoneLamp(true);
 }
 
 // ---------- Météo : le temps qu'il fait là où habite la personne ----------
@@ -976,6 +1020,7 @@ function command(spoken) {
   if (/(?<![mts]['’])\b(appelle|appeler|appelez)\b|\btelephone a\b/.test(text)) return go('call', { spoken }), true;
   if (/\b(photo|cam[ée]ra)\b/.test(text) && (order || /\bprend/.test(text))) return go('photo'), true;
   if (/\b(raconte|lis|dis)\b.*\b(histoire|conte)\b/.test(text)) return go('story', { play: true }), true;
+  if (/\b(torche|lampe|lumiere|eclaire|veilleuse)\b/.test(text)) return /\b(eteins|eteindre)\b/.test(text) ? (go('menu'), true) : (go('torch', { mode: /veilleuse/.test(text) ? 'night' : 'white' }), true);
   if (/quelle heure|\bl.heure\b|\bhorloge\b/.test(text)) return go('clock'), true;
   if (/\b(meteo|quel temps|temps qu.il fait|il fait beau|pleut|nuages)\b/.test(text)) return go('weather', { map: /\b(carte|nuages|radar)\b/.test(text) }), true;
   if (order && /\bassistant\b/.test(text)) return go('chat'), true;
@@ -1783,6 +1828,7 @@ document.addEventListener('click', (event) => {
   if ('page' in data) return openMenu({ page: state.menuPage + 1 });
   if (data.color) return setColor(data.color);
   if (data.story) return playStory(Number(data.story));
+  if (data.torch) return (torch.mode = data.torch), renderTorch();
   if (data.unface) return store.set('faces', faces().filter((_, i) => i !== Number(data.unface))), renderFaces();
   if (data.esimWho || data.esimOffer) {
     store.set('esim', { ...store.get('esim', {}), ...(data.esimWho ? { who: data.esimWho } : { offer: data.esimOffer }) });
