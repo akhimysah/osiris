@@ -552,6 +552,7 @@ function stopSpeaking() {
   speechRun++;
   const synth = window.speechSynthesis;
   if (synth && (synth.speaking || synth.pending)) synth.cancel();
+  if (!voice.paused) voice.pause();
   eye.classList.remove('listening', 'thinking');
 }
 // Sur iPhone, la synthèse vocale doit avoir été lancée une première fois depuis un geste.
@@ -566,26 +567,62 @@ function frenchVoice() {
   const voices = window.speechSynthesis?.getVoices() || [];
   return voices.find((v) => /^fr/i.test(v.lang) && /am[ée]lie|audrey|aurelie|google/i.test(v.name)) || voices.find((v) => /^fr/i.test(v.lang));
 }
-// Lit le texte phrase par phrase et affiche la phrase en cours dans l'œil.
+// La voix de BOOZZO. Les phrases prévues (histoires, petites réponses) ont un enregistrement dans voix/ :
+// une voix douce, la même sur tous les appareils, que l'iPhone lit comme n'importe quel son.
+// Les autres phrases (réponses de l'assistant, heure, prénoms) passent par la voix de l'appareil.
+const voice = new Audio();
+voice.preload = 'auto';
+const SILENCE = 'data:audio/wav;base64,UklGRv////9XQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAATElTVBoAAABJTkZPSVNGVA4AAABMYXZmNjAuMTYuMTAwAGRhdGH/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
+// Les navigateurs ne laissent une page jouer du son qu'après un toucher : on débloque le lecteur au premier.
+function unlockVoice() {
+  if (unlockVoice.done) return;
+  unlockVoice.done = true;
+  voice.src = SILENCE;
+  voice.play().then(() => voice.src === SILENCE && voice.pause(), () => (unlockVoice.done = false));
+}
+document.addEventListener('pointerdown', unlockVoice);
+const hasRecording = (sentence) => typeof VOICE_FILES !== 'undefined' && VOICE_FILES.has(voiceKey(sentence));
+function sayWithDevice(sentence) {
+  return new Promise((resolve) => {
+    const fallback = setTimeout(resolve, 1200 + sentence.length * 70);
+    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+    const utterance = new SpeechSynthesisUtterance(sentence);
+    utterance.lang = 'fr-FR';
+    utterance.voice = frenchVoice() || null;
+    utterance.rate = 0.95;
+    utterance.pitch = 1.05;
+    utterance.onend = utterance.onerror = () => (clearTimeout(fallback), resolve());
+    window.speechSynthesis.speak(utterance);
+  });
+}
+function sayRecorded(sentence) {
+  return new Promise((resolve) => {
+    let finished = false;
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(limit);
+      voice.onended = voice.onerror = null;
+      resolve();
+    };
+    // Garde-fou : si le son ne se termine jamais, le texte continue quand même d'avancer.
+    const limit = setTimeout(done, 4000 + sentence.length * 130);
+    voice.onended = done;
+    voice.onerror = () => sayWithDevice(sentence).then(done);
+    voice.src = `voix/${voiceKey(sentence)}.mp3`;
+    // Lecture refusée (aucun toucher encore) : garder le rythme de lecture du texte.
+    voice.play().catch(() => setTimeout(done, 1200 + sentence.length * 70));
+  });
+}
+// Dit le texte phrase par phrase et affiche la phrase en cours dans l'œil.
 async function speak(text, label = 'BOOZZO') {
   stopSpeaking();
   stopRecognizer(); // BOOZZO ne doit pas s'entendre parler
   const run = speechRun;
-  const sentences = text.match(/[^.!?…]+[.!?…]*\s*/g)?.map((s) => s.trim()).filter(Boolean) || [text];
-  for (const sentence of sentences) {
+  for (const sentence of splitSentences(text)) {
     if (run !== speechRun) return;
     sayInEye(sentence, label);
-    await new Promise((resolve) => {
-      const fallback = setTimeout(resolve, 1200 + sentence.length * 70);
-      if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
-      const utterance = new SpeechSynthesisUtterance(sentence);
-      utterance.lang = 'fr-FR';
-      utterance.voice = frenchVoice() || null;
-      utterance.rate = 0.95;
-      utterance.pitch = 1.05;
-      utterance.onend = utterance.onerror = () => (clearTimeout(fallback), resolve());
-      window.speechSynthesis.speak(utterance);
-    });
+    await (hasRecording(sentence) ? sayRecorded(sentence) : sayWithDevice(sentence));
   }
   if (run === speechRun && state.wake) startWake();
 }
@@ -609,25 +646,8 @@ function renderChat() {
 // Quelques réponses et histoires embarquées, pour que la peluche parle même sans serveur ni clé.
 // Ce n'est pas une intelligence artificielle : ce qui n'est pas prévu ici reçoit une réponse d'attente.
 
-const STORIES = [
-  {
-    title: 'Le bateau de la lune',
-    text: 'Il était une fois une petite peluche qui s’appelait BOOZZO. Elle avait un grand œil tout rond, qui brillait comme la lune. Chaque soir, quand la maison devenait silencieuse, son œil s’allumait doucement. Dedans, on voyait des étoiles, des nuages et parfois un petit bateau. Un soir, le bateau emmena BOOZZO jusqu’à une île où les arbres chantaient des berceuses. BOOZZO écouta, ferma son grand œil, et rapporta la plus douce des chansons. Depuis, quand un enfant a du mal à s’endormir, BOOZZO la fredonne tout bas. Bonne nuit.',
-  },
-  {
-    title: 'L’explorateur du jardin',
-    text: 'Un matin, BOOZZO mit son chapeau d’explorateur et son sac à dos. Aujourd’hui, dit-il, je pars découvrir le jardin. Il rencontra une fourmi très pressée, qui portait une miette plus grosse qu’elle. Puis un escargot, qui prenait tout son temps et saluait chaque fleur. BOOZZO apprit de la fourmi qu’on peut porter de grandes choses à plusieurs. Il apprit de l’escargot qu’on voit plus de merveilles quand on va doucement. Le soir, il rangea ces deux secrets dans son sac. Et il les garde pour toi.',
-  },
-  {
-    title: 'Le nuage qui avait peur de pleuvoir',
-    text: 'Tout en haut de la colline vivait un nuage qui avait peur de pleuvoir. Il croyait que ses gouttes feraient de la peine aux fleurs. BOOZZO leva son grand œil vers lui et lui dit : regarde en bas. Le nuage regarda, et vit des fleurs qui ouvraient leurs pétales en l’attendant. Alors il laissa tomber une petite pluie, toute fine, toute tiède. Les fleurs dansèrent, la terre sentit bon, et un arc-en-ciel apparut. Le nuage comprit que ce qu’il avait à donner était un cadeau. Et il n’eut plus jamais peur.',
-  },
-];
-const JOKES = [
-  'Que dit une peluche qui a bien mangé ? Je suis rembourrée !',
-  'Pourquoi BOOZZO ne perd jamais rien ? Parce qu’il garde toujours l’œil dessus.',
-  'Quel est le comble pour un œil ? De ne pas se sentir regardé.',
-];
+
+
 let storyIndex = 0;
 let jokeIndex = 0;
 // Écran Histoires : chaque histoire démarre au toucher, directement dans l'œil.
@@ -664,20 +684,20 @@ async function builtInReply(spoken) {
         : /quel jour|la date|on est quel/.test(text)
           ? `Nous sommes le ${now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.`
           : /qui es.tu|tu es qui|comment tu t.appelles|ton nom|c.est quoi boozzo/.test(text)
-            ? 'Je suis BOOZZO, ta peluche compagnon. Mon grand œil est un écran : j’y montre tes proches, tes vidéos et tes photos, et je peux te parler.'
+            ? REPLIES.who
             : /que sais.tu|tu sais faire|peux.tu faire|tu fais quoi|a quoi tu sers/.test(text)
-              ? 'Je peux appeler tes proches en vidéo, montrer des vidéos, prendre des photos, changer la couleur de mon œil et raconter des histoires. Dis par exemple : BOOZZO, raconte une histoire.'
+              ? REPLIES.skills
               : /\b(bonjour|salut|coucou|bonsoir|hello)\b/.test(text)
-                ? 'Bonjour ! Je suis content de te voir. Tu veux une histoire, une blague, ou appeler quelqu’un ?'
+                ? REPLIES.hello
                 : /ca va|comment vas.tu|tu vas bien/.test(text)
-                  ? 'Je vais très bien, merci. Et toi, comment te sens-tu aujourd’hui ?'
+                  ? REPLIES.fine
                   : /\bmerci\b/.test(text)
-                    ? 'Avec plaisir. Je suis là quand tu veux.'
+                    ? REPLIES.thanks
                     : /bonne nuit|dodo|dormir/.test(text)
-                      ? 'Bonne nuit. Fais de beaux rêves, je veille avec mon grand œil.'
+                      ? REPLIES.night
                       : /je t.aime|calin/.test(text)
-                        ? 'Moi aussi je t’aime beaucoup. Gros câlin tout doux.'
-                        : 'Je n’ai pas encore la réponse à ça dans cette démonstration. Demande-moi une histoire, une blague, l’heure, ou ce que je sais faire.';
+                        ? REPLIES.love
+                        : REPLIES.unknown;
   return { reply };
 }
 
