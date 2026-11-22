@@ -10,6 +10,7 @@ Application web de la peluche BOOZZO. La peluche reste immobile : tout se passe 
 - **Proches** : on ajoute un proche par son prénom ; il reçoit un lien permanent à garder ouvert sur son téléphone. « BOOZZO, appelle Mamie » fait sonner sa page ; il peut aussi appeler BOOZZO, qui sonne et affiche son prénom dans l'œil (« réponds » ou « refuse » à la voix).
 - **Voix** : bouton micro, ou écoute continue du mot « BOOZZO ». Exemples : « BOOZZO, mets YouTube », « BOOZZO, appelle », « prends une photo », « mets l'iris en violet », « raccroche ».
 - **Assistant** : toute phrase qui n'est pas une commande est envoyée à l'assistant, qui répond à voix haute, phrase par phrase, dans l'œil. « Histoires » lui demande une histoire douce.
+- **Sans assistant branché** : BOOZZO répond avec quelques réponses et trois histoires intégrées (`builtInReply` dans `ui/app.js`), lues à voix haute. Ce n'est pas une intelligence artificielle ; l'écran l'indique.
 - **YouTube et TikTok** : lecture dans l'œil à partir du lien d'une vidéo (ou d'une playlist YouTube) ; les favoris nommés se lancent à la voix. Le fil d'accueil de ces services ne peut pas être intégré dans une page web.
 - **Photo** : retour caméra dans l'œil, prise de vue, dernières photos gardées sur l'appareil.
 - **Iris** : quatre couleurs, azur par défaut.
