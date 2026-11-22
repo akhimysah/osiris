@@ -45,7 +45,8 @@ const APPS = [
 // Applications officielles : BOOZZO ne les intègre pas, il les ouvre. Sur un appareil Android,
 // le lien lance l'application installée ; ailleurs, il ouvre son site dans un nouvel onglet.
 const EXTERNAL = [
-  ['whatsapp', 'WhatsApp', 'c-wa', 'chat', 'https://wa.me/'],
+  // WhatsApp Web gère les appels audio et vidéo depuis 2026 ; sur téléphone, le lien ouvre l'application.
+  ['whatsapp', 'WhatsApp', 'c-wa', 'chat', /Android|iPhone|iPad/i.test(navigator.userAgent) ? 'https://wa.me/' : 'https://web.whatsapp.com/'],
   ['spotify', 'Spotify', 'c-spotify', 'music', 'https://open.spotify.com/'],
   ['tiktok', 'TikTok', 'c-tiktok', 'clip', 'https://www.tiktok.com/'],
 ];
