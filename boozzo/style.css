@@ -77,6 +77,7 @@ main { max-width: 980px; margin: 0 auto; padding: 8px 16px 40px; display: grid; 
 .c-photo { background: linear-gradient(#f4f4f4, #b9bcc2); color: #1c1c1e; } .c-chat { background: linear-gradient(#8f7bf5, #5b3fd6); }
 .c-wa { background: linear-gradient(#57d98a, #128c4a); } .c-spotify { background: linear-gradient(#3ddc6f, #169c46); color: #0b0b0b; } .c-tiktok { background: linear-gradient(#2b2b2f, #050506); }
 .c-phone { background: linear-gradient(#7c8a9c, #46505f); }
+.c-esim { background: linear-gradient(#59c7c0, #1f8f8a); }
 .c-story { background: linear-gradient(#f8c765, #e08b1d); } .c-iris { background: linear-gradient(#69c3f2, #2a7fc2); }
 
 /* --- Le panneau de commandes --- */
@@ -130,6 +131,10 @@ form.line input { flex: 1; min-width: 0; padding: 12px 14px; border-radius: 14px
 .answer .no { background: #d5392b; } .answer .no svg { transform: rotate(135deg); }
 .diag { border-top: 1.5px solid var(--line); margin-top: 12px; padding-top: 10px; }
 .diag ul { margin: 0 0 10px; padding-left: 18px; font-size: .92rem; }
+.notice { background: #fff4d6; border: 1.5px solid #e6cf8a; border-radius: 14px; padding: 10px 14px; }
+.btn.offer { border-radius: 16px; text-align: left; white-space: normal; }
+.btn.offer span { display: grid; gap: 2px; }
+.btn.offer small { font-weight: 500; opacity: .85; }
 details { margin-top: 10px; } summary { cursor: pointer; font-weight: 600; color: var(--green); }
 label.check { display: flex; gap: 10px; align-items: center; margin: 10px 0; font-weight: 600; }
 label.check input { width: 20px; height: 20px; accent-color: var(--green); }

@@ -34,6 +34,7 @@ const ICON = {
   tiktok: svg('<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 9v6l4.5-3z"/>'),
   phone: svg('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
   next: svg('<path d="M9 6l6 6-6 6"/>'),
+  esim: svg('<path d="M7 3h7l4 4v14H7z"/><rect x="10" y="11" width="5" height="6" rx="1"/>'),
   mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
 };
 const APPS = [
@@ -45,6 +46,7 @@ const APPS = [
   ['story', 'Histoires', 'c-story'],
   ['phone', 'Téléphone', 'c-phone'],
   ['iris', 'Iris', 'c-iris'],
+  ['esim', 'Forfait', 'c-esim'],
 ];
 // Applications officielles : BOOZZO ne les intègre pas, il les ouvre. Sur un appareil Android,
 // le lien lance l'application installée ; ailleurs, il ouvre son site dans un nouvel onglet.
@@ -159,7 +161,7 @@ function go(name, options = {}) {
   }
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, phone: openPhone })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, phone: openPhone, esim: openEsim })[name](options);
 }
 
 function openHome() {
@@ -207,6 +209,36 @@ function openPhone() {
     <p><strong>iPhone</strong><br>Ouvrez le Centre de contrôle, touchez « Recopie de l’écran », puis choisissez « BOOZZO ». Pour arrêter, touchez « Arrêter la recopie ».</p>
     <p><strong>Android</strong><br>Reliez le téléphone à la peluche par câble USB, ou en Wi-Fi après l’avoir autorisé une première fois (voir le guide d’installation).</p>
     <p class="muted">La recopie fonctionne uniquement sur la peluche, une fois sa carte installée avec le kit du dossier « peluche ». Le téléphone et la peluche doivent être sur le même Wi-Fi.</p>`;
+}
+
+// ---------- Forfait eSIM : aperçu ----------
+// Cet écran présente l'abonnement mobile de la peluche. Il ne vend rien pour l'instant : la souscription
+// demande un partenaire eSIM, un paiement en ligne et un modem 4G dans la peluche (voir README).
+// Les offres ci-dessous sont des exemples à remplacer par les vraies offres et leurs prix.
+
+const ESIM_OFFERS = [
+  { id: 'decouverte', name: 'Découverte', detail: 'Appels vidéo et assistant, usage occasionnel' },
+  { id: 'famille', name: 'Famille', detail: 'Appels, vidéos et musique au quotidien' },
+  { id: 'voyage', name: 'Voyage', detail: 'Pour emmener BOOZZO en vacances, sans Wi-Fi' },
+];
+function openEsim() {
+  const saved = store.get('esim', {});
+  const who = saved.who === 'adulte' ? 'adulte' : 'enfant';
+  sayInEye(saved.offer ? 'Votre choix est noté.' : 'Pas encore de forfait.', 'Forfait');
+  panel.innerHTML = `${backButton}<h2>Forfait BOOZZO</h2>
+    <p>Avec un forfait eSIM, BOOZZO se connecte tout seul, partout, sans Wi-Fi. C’est un parent qui souscrit, pour son enfant ou pour lui-même.</p>
+    <p class="notice"><strong>Aperçu.</strong> La souscription n’est pas encore ouverte : rien n’est vendu ni facturé ici. Les offres ci-dessous sont des exemples, leurs prix restent à définir.</p>
+    <p class="muted">Pour qui ?</p>
+    <div class="row">
+      <button class="btn ${who === 'enfant' ? '' : 'light'}" type="button" data-esim-who="enfant" aria-pressed="${who === 'enfant'}">Mon enfant</button>
+      <button class="btn ${who === 'adulte' ? '' : 'light'}" type="button" data-esim-who="adulte" aria-pressed="${who === 'adulte'}">Moi</button>
+    </div>
+    <p class="muted">Offres (exemples)</p>
+    <ul class="favs">${ESIM_OFFERS.map(
+      (offer) => `<li><button class="btn ${saved.offer === offer.id ? '' : 'light'} offer" type="button" data-esim-offer="${offer.id}" aria-pressed="${saved.offer === offer.id}"><span><strong>${offer.name}</strong><small>${offer.detail} · prix à définir</small></span></button></li>`,
+    ).join('')}</ul>
+    ${saved.offer ? `<p>Choix noté sur cet appareil : offre « ${esc(ESIM_OFFERS.find((o) => o.id === saved.offer)?.name || '')} » pour ${who === 'enfant' ? 'votre enfant' : 'vous'}. Vous pourrez souscrire dès l’ouverture du service.</p>` : ''}
+    ${who === 'enfant' ? '<p class="muted">Pour un enfant, le forfait est au nom du parent, qui garde la main sur les proches autorisés et sur les applications.</p>' : ''}`;
 }
 
 // ---------- Iris ----------
@@ -474,6 +506,7 @@ function command(spoken) {
   if (/\b(photo|cam[ée]ra)\b/.test(text) && (order || /\bprend/.test(text))) return go('photo'), true;
   if (/\b(raconte|lis|dis)\b.*\b(histoire|conte)\b/.test(text)) return go('story'), true;
   if (order && /\bassistant\b/.test(text)) return go('chat'), true;
+  if (order && /\b(forfait|abonnement|esim)\b/.test(text)) return go('esim'), true;
   if (color && (/\b(iris|œil|oeil|yeux|couleur)\b/.test(text) || /\ben\s/.test(text))) return go('home'), setColor(color[1]), true;
   if (order && /\b(iris|œil|oeil)\b/.test(text)) return go('home'), true;
   if (order && /\b(menu|applications?)\b/.test(text)) return setView(true), go('menu'), true;
@@ -1272,6 +1305,10 @@ document.addEventListener('click', (event) => {
   if ('listen' in data) return listen();
   if ('page' in data) return openMenu({ page: state.menuPage + 1 });
   if (data.color) return setColor(data.color);
+  if (data.esimWho || data.esimOffer) {
+    store.set('esim', { ...store.get('esim', {}), ...(data.esimWho ? { who: data.esimWho } : { offer: data.esimOffer }) });
+    return openEsim();
+  }
   if (data.call) return data.call === 'accept' ? acceptIncoming() : declineIncoming();
   if (data.contact) return startCall('eye', { contact: contacts().find((c) => c.id === data.contact) });
   if (data.link) return (state.newContact = contacts().find((c) => c.id === data.link)), renderCall();
