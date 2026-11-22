@@ -18,8 +18,8 @@ out = pathlib.Path(out)
 out.mkdir(parents=True, exist_ok=True)
 phrases = json.load(open(phrases_file, encoding="utf8"))
 for key, sentence in phrases:
-    # Prononciation du nom, écrit en capitales dans les textes.
-    spoken = sentence.replace("BOOZZO", "Bouzo")
+    # Prononciation du nom : il s'écrit BOOZZO et se dit « bozo ».
+    spoken = sentence.replace("BOOZZO", "Bozo")
     with tempfile.NamedTemporaryFile(suffix=".wav") as wav:
         # length_scale > 1 ralentit légèrement la voix, pour un ton plus posé.
         subprocess.run([piper, "--model", model, "--length_scale", "1.08", "--output_file", wav.name], input=spoken.encode("utf8"), check=True, capture_output=True)
