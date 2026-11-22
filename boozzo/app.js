@@ -607,7 +607,12 @@ function renderCall() {
       <div class="row"><video class="self" id="self" autoplay playsinline muted></video></div>
       <div class="row"><button class="btn danger" id="hangup" type="button">Raccrocher</button><button class="btn light" id="mute" type="button">${call.muted ? 'Réactiver le micro' : 'Couper le micro'}</button></div>
       ${invite}
-      <details><summary>Si l’appel ne se connecte pas</summary><p class="muted">Vérifiez que les deux appareils ont autorisé la caméra et le micro. Sur certains réseaux (4G, Wi-Fi d’entreprise), un serveur relais doit être ajouté au projet.</p></details>`;
+      ${
+        call.peer
+          ? `<div class="diag"><p class="muted">État de la connexion</p><ul>${diagText().map((line) => `<li>${esc(line)}</li>`).join('')}</ul>
+             ${diag.ice === 'failed' || (diag.peer && !call.connected && !diag.kinds.has('relay')) ? '<p class="muted">Si la liaison vidéo reste impossible, les deux réseaux ne peuvent pas se joindre directement : essayez avec les deux téléphones en Wi-Fi, ou ajoutez un serveur de secours dans Appels, « Réglages du relais vidéo ».</p>' : ''}</div>`
+          : '<details><summary>Si l’appel ne se connecte pas</summary><p class="muted">Vérifiez que les deux appareils ont autorisé la caméra et le micro. Sur certains réseaux (4G, Wi-Fi d’entreprise), un serveur relais doit être ajouté au projet.</p></details>'
+      }`;
   } else if (state.incoming) {
     body = `<p><strong>${esc(state.incoming.name)} vous appelle…</strong></p>
       <div class="row"><button class="btn" data-call="accept" type="button" ${busy}>${ICON.call}Répondre</button><button class="btn danger" data-call="decline" type="button">Refuser</button></div>`;
@@ -637,7 +642,16 @@ function renderCall() {
       <div class="row"><button class="btn" id="startCall" type="button" ${busy}>${ICON.call}Appeler avec un lien WhatsApp</button></div>
       <p class="muted">BOOZZO ouvre l’appel et prépare un message WhatsApp avec un lien. Votre proche le touche, et son visage apparaît dans l’œil.</p>
       <div class="row"><button class="btn light" id="deviceTest" type="button" ${busy}>${ICON.photo}Tester ma caméra et mon micro</button></div>
-      <div id="deviceResult"></div>`;
+      <div id="deviceResult"></div>
+      <details><summary>Réglages du relais vidéo</summary>
+        <p class="muted">Quand deux réseaux ne peuvent pas se joindre directement (4G, certaines box), la vidéo passe par un serveur de secours « TURN ». Si vous en avez un, enregistrez-le ici : il reste sur cet appareil.</p>
+        <form class="stack" id="turnForm">
+          <input name="urls" placeholder="turn:adresse:3478" aria-label="Adresse du serveur TURN" value="${esc(store.get('turn', {}).urls || '')}" autocomplete="off">
+          <input name="username" placeholder="Identifiant" aria-label="Identifiant TURN" value="${esc(store.get('turn', {}).username || '')}" autocomplete="off">
+          <input name="credential" placeholder="Mot de passe" aria-label="Mot de passe TURN" value="${esc(store.get('turn', {}).credential || '')}" autocomplete="off">
+          <button class="btn light">Enregistrer</button>
+        </form>
+      </details>`;
   }
   panel.innerHTML = `${guestMode ? '' : backButton}<h2>Appel dans l’œil</h2>${body}`;
   if ($('#self') && call.local) showStream($('#self'), call.local);
@@ -729,6 +743,75 @@ async function startCall(role, { callId = '', contact = null, wa = null } = {}) 
 // Pour utiliser son propre relais PeerServer : définir window.BOOZZO_PEER = { host, port, path, secure }.
 
 const RELAY_PREFIX = 'boozzo-';
+// Serveurs utilisés pour relier les deux appareils. Quand deux réseaux ne peuvent pas se joindre directement
+// (4G, certaines box), la vidéo doit passer par un serveur TURN. Ceux du relais public PeerJS sont un dépannage ;
+// un serveur TURN à soi peut être enregistré sur l'appareil BOOZZO (Appels > Réglages du relais vidéo).
+function relayIceServers() {
+  const own = store.get('turn', null);
+  return [
+    { urls: 'stun:stun.l.google.com:19302' },
+    {
+      urls: ['turn:eu-0.turn.peerjs.com:3478', 'turn:us-0.turn.peerjs.com:3478', 'turn:eu-0.turn.peerjs.com:3478?transport=tcp', 'turn:us-0.turn.peerjs.com:3478?transport=tcp'],
+      username: 'peerjs',
+      credential: 'peerjsp',
+    },
+    ...(own?.urls ? [{ urls: own.urls.split(',').map((u) => u.trim()).filter(Boolean), username: own.username || '', credential: own.credential || '' }] : []),
+  ];
+}
+// Diagnostic de l'appel en cours, affiché dans le panneau pour comprendre un blocage.
+const diag = { relay: false, peer: false, ice: '', kinds: new Set(), path: '' };
+function resetDiag() {
+  Object.assign(diag, { relay: false, peer: false, ice: '', path: '' });
+  diag.kinds.clear();
+}
+function diagText() {
+  const video = { '': 'pas encore commencée', new: 'en préparation', checking: 'recherche d’un chemin…', connected: 'établie', completed: 'établie', disconnected: 'interrompue', failed: 'impossible', closed: 'fermée' }[diag.ice] || diag.ice;
+  const path = { host: 'directe (même réseau)', srflx: 'directe (Internet)', prflx: 'directe (Internet)', relay: 'par le serveur de secours' }[diag.path];
+  return [
+    `Relais de mise en relation : ${diag.relay ? 'connecté' : 'non connecté'}`,
+    `${guestMode ? 'BOOZZO' : 'Votre proche'} : ${diag.peer ? 'présent' : 'pas encore là'}`,
+    `Liaison vidéo : ${video}${path ? ' · ' + path : ''}`,
+    `Serveur de secours : ${diag.kinds.has('relay') ? 'disponible' : 'non disponible'}`,
+  ];
+}
+let diagTimer = 0;
+function diagChanged() {
+  clearTimeout(diagTimer);
+  diagTimer = setTimeout(() => {
+    if (!call.peer) return;
+    if (diag.ice === 'failed' && !call.connected)
+      call.status = 'Les deux réseaux n’arrivent pas à se joindre. Nouvel essai…';
+    if (state.screen === 'call') renderCall();
+  }, 200);
+}
+// Suit l'état de la liaison vidéo d'une tentative d'appel.
+function watchLink(media) {
+  const pc = media.peerConnection;
+  if (!pc) return;
+  pc.addEventListener('icecandidate', (event) => {
+    const kind = event.candidate?.type || event.candidate?.candidate.match(/ typ (\w+)/)?.[1];
+    if (kind && !diag.kinds.has(kind)) (diag.kinds.add(kind), diagChanged());
+  });
+  pc.addEventListener('iceconnectionstatechange', async () => {
+    if (call.media !== media) return;
+    diag.ice = pc.iceConnectionState;
+    if (['connected', 'completed'].includes(diag.ice)) {
+      try {
+        const stats = await pc.getStats();
+        let pair = null;
+        stats.forEach((report) => {
+          if (report.type === 'transport' && report.selectedCandidatePairId) pair = stats.get(report.selectedCandidatePairId);
+        });
+        stats.forEach((report) => {
+          if (!pair && report.type === 'candidate-pair' && report.nominated && report.state === 'succeeded') pair = report;
+        });
+        const kinds = pair ? [stats.get(pair.localCandidateId)?.candidateType, stats.get(pair.remoteCandidateId)?.candidateType] : [];
+        diag.path = kinds.includes('relay') ? 'relay' : kinds.includes('srflx') || kinds.includes('prflx') ? 'srflx' : kinds[0] || '';
+      } catch {}
+    }
+    diagChanged();
+  });
+}
 function loadRelayLibrary() {
   return (loadRelayLibrary.loading ??= new Promise((resolve, reject) => {
     const script = Object.assign(document.createElement('script'), { src: 'peerjs.min.js', onload: resolve, onerror: reject });
@@ -741,7 +824,7 @@ async function startRelayCall(role, callId, run) {
   try {
     await loadRelayLibrary();
     if (run !== call.run) return;
-    peer = call.peer = new Peer(role === 'eye' ? id : undefined, window.BOOZZO_PEER || {});
+    peer = call.peer = new Peer(role === 'eye' ? id : undefined, { config: { iceServers: relayIceServers() }, ...(window.BOOZZO_PEER || {}) });
     await new Promise((resolve, reject) => {
       peer.once('open', resolve);
       peer.once('error', reject);
@@ -754,12 +837,14 @@ async function startRelayCall(role, callId, run) {
     return setCallStatus('Impossible d’ouvrir l’appel. Vérifiez la connexion Internet et réessayez.');
   }
   Object.assign(call, { id, role, busy: false, connected: false, muted: false, ring: '' });
+  resetDiag();
   // Une liaison qui tombe ne termine pas l'appel : seul un « bye » ou une absence prolongée le fait.
   // Chaque côté définit dans `dropped` comment il attend ou relance la liaison.
   let dropped = () => {};
   const attach = (media) => {
     call.media = media;
     media.on('stream', showRemote);
+    watchLink(media);
     media.on('close', () => {
       if (call.media !== media || peer !== call.peer) return;
       call.media = null;
@@ -772,6 +857,7 @@ async function startRelayCall(role, callId, run) {
   // Canal de messages : seul le « bye » du correspondant en appel compte (un second appareil peut ouvrir le lien).
   const listen = (conn) => {
     call.conns.push(conn);
+    conn.on('open', () => ((diag.peer = true), diagChanged()));
     conn.on('data', (data) => {
       if (data !== 'bye' || conn.peer !== call.remote) return;
       endCall(false);
@@ -780,7 +866,11 @@ async function startRelayCall(role, callId, run) {
   };
   // Le téléphone met la page en veille dès qu'on passe sur WhatsApp : le lien avec le relais tombe.
   // On le rétablit dès que la page revient, et aussitôt qu'il tombe tant que la page est active.
+  diag.relay = true;
+  peer.on('open', () => ((diag.relay = true), diagChanged()));
   peer.on('disconnected', () => {
+    diag.relay = false;
+    diagChanged();
     if (peer === call.peer && !peer.destroyed) setTimeout(() => peer === call.peer && !peer.destroyed && peer.disconnected && peer.reconnect(), 500);
   });
   if (role === 'eye') {
@@ -1236,6 +1326,11 @@ document.addEventListener('submit', (event) => {
     const text = form.text.value.trim();
     primeSpeech();
     if (text) ask(text);
+  }
+  if (form.id === 'turnForm') {
+    const turn = { urls: form.urls.value.trim(), username: form.username.value.trim(), credential: form.credential.value };
+    store.set('turn', turn.urls ? turn : null);
+    toast(turn.urls ? 'Relais vidéo enregistré.' : 'Relais vidéo retiré.');
   }
   if (form.id === 'contactForm') {
     const name = form.name.value.trim();
