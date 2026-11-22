@@ -59,6 +59,21 @@ main { max-width: 980px; margin: 0 auto; padding: 8px 16px 40px; display: grid; 
 .screen video, .screen img, .screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; background: #000; }
 .screen video.mirror { transform: scaleX(-1); }
 .say { position: absolute; inset: 0; display: grid; place-items: center; padding: 14cqw; background: radial-gradient(circle, #10283acc 35%, #0a1722f2); font-size: 6.2cqw; line-height: 1.3; font-weight: 600; overflow: hidden; }
+/* Horloge : chiffres rouges lumineux sur fond noir, comme un réveil. */
+.led { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #1a0605, #050202 70%); }
+.led svg { width: 70%; overflow: visible; filter: drop-shadow(0 0 1.6cqw #ff2a1a) drop-shadow(0 0 4cqw #ff2a1a99); }
+.led .on { fill: #ff3b2b; } .led .off { fill: #ff3b2b; opacity: .07; }
+.led .colon { animation: blink 2s steps(1) infinite; }
+@keyframes blink { 50% { opacity: .15; } }
+@media (prefers-reduced-motion: reduce) { .led .colon { animation: none; } }
+/* Météo : carte du temps qu'il fait. */
+.sky { position: absolute; inset: 0; display: grid; justify-items: center; align-content: center; gap: .6cqw; color: #fff; background: linear-gradient(#3f9be8, #8fd0ff); padding: 8cqw; }
+.sky-cloud, .sky-fog { background: linear-gradient(#6f8196, #a9b6c4); } .sky-rain, .sky-storm { background: linear-gradient(#3b4a63, #6f8196); }
+.sky-snow { background: linear-gradient(#7f97b8, #c6d6ea); }
+.sky small { font-size: 5.2cqw; font-weight: 700; letter-spacing: .04em; } .sky svg { width: 34cqw; }
+.sky strong { font-size: 17cqw; line-height: 1; } .sky span { font-size: 5.4cqw; font-weight: 600; } .sky em { font-style: normal; font-size: 4.4cqw; opacity: .9; }
+.day { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 10px; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 6px 12px; }
+.day i { display: grid; background: linear-gradient(#3f9be8, #8fd0ff); border-radius: 10px; } .day span::first-letter { text-transform: uppercase; }
 /* Histoire : ciel de nuit étoilé dans l'œil, texte plus grand. */
 .say.story { font-size: 6.6cqw; background:
   radial-gradient(circle at 20% 22%, #fff 0 .5cqw, transparent .7cqw), radial-gradient(circle at 78% 16%, #fff 0 .4cqw, transparent .6cqw),
@@ -86,6 +101,7 @@ main { max-width: 980px; margin: 0 auto; padding: 8px 16px 40px; display: grid; 
 .c-phone { background: linear-gradient(#7c8a9c, #46505f); }
 .c-esim { background: linear-gradient(#59c7c0, #1f8f8a); }
 .c-face { background: linear-gradient(#f08aa6, #c23c69); }
+.c-clock { background: linear-gradient(#4a4a52, #17171b); color: #ff4a3d; } .c-weather { background: linear-gradient(#7fd0ff, #2f8fe0); }
 .c-story { background: linear-gradient(#f8c765, #e08b1d); } .c-iris { background: linear-gradient(#69c3f2, #2a7fc2); }
 
 /* --- Le panneau de commandes --- */

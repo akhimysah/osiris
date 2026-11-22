@@ -35,6 +35,8 @@ const ICON = {
   phone: svg('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
   next: svg('<path d="M9 6l6 6-6 6"/>'),
   face: svg('<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 10v1M15 10v1M9 15c1.8 1.4 4.2 1.4 6 0"/>'),
+  clock: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'),
+  weather: svg('<circle cx="8" cy="8" r="3"/><path d="M8 2v1M2 8h1M3.8 3.8l.7.7M12.2 3.8l-.7.7"/><path d="M8.5 20h8a3.5 3.5 0 0 0 .6-6.9 5 5 0 0 0-9.5 1.3A2.8 2.8 0 0 0 8.5 20z"/>'),
   esim: svg('<path d="M7 3h7l4 4v14H7z"/><rect x="10" y="11" width="5" height="6" rx="1"/>'),
   mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
 };
@@ -43,11 +45,13 @@ const APPS = [
   ['youtube', 'YouTube', 'c-yt'],
   ['tiktok', 'TikTok', 'c-tiktok'],
   ['photo', 'Photo', 'c-photo'],
-  ['chat', 'Assistant', 'c-chat'],
   ['story', 'Histoires', 'c-story'],
+  ['chat', 'Assistant', 'c-chat'],
+  ['clock', 'Heure', 'c-clock'],
+  ['weather', 'Météo', 'c-weather'],
+  ['face', 'Visages', 'c-face'],
   ['phone', 'Téléphone', 'c-phone'],
   ['iris', 'Iris', 'c-iris'],
-  ['face', 'Visages', 'c-face'],
   ['esim', 'Forfait', 'c-esim'],
 ];
 // Applications officielles : BOOZZO ne les intègre pas, il les ouvre. Sur un appareil Android,
@@ -164,7 +168,7 @@ function go(name, options = {}) {
   stopSpeaking();
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, face: openFaces, phone: openPhone, esim: openEsim })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, face: openFaces, phone: openPhone, esim: openEsim })[name](options);
 }
 
 function openHome() {
@@ -212,6 +216,148 @@ function openPhone() {
     <p><strong>iPhone</strong><br>Ouvrez le Centre de contrôle, touchez « Recopie de l’écran », puis choisissez « BOOZZO ». Pour arrêter, touchez « Arrêter la recopie ».</p>
     <p><strong>Android</strong><br>Reliez le téléphone à la peluche par câble USB, ou en Wi-Fi après l’avoir autorisé une première fois (voir le guide d’installation).</p>
     <p class="muted">La recopie fonctionne uniquement sur la peluche, une fois sa carte installée avec le kit du dossier « peluche ». Le téléphone et la peluche doivent être sur le même Wi-Fi.</p>`;
+}
+
+// ---------- Heure : horloge à chiffres rouges dans l'œil ----------
+
+// Segments allumés pour chaque chiffre, dans l'ordre a b c d e f g.
+const SEGMENTS = ['1111110', '0110000', '1101101', '1111001', '0110011', '1011011', '1011111', '1110000', '1111111', '1111011'];
+const SEGMENT_SHAPES = [
+  'x="2" y=".6" width="6" height="1.7"', // a : haut
+  'x="7.7" y="1.9" width="1.7" height="6.3"', // b : haut droit
+  'x="7.7" y="9.8" width="1.7" height="6.3"', // c : bas droit
+  'x="2" y="15.7" width="6" height="1.7"', // d : bas
+  'x=".6" y="9.8" width="1.7" height="6.3"', // e : bas gauche
+  'x=".6" y="1.9" width="1.7" height="6.3"', // f : haut gauche
+  'x="2" y="8.15" width="6" height="1.7"', // g : milieu
+];
+const ledDigit = (digit, x) =>
+  `<g transform="translate(${x} 0)">${SEGMENT_SHAPES.map((shape, i) => `<rect ${shape} rx=".7" class="${SEGMENTS[digit][i] === '1' ? 'on' : 'off'}"/>`).join('')}</g>`;
+function ledClock(date = new Date()) {
+  const [h1, h2] = String(date.getHours()).padStart(2, '0');
+  const [m1, m2] = String(date.getMinutes()).padStart(2, '0');
+  return `<div class="led" role="img" aria-label="Il est ${date.getHours()} heures ${date.getMinutes()}"><svg viewBox="0 0 49 18">
+    ${ledDigit(h1, 0)}${ledDigit(h2, 11.5)}<g class="colon"><rect x="23.6" y="5" width="1.8" height="1.8" rx=".5" class="on"/><rect x="23.6" y="11.2" width="1.8" height="1.8" rx=".5" class="on"/></g>${ledDigit(m1, 27.5)}${ledDigit(m2, 39)}</svg></div>`;
+}
+let clockTimer = 0;
+function openClock() {
+  const show = () => {
+    if (state.screen !== 'clock') return clearInterval(clockTimer);
+    screen.innerHTML = ledClock();
+  };
+  clearInterval(clockTimer);
+  clockTimer = setInterval(show, 5000);
+  show();
+  focusEye();
+  const now = new Date();
+  panel.innerHTML = `${backButton}<h2>Heure</h2>
+    <p>Il est ${now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}, ${now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.</p>
+    <p class="muted">L’heure s’affiche dans l’œil en grands chiffres rouges. Dites « BOOZZO, quelle heure est-il ? » pour l’afficher.</p>`;
+}
+
+// ---------- Météo : le temps qu'il fait là où habite la personne ----------
+// Données : Open-Meteo (service ouvert, sans clé ; gratuit pour un usage non commercial).
+
+const WEATHER = [
+  [[0], 'Ciel dégagé', 'sun'],
+  [[1, 2], 'Éclaircies', 'partly'],
+  [[3], 'Couvert', 'cloud'],
+  [[45, 48], 'Brouillard', 'fog'],
+  [[51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82], 'Pluie', 'rain'],
+  [[71, 73, 75, 77, 85, 86], 'Neige', 'snow'],
+  [[95, 96, 99], 'Orage', 'storm'],
+];
+const weatherKind = (code) => WEATHER.find(([codes]) => codes.includes(code)) || [[], 'Temps variable', 'cloud'];
+const SKY = {
+  sun: '<circle cx="50" cy="42" r="17" fill="#ffd34d"/><g stroke="#ffd34d" stroke-width="4" stroke-linecap="round"><path d="M50 12v8M50 64v8M20 42h8M72 42h8M29 21l6 6M65 57l6 6M71 21l-6 6M35 57l-6 6"/></g>',
+  partly: '<circle cx="38" cy="32" r="13" fill="#ffd34d"/><path d="M36 66h30a12 12 0 0 0 2-23.8A17 17 0 0 0 35 46a10 10 0 0 0 1 20z" fill="#f4f7fb"/>',
+  cloud: '<path d="M30 64h38a14 14 0 0 0 2.3-27.8A20 20 0 0 0 31 41a11.5 11.5 0 0 0-1 23z" fill="#e8edf3"/>',
+  fog: '<path d="M30 52h38a14 14 0 0 0 2.3-27.8A20 20 0 0 0 31 29a11.5 11.5 0 0 0-1 23z" fill="#dfe5ec"/><g stroke="#dfe5ec" stroke-width="4" stroke-linecap="round"><path d="M26 62h48M32 71h36"/></g>',
+  rain: '<path d="M30 54h38a14 14 0 0 0 2.3-27.8A20 20 0 0 0 31 31a11.5 11.5 0 0 0-1 23z" fill="#dfe5ec"/><g stroke="#6cc3ff" stroke-width="4" stroke-linecap="round"><path d="M38 62l-3 9M51 62l-3 9M64 62l-3 9"/></g>',
+  snow: '<path d="M30 54h38a14 14 0 0 0 2.3-27.8A20 20 0 0 0 31 31a11.5 11.5 0 0 0-1 23z" fill="#eef2f7"/><g fill="#fff"><circle cx="37" cy="66" r="3"/><circle cx="50" cy="70" r="3"/><circle cx="63" cy="66" r="3"/></g>',
+  storm: '<path d="M30 52h38a14 14 0 0 0 2.3-27.8A20 20 0 0 0 31 29a11.5 11.5 0 0 0-1 23z" fill="#c9d1db"/><path d="M53 54l-9 13h8l-4 11 12-15h-8z" fill="#ffd34d"/>',
+};
+const skyIcon = (kind) => `<svg viewBox="0 0 100 84" aria-hidden="true">${SKY[kind]}</svg>`;
+const weather = { place: store.get('place', null), data: null, message: '' };
+async function loadWeather() {
+  if (!weather.place) return;
+  weather.message = 'Je regarde le ciel…';
+  renderWeather();
+  try {
+    const { latitude, longitude } = weather.place;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=4`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('weather');
+    weather.data = await response.json();
+    weather.message = '';
+  } catch {
+    weather.data = null;
+    weather.message = 'La météo n’est pas disponible pour l’instant.';
+  }
+  if (state.screen === 'weather') renderWeather();
+}
+async function setPlace(name) {
+  weather.message = 'Je cherche cette ville…';
+  renderWeather();
+  try {
+    const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=fr`);
+    const found = (await response.json()).results?.[0];
+    if (!found) throw new Error('place');
+    weather.place = { name: found.name, region: found.admin1 || found.country || '', latitude: found.latitude, longitude: found.longitude };
+    store.set('place', weather.place);
+    return loadWeather();
+  } catch {
+    weather.message = 'Je n’ai pas trouvé cette ville. Vérifiez son nom.';
+    renderWeather();
+  }
+}
+function useMyPosition() {
+  if (!navigator.geolocation) return toast('La position n’est pas disponible sur cet appareil.');
+  weather.message = 'Je cherche où vous êtes…';
+  renderWeather();
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => {
+      weather.place = { name: 'Ma position', region: '', latitude: Math.round(coords.latitude * 100) / 100, longitude: Math.round(coords.longitude * 100) / 100 };
+      store.set('place', weather.place);
+      loadWeather();
+    },
+    () => {
+      weather.message = 'Position refusée. Écrivez plutôt le nom de votre ville.';
+      renderWeather();
+    },
+    { timeout: 10000 },
+  );
+}
+function renderWeather() {
+  if (state.screen !== 'weather') return;
+  const { place, data } = weather;
+  const now = data?.current;
+  const [, label, kind] = weatherKind(now?.weather_code);
+  // Dans l'œil : la carte météo du lieu.
+  screen.innerHTML = now
+    ? `<div class="sky sky-${kind}"><small>${esc(place.name)}</small>${skyIcon(kind)}<strong>${Math.round(now.temperature_2m)}°</strong><span>${label}</span><em>${Math.round(data.daily.temperature_2m_min[0])}° / ${Math.round(data.daily.temperature_2m_max[0])}°</em></div>`
+    : `<div class="say"><span><small>Météo</small>${esc(weather.message || 'Où habitez-vous ?')}</span></div>`;
+  const days = data
+    ? data.daily.time
+        .slice(1)
+        .map((day, i) => {
+          const [, dayLabel, dayKind] = weatherKind(data.daily.weather_code[i + 1]);
+          const name = new Date(day + 'T12:00').toLocaleDateString('fr-FR', { weekday: 'long' });
+          return `<li class="day"><i>${skyIcon(dayKind)}</i><span><strong>${name}</strong> · ${dayLabel}</span><b>${Math.round(data.daily.temperature_2m_min[i + 1])}° / ${Math.round(data.daily.temperature_2m_max[i + 1])}°</b></li>`;
+        })
+        .join('')
+    : '';
+  panel.innerHTML = `${backButton}<h2>Météo</h2>
+    ${now ? `<p><strong>${esc(place.name)}</strong>${place.region ? ', ' + esc(place.region) : ''} : ${label.toLowerCase()}, ${Math.round(now.temperature_2m)}° maintenant.</p>` : `<p>${esc(weather.message || 'Indiquez la ville où vous habitez : BOOZZO affiche le temps qu’il y fait dans son œil.')}</p>`}
+    ${days ? `<ul class="favs">${days}</ul>` : ''}
+    <form class="line" id="placeForm"><input name="city" maxlength="60" required placeholder="Votre ville (ex. Lyon)" aria-label="Votre ville" value="${place && place.name !== 'Ma position' ? esc(place.name) : ''}" autocomplete="off"><button class="btn">Valider</button></form>
+    <div class="row"><button class="btn light" id="locate" type="button">Utiliser ma position</button></div>
+    <p class="muted">La ville est gardée sur cet appareil. Données météo : Open-Meteo.</p>`;
+}
+function openWeather() {
+  focusEye();
+  renderWeather();
+  if (weather.place) loadWeather();
 }
 
 // ---------- Visages : reconnaître les personnes enregistrées ----------
@@ -763,6 +909,8 @@ function command(spoken) {
   if (/(?<![mts]['’])\b(appelle|appeler|appelez)\b|\btelephone a\b/.test(text)) return go('call', { spoken }), true;
   if (/\b(photo|cam[ée]ra)\b/.test(text) && (order || /\bprend/.test(text))) return go('photo'), true;
   if (/\b(raconte|lis|dis)\b.*\b(histoire|conte)\b/.test(text)) return go('story', { play: true }), true;
+  if (/quelle heure|\bl.heure\b|\bhorloge\b/.test(text)) return go('clock'), true;
+  if (/\b(meteo|quel temps|temps qu.il fait|il fait beau|pleut)\b/.test(text)) return go('weather'), true;
   if (order && /\bassistant\b/.test(text)) return go('chat'), true;
   if (order && /\b(forfait|abonnement|esim)\b/.test(text)) return go('esim'), true;
   if (/\b(reconnais|qui suis.je|visages?)\b/.test(text)) return go('face'), true;
@@ -1601,6 +1749,8 @@ document.addEventListener('click', (event) => {
       return state.screen === 'story' ? (renderStories(), sayInEye('Choisis une histoire.', 'Histoire')) : undefined;
     case 'newStory':
       return ask('Raconte-moi une courte histoire douce.');
+    case 'locate':
+      return useMyPosition();
     case 'deviceTest':
       return testDevices();
     case 'deviceStop':
@@ -1635,6 +1785,10 @@ document.addEventListener('submit', (event) => {
     const turn = { urls: form.urls.value.trim(), username: form.username.value.trim(), credential: form.credential.value };
     store.set('turn', turn.urls ? turn : null);
     toast(turn.urls ? 'Relais vidéo enregistré.' : 'Relais vidéo retiré.');
+  }
+  if (form.id === 'placeForm') {
+    const city = form.city.value.trim();
+    if (city) setPlace(city);
   }
   if (form.id === 'searchForm') {
     const q = form.q.value.trim();
