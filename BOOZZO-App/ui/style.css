@@ -59,6 +59,13 @@ main { max-width: 980px; margin: 0 auto; padding: 8px 16px 40px; display: grid; 
 .screen video, .screen img, .screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; background: #000; }
 .screen video.mirror { transform: scaleX(-1); }
 .say { position: absolute; inset: 0; display: grid; place-items: center; padding: 14cqw; background: radial-gradient(circle, #10283acc 35%, #0a1722f2); font-size: 6.2cqw; line-height: 1.3; font-weight: 600; overflow: hidden; }
+/* Histoire : ciel de nuit étoilé dans l'œil, texte plus grand. */
+.say.story { font-size: 6.6cqw; background:
+  radial-gradient(circle at 20% 22%, #fff 0 .5cqw, transparent .7cqw), radial-gradient(circle at 78% 16%, #fff 0 .4cqw, transparent .6cqw),
+  radial-gradient(circle at 64% 80%, #fff 0 .45cqw, transparent .65cqw), radial-gradient(circle at 30% 76%, #ffe9a8 0 .5cqw, transparent .7cqw),
+  radial-gradient(circle at 86% 52%, #fff 0 .35cqw, transparent .55cqw), radial-gradient(circle at 12% 54%, #fff 0 .35cqw, transparent .55cqw),
+  radial-gradient(circle at 74% 26%, #fff6c9 0 5cqw, transparent 5.4cqw), radial-gradient(circle at 50% 110%, #2b3f7a, #0b1230 70%); }
+.say.story.long { font-size: 5.2cqw; }
 .say.long { font-size: 4.7cqw; }
 .say small { display: block; font-size: 4.2cqw; font-weight: 500; opacity: .8; margin-bottom: 2cqw; letter-spacing: .08em; text-transform: uppercase; }
 .badge { position: absolute; left: 50%; bottom: 7cqw; transform: translateX(-50%); background: #000a; padding: 1.2cqw 3.5cqw; border-radius: 99px; font-size: 3.8cqw; white-space: nowrap; }
