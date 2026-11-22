@@ -1,0 +1,225 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Socle BOOZZO P0</title>
+<style>
+/* Mise en page : planche technique sur papier clair, vues cotées à gauche, tableaux à droite. Thème unique, voulu. */
+:root {
+  --paper: #fbfaf6; --ink: #1d2320; --muted: #5f6964; --line: #c9cfc8; --part: #dfe6e1; --part-dark: #a9b6ae;
+  --accent: #1f5a3c; --dim: #b4441f; --soft: #f1ede2;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--sans); }
+.sheet { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: end; border-bottom: 2px solid var(--ink); padding-bottom: 12px; }
+.brand { font-weight: 800; font-size: 1.7rem; letter-spacing: .05em; color: var(--accent); }
+h1 { font-size: 1.35rem; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+.meta { font: 12px/1.5 var(--mono); color: var(--muted); margin-left: auto; text-align: right; }
+.sub { color: var(--muted); font-size: .9rem; margin: 2px 0 0; }
+h2 { font: 700 .78rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+section { border-bottom: 1px solid var(--line); padding: 20px 0; }
+.notice { background: var(--soft); border-left: 4px solid var(--dim); padding: 10px 14px; margin: 16px 0 0; font-size: .92rem; }
+.views { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+figure { margin: 0; min-width: 0; }
+figure svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--line); }
+figcaption { font: 600 .74rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; margin-top: 6px; color: var(--muted); }
+svg text { font: 9px var(--mono); fill: var(--ink); }
+svg .d { stroke: var(--dim); stroke-width: .8; fill: none; } svg .dt { fill: var(--dim); }
+svg .p { fill: var(--part); stroke: var(--ink); stroke-width: 1.1; } svg .p2 { fill: var(--part-dark); stroke: var(--ink); stroke-width: 1; }
+svg .h { fill: none; stroke: var(--muted); stroke-width: .8; stroke-dasharray: 4 3; } svg .c { stroke: var(--muted); stroke-width: .6; stroke-dasharray: 8 3 2 3; fill: none; }
+svg .scr { fill: #10151a; stroke: var(--ink); stroke-width: 1; } svg .soft { fill: #efe3c9; stroke: var(--ink); stroke-width: .9; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+.cols > div { min-width: 0; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; color: var(--muted); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
+td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+ol, ul { margin: 0; padding-left: 20px; } li { margin-bottom: 5px; }
+.tag { font: 11px var(--mono); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; color: var(--muted); white-space: nowrap; }
+footer { padding-top: 14px; font-size: .82rem; color: var(--muted); }
+</style>
+
+<div class="sheet">
+<header>
+  <div><div class="brand">BOOZZO</div></div>
+  <div>
+    <h1>Socle intérieur de la peluche</h1>
+    <p class="sub">Modèle Exploratrice · support de l’œil, de la carte et du son</p>
+  </div>
+  <div class="meta">RÉF. BZ-EX-S01<br>ÉCHANTILLON P0 · 22.11.2026<br>Cotes en mm</div>
+</header>
+
+<p class="notice"><strong>Proposition à valider.</strong> Cette fiche est un concept de départ dessiné autour du matériel commandé. Les cotes du socle sont des cibles : elles n’ont été ni maquettées ni calculées par un bureau d’études, et l’échauffement comme la sécurité jouet restent à vérifier sur un échantillon.</p>
+
+<section>
+  <h2>Vues du socle</h2>
+  <div class="views">
+    <figure>
+      <svg viewBox="0 0 340 392" role="img" aria-label="Vue de face du socle : bague de 126 millimètres portant l’écran rond, montant central et semelle de 160 millimètres">
+        <line class="c" x1="170" y1="28" x2="170" y2="360"/><line class="c" x1="60" y1="147" x2="300" y2="147"/>
+        <!-- semelle -->
+        <rect class="p" x="58" y="294" width="224" height="56" rx="12"/>
+        <!-- montant -->
+        <rect class="p" x="146" y="228" width="48" height="70"/>
+        <!-- bague + écran -->
+        <circle class="p" cx="170" cy="147" r="88.2"/>
+        <circle class="h" cx="170" cy="147" r="80.5"/>
+        <circle class="scr" cx="170" cy="147" r="61.3"/>
+        <!-- module caméra -->
+        <rect class="p2" x="156" y="42" width="28" height="20" rx="4"/><circle cx="170" cy="52" r="5" fill="#10151a"/>
+        <!-- haut-parleurs -->
+        <rect class="h" x="70" y="304" width="38" height="36" rx="3"/><rect class="h" x="232" y="304" width="38" height="36" rx="3"/>
+        <!-- cotes -->
+        <path class="d" d="M81.8 22v14M258.2 22v14M81.8 28h176.4"/><text class="dt" x="170" y="20" text-anchor="middle">Ø 126 · bague</text>
+        <path class="d" d="M108.7 147h122.6"/><text x="170" y="141" text-anchor="middle" fill="#fff" style="fill:#fff">Ø 87,6 visible</text>
+        <path class="d" d="M58 366v10M282 366v10M58 372h224"/><text class="dt" x="170" y="386" text-anchor="middle">160 · semelle</text>
+        <path class="d" d="M300 147h22M300 350h22M316 147v203"/><text class="dt" x="320" y="252" transform="rotate(-90 320 252)" text-anchor="middle">145 · centre de l’œil</text>
+        <path class="d" d="M30 294h22M30 350h22M36 294v56"/><text class="dt" x="32" y="322" transform="rotate(-90 32 322)" text-anchor="middle">40</text>
+        <text x="170" y="74" text-anchor="middle">caméra</text><text x="89" y="358" text-anchor="middle">HP</text><text x="251" y="358" text-anchor="middle">HP</text>
+      </svg>
+      <figcaption>Face</figcaption>
+    </figure>
+
+    <figure>
+      <svg viewBox="0 0 340 392" role="img" aria-label="Vue de profil du socle : la bague porte l’écran à l’avant, le montant en S descend vers l’arrière de la semelle">
+        <!-- semelle -->
+        <rect class="p" x="70" y="294" width="154" height="56" rx="12"/>
+        <!-- montant en S -->
+        <path class="p" d="M112 205 C112 250 150 250 150 296 L190 296 C190 240 143 240 143 190 L143 100 L112 100 Z"/>
+        <path class="h" d="M127 110 L127 196 C127 245 170 245 170 294"/>
+        <!-- bague (profil) -->
+        <rect class="p" x="100" y="58.8" width="31" height="176.4" rx="5"/>
+        <rect class="scr" x="103" y="66.5" width="24" height="161" rx="2"/>
+        <rect class="soft" x="96" y="58.8" width="5" height="176.4" rx="2.5"/>
+        <!-- caméra -->
+        <rect class="p2" x="100" y="40" width="20" height="20" rx="4"/><rect x="96" y="46" width="5" height="8" fill="#10151a"/>
+        <!-- carte dans la semelle -->
+        <rect class="h" x="100" y="308" width="100" height="30" rx="2"/>
+        <!-- sortie câble -->
+        <path class="d" d="M224 326h34m-8-5l8 5-8 5"/><text x="262" y="323">USB-C</text><text x="262" y="334">27 W</text>
+        <!-- cotes -->
+        <path class="d" d="M70 366v10M224 366v10M70 372h154"/><text class="dt" x="147" y="386" text-anchor="middle">110 · profondeur</text>
+        <path class="d" d="M100 24v12M131 24v12M100 30h31"/><text class="dt" x="116" y="20" text-anchor="middle">22</text>
+        <path class="d" d="M286 40h22M286 350h22M302 40v310"/><text class="dt" x="306" y="196" transform="rotate(-90 306 196)" text-anchor="middle">222 · hauteur totale</text>
+        <text x="60" y="150" text-anchor="end">avant</text><text x="60" y="62" text-anchor="end">lèvre</text><path class="d" d="M62 59h32"/>
+        <text x="198" y="200">montant</text><text x="198" y="211">creux</text><text x="150" y="328" text-anchor="middle">Raspberry Pi 5</text>
+      </svg>
+      <figcaption>Profil</figcaption>
+    </figure>
+
+    <figure>
+      <svg viewBox="0 0 340 392" role="img" aria-label="Semelle vue de dessus : la carte au centre arrière, un haut-parleur de chaque côté, le pied du montant et le micro à l’avant">
+        <rect class="p" x="42" y="120" width="256" height="176" rx="30"/>
+        <!-- Pi 5 : 85 x 56 -->
+        <rect class="p2" x="102" y="190" width="136" height="90" rx="4"/><text x="170" y="232" text-anchor="middle">Raspberry Pi 5</text><text x="170" y="244" text-anchor="middle">85 × 56</text>
+        <!-- haut-parleurs 70 x 31 -->
+        <rect class="p2" x="48" y="152" width="50" height="112" rx="4"/><text x="73" y="212" text-anchor="middle">HP</text>
+        <rect class="p2" x="242" y="152" width="50" height="112" rx="4"/><text x="267" y="212" text-anchor="middle">HP</text>
+        <!-- pied du montant 34 x 20 -->
+        <rect class="p" x="143" y="130" width="54" height="32"/><text x="170" y="150" text-anchor="middle">montant</text>
+        <!-- ampli, micro -->
+        <rect class="h" x="104" y="166" width="30" height="20"/><text x="119" y="180" text-anchor="middle">ampli</text>
+        <circle class="h" cx="218" cy="176" r="8"/><text x="232" y="180">micro</text>
+        <!-- ouïes -->
+        <path class="h" d="M120 288h100M130 292h80"/>
+        <!-- cotes -->
+        <path class="d" d="M42 314v10M298 314v10M42 320h256"/><text class="dt" x="170" y="336" text-anchor="middle">160</text>
+        <path class="d" d="M312 120h14M312 296h14M320 120v176"/><text class="dt" x="330" y="208" transform="rotate(-90 330 208)" text-anchor="middle">110</text>
+        <text x="170" y="110" text-anchor="middle">avant de la peluche</text><text x="170" y="358" text-anchor="middle">arrière : ouïes d’aération et sortie du câble</text>
+      </svg>
+      <figcaption>Semelle, vue de dessus</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="cols">
+  <div>
+    <h2>Cotes cibles du socle</h2>
+    <div class="scroll"><table>
+      <tr><th>Élément</th><th>Cote</th><th>Raison</th></tr>
+      <tr><td>Bague, diamètre extérieur</td><td class="n">Ø 126</td><td>Module d’écran de 115 + jeu + paroi de 5</td></tr>
+      <tr><td>Logement de l’écran</td><td class="n">Ø 116 × 18</td><td>Module Waveshare de 115 × 115 × 17</td></tr>
+      <tr><td>Ouverture visible</td><td class="n">Ø 87,6</td><td>Zone d’affichage de l’écran</td></tr>
+      <tr><td>Lèvre souple, saillie</td><td class="n">2</td><td>Protège le verre et le visage de l’enfant</td></tr>
+      <tr><td>Centre de l’œil / assise</td><td class="n">145</td><td>Hauteur assise visée d’environ 240</td></tr>
+      <tr><td>Montant, section</td><td class="n">34 × 20</td><td>Passage du câble vidéo, de l’USB et de la nappe caméra</td></tr>
+      <tr><td>Semelle</td><td class="n">160 × 110 × 40</td><td>Carte, deux haut-parleurs, ampli, sous le bassin</td></tr>
+      <tr><td>Hauteur totale</td><td class="n">222</td><td>Semelle + œil + module caméra</td></tr>
+    </table></div>
+  </div>
+  <div>
+    <h2>Composants logés</h2>
+    <div class="scroll"><table>
+      <tr><th>Composant</th><th>Encombrement</th><th>Emplacement</th></tr>
+      <tr><td>Écran rond Waveshare 3,4″, 800 × 800, tactile</td><td class="n">115 × 115 × 17</td><td>Bague, clipsé par l’arrière</td></tr>
+      <tr><td>Raspberry Pi 5, 4 Go, avec ventilateur</td><td class="n">85 × 56 × ~30</td><td>Semelle, centre arrière</td></tr>
+      <tr><td>Caméra IMX708 grand angle</td><td class="n">~25 × 24 × 12 <span class="tag">à mesurer</span></td><td>Au-dessus de la bague, sous le bord du chapeau</td></tr>
+      <tr><td>Haut-parleurs 3 W, 4 Ω (× 2)</td><td class="n">70 × 31</td><td>Semelle, un de chaque côté</td></tr>
+      <tr><td>Amplificateur audio</td><td class="n">~20 × 20 <span class="tag">à commander</span></td><td>Semelle, à l’avant</td></tr>
+      <tr><td>Micro</td><td class="n"><span class="tag">à commander</span></td><td>Avant de la semelle, sous le foulard</td></tr>
+      <tr><td>Alimentation USB-C 27 W</td><td class="n">câble</td><td>Sortie à l’arrière, avec serre-câble</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section class="cols">
+  <div>
+    <h2>Matières à qualifier</h2>
+    <div class="scroll"><table>
+      <tr><th>Pièce</th><th>Matière</th></tr>
+      <tr><td>Bague, montant, semelle</td><td>Polycarbonate ignifugé (classe V-0 visée)</td></tr>
+      <tr><td>Lèvre de l’œil</td><td>Silicone souple</td></tr>
+      <tr><td>Assise sous la semelle</td><td>Mousse de silicone, 10 mm</td></tr>
+      <tr><td>Garnissage autour du socle</td><td>Ouate polyester à retard de flamme</td></tr>
+    </table></div>
+    <p class="sub">Pour un premier échantillon, les trois pièces rigides peuvent être imprimées en 3D (PETG), sans valeur pour les essais de feu.</p>
+  </div>
+  <div>
+    <h2>Points de conception</h2>
+    <ul>
+      <li><strong>Chaleur.</strong> Le Raspberry Pi 5 chauffe : il reste dans la semelle fermée, avec son ventilateur, des ouïes dessous et à l’arrière, et aucune ouate contre lui.</li>
+      <li><strong>Câbles.</strong> Vidéo, tactile et nappe caméra descendent dans le montant creux ; les adaptateurs coudés livrés avec l’écran évitent les prises qui dépassent.</li>
+      <li><strong>Stabilité.</strong> La carte et les haut-parleurs sont en bas : le poids reste dans la semelle, l’œil ne fait pas basculer la peluche.</li>
+      <li><strong>Démontage.</strong> L’écran se retire par le dos de la tête ; la semelle s’ouvre par dessous, sans outil spécial accessible à un enfant.</li>
+      <li><strong>Vie privée.</strong> Prévoir un cache coulissant devant la caméra.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="cols">
+  <div>
+    <h2>Montage</h2>
+    <ol>
+      <li>Clipser l’écran dans la bague par l’arrière, lèvre souple vers l’avant.</li>
+      <li>Fixer le module caméra au-dessus de la bague et passer sa nappe dans le montant.</li>
+      <li>Passer les câbles vidéo et tactile dans le montant, puis visser le montant sur la semelle.</li>
+      <li>Poser la carte, l’ampli et les haut-parleurs dans la semelle ; brancher ; fermer.</li>
+      <li>Introduire l’ensemble par le dos ouvert de la peluche, bague dans la tête, semelle sous le bassin.</li>
+      <li>Garnir autour du montant, en laissant libres les ouïes, le micro et les haut-parleurs.</li>
+    </ol>
+  </div>
+  <div>
+    <h2>Essais demandés sur l’échantillon</h2>
+    <ul>
+      <li>Température des surfaces et de la carte après une heure d’appel vidéo, peluche garnie.</li>
+      <li>Basculement au toucher de l’œil ; chutes ; arrachement de l’écran et du câble.</li>
+      <li>Champ de la caméra (visage d’un enfant assis en face) et prise de son du micro.</li>
+      <li>Son des haut-parleurs à travers le tissu.</li>
+      <li>Inflammabilité et petites pièces sur le jouet assemblé (EN 71), sécurité électrique des jouets (EN IEC 62115).</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>À confirmer avant de lancer une pièce</h2>
+  <ul>
+    <li>Cotes réelles de l’écran, de la caméra et des haut-parleurs, mesurées sur les pièces reçues (les valeurs viennent des fiches des vendeurs).</li>
+    <li>Présence d’une sortie haut-parleur sur l’écran ; sinon choix de l’amplificateur.</li>
+    <li>Hauteur assise réelle de la peluche Exploratrice et diamètre de l’ouverture de l’œil dans le tissu.</li>
+    <li>Alimentation : sur secteur pour P0 ; une batterie demandera un logement et des essais propres.</li>
+  </ul>
+</section>
+
+<footer>BOOZZO · Socle intérieur BZ-EX-S01 · échantillon P0 · vues indicatives, validation sur échantillon. Dimensions de l’écran : fiche Waveshare « 3.4inch 800x800 LCD ».</footer>
+</div>
