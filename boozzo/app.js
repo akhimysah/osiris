@@ -436,17 +436,63 @@ async function speak(text, label = 'BOOZZO') {
 
 function openChat() {
   renderChat();
-  sayInEye(state.assistant ? 'Je t’écoute.' : 'L’assistant n’est pas encore branché.', 'Assistant');
+  sayInEye('Je t’écoute.', 'Assistant');
 }
 function renderChat() {
   panel.innerHTML = `${backButton}<h2>Assistant</h2>
-    ${state.assistant ? '' : '<p class="error">L’assistant n’est pas encore branché sur ce serveur : il manque la clé d’API (voir README).</p>'}
+    ${state.assistant ? '' : '<p class="notice"><strong>Mode démonstration.</strong> BOOZZO répond ici avec quelques réponses et histoires intégrées. La conversation libre, sur n’importe quel sujet, s’active quand l’assistant est branché (voir README).</p>'}
     <div class="talk" id="talk">${state.talk.map((m) => `<div class="${m.role}">${esc(m.content)}</div>`).join('')}</div>
     <div class="row"><button class="btn" data-listen type="button">${ICON.mic}Parler</button><button class="btn light" id="quiet" type="button">Silence</button></div>
     <form class="line" id="chatForm"><input name="text" maxlength="500" required placeholder="Ou écrivez ici…" aria-label="Message pour BOOZZO" autocomplete="off"><button class="btn">Envoyer</button></form>`;
   const talk = $('#talk');
   talk.scrollTop = talk.scrollHeight;
 }
+// ---------- Réponses intégrées : BOOZZO sans assistant branché ----------
+// Quelques réponses et histoires embarquées, pour que la peluche parle même sans serveur ni clé.
+// Ce n'est pas une intelligence artificielle : ce qui n'est pas prévu ici reçoit une réponse d'attente.
+
+const STORIES = [
+  'Il était une fois une petite peluche qui s’appelait BOOZZO. Elle avait un grand œil tout rond, qui brillait comme la lune. Chaque soir, quand la maison devenait silencieuse, son œil s’allumait doucement. Dedans, on voyait des étoiles, des nuages et parfois un petit bateau. Un soir, le bateau emmena BOOZZO jusqu’à une île où les arbres chantaient des berceuses. BOOZZO écouta, ferma son grand œil, et rapporta la plus douce des chansons. Depuis, quand un enfant a du mal à s’endormir, BOOZZO la fredonne tout bas. Bonne nuit.',
+  'Un matin, BOOZZO mit son chapeau d’explorateur et son sac à dos. Aujourd’hui, dit-il, je pars découvrir le jardin. Il rencontra une fourmi très pressée, qui portait une miette plus grosse qu’elle. Puis un escargot, qui prenait tout son temps et saluait chaque fleur. BOOZZO apprit de la fourmi qu’on peut porter de grandes choses à plusieurs. Il apprit de l’escargot qu’on voit plus de merveilles quand on va doucement. Le soir, il rangea ces deux secrets dans son sac. Et il les garde pour toi.',
+  'Tout en haut de la colline vivait un nuage qui avait peur de pleuvoir. Il croyait que ses gouttes feraient de la peine aux fleurs. BOOZZO leva son grand œil vers lui et lui dit : regarde en bas. Le nuage regarda, et vit des fleurs qui ouvraient leurs pétales en l’attendant. Alors il laissa tomber une petite pluie, toute fine, toute tiède. Les fleurs dansèrent, la terre sentit bon, et un arc-en-ciel apparut. Le nuage comprit que ce qu’il avait à donner était un cadeau. Et il n’eut plus jamais peur.',
+];
+const JOKES = [
+  'Que dit une peluche qui a bien mangé ? Je suis rembourrée !',
+  'Pourquoi BOOZZO ne perd jamais rien ? Parce qu’il garde toujours l’œil dessus.',
+  'Quel est le comble pour un œil ? De ne pas se sentir regardé.',
+];
+let storyIndex = 0;
+let jokeIndex = 0;
+async function builtInReply(spoken) {
+  const text = plain(spoken);
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  const now = new Date();
+  const reply = /\b(histoire|conte|raconte)\b/.test(text)
+    ? STORIES[storyIndex++ % STORIES.length]
+    : /\b(blague|rigol|rire|drole)\b/.test(text)
+      ? JOKES[jokeIndex++ % JOKES.length]
+      : /quelle heure|l.heure\b/.test(text)
+        ? `Il est ${now.toLocaleTimeString('fr-FR', { hour: 'numeric', minute: '2-digit' }).replace(':', ' heures ')}.`
+        : /quel jour|la date|on est quel/.test(text)
+          ? `Nous sommes le ${now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.`
+          : /qui es.tu|tu es qui|comment tu t.appelles|ton nom|c.est quoi boozzo/.test(text)
+            ? 'Je suis BOOZZO, ta peluche compagnon. Mon grand œil est un écran : j’y montre tes proches, tes vidéos et tes photos, et je peux te parler.'
+            : /que sais.tu|tu sais faire|peux.tu faire|tu fais quoi|a quoi tu sers/.test(text)
+              ? 'Je peux appeler tes proches en vidéo, montrer des vidéos, prendre des photos, changer la couleur de mon œil et raconter des histoires. Dis par exemple : BOOZZO, raconte une histoire.'
+              : /\b(bonjour|salut|coucou|bonsoir|hello)\b/.test(text)
+                ? 'Bonjour ! Je suis content de te voir. Tu veux une histoire, une blague, ou appeler quelqu’un ?'
+                : /ca va|comment vas.tu|tu vas bien/.test(text)
+                  ? 'Je vais très bien, merci. Et toi, comment te sens-tu aujourd’hui ?'
+                  : /\bmerci\b/.test(text)
+                    ? 'Avec plaisir. Je suis là quand tu veux.'
+                    : /bonne nuit|dodo|dormir/.test(text)
+                      ? 'Bonne nuit. Fais de beaux rêves, je veille avec mon grand œil.'
+                      : /je t.aime|calin/.test(text)
+                        ? 'Moi aussi je t’aime beaucoup. Gros câlin tout doux.'
+                        : 'Je n’ai pas encore la réponse à ça dans cette démonstration. Demande-moi une histoire, une blague, l’heure, ou ce que je sais faire.';
+  return { reply };
+}
+
 const CHAT_ERRORS = {
   assistant_non_configure: 'L’assistant n’est pas encore branché.',
   cle_invalide: 'La clé de l’assistant est refusée.',
@@ -468,7 +514,10 @@ async function ask(text) {
   eye.classList.add('thinking');
   sayInEye('…', 'Je réfléchis');
   try {
-    const { reply } = await api('api/chat', { device: deviceId, messages: state.talk.slice(-12).filter((m, i, list) => i > 0 || m.role === 'user') });
+    await serverReady;
+    const { reply } = state.assistant
+      ? await api('api/chat', { device: deviceId, messages: state.talk.slice(-12).filter((m, i, list) => i > 0 || m.role === 'user') })
+      : await builtInReply(text);
     state.talk.push({ role: 'assistant', content: reply });
     if (state.screen !== 'chat' || run !== speechRun) return;
     renderChat();
