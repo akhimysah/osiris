@@ -104,7 +104,7 @@ function toast(message) {
   toast.timer = setTimeout(() => ($('#toast').textContent = ''), 4500);
 }
 function sayInEye(text, label = '') {
-  screen.innerHTML = `<div class="say${text.length > 90 ? ' long' : ''}"><span>${label ? `<small>${esc(label)}</small>` : ''}${esc(text)}</span></div>`;
+  screen.innerHTML = `<div class="say${text.length > 90 ? ' long' : ''}${label === 'Histoire' ? ' story' : ''}"><span>${label ? `<small>${esc(label)}</small>` : ''}${esc(text)}</span></div>`;
 }
 function applyColor() {
   $('#iris').style.filter = `hue-rotate(${COLORS[state.color][1]}deg) saturate(1.25)`;
@@ -112,6 +112,11 @@ function applyColor() {
 function setView(eyeView) {
   stage.classList.toggle('eyeView', eyeView || kiosk);
   $('#viewToggle').textContent = stage.classList.contains('eyeView') ? 'Vue peluche' : 'Agrandir l’œil';
+}
+// Ce qui se joue dans l'œil doit se voir : on agrandit l'œil et on le ramène à l'écran.
+function focusEye() {
+  setView(true);
+  if (!kiosk) window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 async function api(path, body) {
   const response = await fetch(path, {
@@ -276,8 +281,8 @@ const VIDEO = {
     },
     src: (id) =>
       id.startsWith('list:')
-        ? `https://www.youtube-nocookie.com/embed/videoseries?list=${id.slice(5)}&autoplay=1&playsinline=1&rel=0`
-        : `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0`,
+        ? `https://www.youtube-nocookie.com/embed/videoseries?list=${id.slice(5)}&autoplay=1&playsinline=1&rel=0&fs=0`
+        : `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0&fs=0`,
     // Exemples proposés tant qu'aucun favori n'est enregistré.
     starters: [
       { id: 'XqZsoesa55w', name: 'Baby Shark' },
@@ -308,7 +313,9 @@ function videoId(app, link) {
 }
 function playVideo(app, id) {
   if (!/^(list:)?[\w-]{10,64}$/.test(id)) return;
-  screen.innerHTML = `<iframe title="${VIDEO[app].label}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen src="${VIDEO[app].src(id)}"></iframe>`;
+  // Lecture dans l'œil : pas de plein écran, et l'œil s'agrandit pour regarder.
+  screen.innerHTML = `<iframe title="${VIDEO[app].label}" allow="autoplay; encrypted-media" playsinline src="${VIDEO[app].src(id)}"></iframe>`;
+  focusEye();
 }
 function openVideo(app, { spoken = '' } = {}) {
   const { label, hint, placeholder, starters } = VIDEO[app];
@@ -354,6 +361,7 @@ async function openPhoto() {
     state.camera = stream;
     screen.innerHTML = '<video class="mirror" autoplay playsinline muted></video>';
     showStream($('video', screen), state.camera);
+    focusEye();
     renderPhoto();
   } catch (error) {
     if (state.screen === 'photo') sayInEye(cameraError(error), 'Photo');
@@ -506,7 +514,7 @@ async function ask(text) {
     setScreen('chat');
     screen.replaceChildren();
   }
-  setView(true);
+  focusEye();
   state.talk.push({ role: 'user', content: text });
   renderChat();
   stopSpeaking();
@@ -518,10 +526,11 @@ async function ask(text) {
     const { reply } = state.assistant
       ? await api('api/chat', { device: deviceId, messages: state.talk.slice(-12).filter((m, i, list) => i > 0 || m.role === 'user') })
       : await builtInReply(text);
+    const story = /\b(histoire|conte)\b/.test(plain(text));
     state.talk.push({ role: 'assistant', content: reply });
     if (state.screen !== 'chat' || run !== speechRun) return;
     renderChat();
-    speak(reply);
+    speak(reply, story ? 'Histoire' : 'BOOZZO');
   } catch (error) {
     state.talk.pop();
     if (state.screen !== 'chat') return;
@@ -1082,6 +1091,7 @@ function showRemote(stream) {
   // Chaque piste (son, image) relance cet appel : ne pas recharger la vidéo pour le même flux.
   if (video.srcObject !== stream) video.srcObject = stream;
   video.play().catch(() => toast('Touchez l’œil pour activer le son.'));
+  if (!call.connected) focusEye();
   call.connected = true;
   setCallStatus('En appel');
   keepAwake(true);
@@ -1242,6 +1252,8 @@ function unlockAudio() {
   } catch {}
 }
 document.addEventListener('pointerdown', unlockAudio);
+// Même règle pour la voix de BOOZZO : sur iPhone, elle ne parle qu'après un premier toucher.
+document.addEventListener('pointerdown', () => primeSpeech());
 const pageTitle = document.title;
 let ringer = 0;
 function ringStart() {
@@ -1277,7 +1289,7 @@ function showIncoming(incoming) {
   stopCamera();
   stopSpeaking();
   setScreen('call');
-  setView(true);
+  focusEye();
   screen.innerHTML = `<div class="say ring"><span><small>Appel</small>${esc(incoming.name)}</span>
     <div class="answer"><button class="yes" data-call="accept" type="button" aria-label="Répondre">${ICON.call}</button><button class="no" data-call="decline" type="button" aria-label="Refuser">${ICON.call}</button></div></div>`;
   renderCall();
