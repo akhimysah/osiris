@@ -601,7 +601,7 @@ function renderCall() {
       !guestMode && !call.ring && call.role === 'eye' && !call.connected
         ? `<div class="row"><a class="btn" href="https://wa.me/${call.wa?.phone || ''}?text=${message}" target="_blank" rel="noopener">${ICON.chat}Envoyer${call.wa ? ' à ' + esc(call.wa.name) : ''} par WhatsApp</a>
            <button class="btn light" data-share="${esc(callLink())}" type="button">Autre envoi</button></div>
-           <p class="muted">Dès que votre proche touche le lien, l’appel démarre. Il peut aussi scanner ce code.</p>${qrSvg(callLink())}`
+           <p class="muted"><strong>Après l’envoi, revenez sur cette page</strong> : c’est ici que l’appel arrive. Dès que votre proche touche le lien, son visage apparaît dans l’œil. Il peut aussi scanner ce code.</p>${qrSvg(callLink())}`
         : '';
     body = `<p><strong>${esc(call.status)}</strong></p>
       <div class="row"><video class="self" id="self" autoplay playsinline muted></video></div>
@@ -768,37 +768,65 @@ async function startRelayCall(role, callId, run) {
       toast('L’appel est terminé.');
     });
   };
-  peer.on('error', (error) => {
-    if (peer !== call.peer || error.type !== 'peer-unavailable') return;
-    endCall(false);
-    setCallStatus('Cet appel est terminé ou le lien a expiré.');
+  // Le téléphone met la page en veille dès qu'on passe sur WhatsApp : le lien avec le relais tombe.
+  // On le rétablit dès que la page revient, et aussitôt qu'il tombe tant que la page est active.
+  peer.on('disconnected', () => {
+    if (peer === call.peer && !peer.destroyed) setTimeout(() => peer === call.peer && !peer.destroyed && peer.disconnected && peer.reconnect(), 500);
   });
   if (role === 'eye') {
     peer.on('connection', listen);
     peer.on('call', (media) => {
       // Un second appareil qui ouvre le même lien ne doit pas casser l'appel en cours.
-      if (call.media) return media.close();
+      if (call.connected && media.peer !== call.remote) return media.close();
+      // Le proche rappelle tant qu'il n'a pas de réponse : la nouvelle tentative remplace l'ancienne.
+      const previous = call.media;
+      call.media = null;
+      previous?.close();
       call.remote = media.peer;
       media.answer(call.local);
       attach(media);
     });
     if (kiosk) screen.innerHTML = qrSvg(callLink());
     else showLocalInEye('En attente de ton proche');
-    setCallStatus('Appel ouvert. Envoyez le lien à votre proche.');
+    setCallStatus('Appel ouvert. Envoyez le lien, puis revenez sur cette page.');
   } else {
     call.remote = id;
-    listen(peer.connect(id));
-    attach(peer.call(id, call.local));
+    // BOOZZO peut être momentanément en veille : on rappelle toutes les quelques secondes pendant deux minutes.
+    const deadline = Date.now() + 120000;
+    let retry = 0;
+    const dial = () => {
+      clearTimeout(retry);
+      if (peer !== call.peer || call.connected) return;
+      if (Date.now() > deadline) {
+        endCall(false);
+        return setCallStatus('BOOZZO ne répond pas. Demandez un nouveau lien.');
+      }
+      const previous = call.media;
+      call.media = null;
+      previous?.close();
+      if (!peer.disconnected) {
+        listen(peer.connect(id));
+        attach(peer.call(id, call.local));
+      }
+      retry = setTimeout(dial, 6000);
+    };
+    peer.on('error', (error) => {
+      if (peer !== call.peer || call.connected || error.type !== 'peer-unavailable') return;
+      setCallStatus('En attente de BOOZZO… gardez cette page ouverte.');
+      clearTimeout(retry);
+      retry = setTimeout(dial, 3000);
+    });
     showLocalInEye('Connexion…');
     setCallStatus('Connexion…');
-    // Lien d'un appel déjà terminé : ne pas laisser le proche attendre avec la caméra allumée.
-    setTimeout(() => {
-      if (peer !== call.peer || call.connected) return;
-      endCall(false);
-      setCallStatus('Cet appel est terminé ou le lien a expiré.');
-    }, 15000);
+    dial();
   }
 }
+// Au retour sur la page (après WhatsApp par exemple), rétablir le lien avec le relais sans attendre.
+document.addEventListener('visibilitychange', () => {
+  const peer = call.peer;
+  if (!document.hidden && peer && !peer.destroyed && peer.disconnected) peer.reconnect();
+});
+
 let polling = false;
 async function pollCall() {
   if (polling || !call.role) return;
