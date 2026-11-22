@@ -1,0 +1,241 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Patronage BOOZZO P0</title>
+<style>
+/* Mise en page : dossier technique textile sur papier clair, vues cotées puis tableaux. Thème unique, voulu. */
+:root {
+  --paper: #fbfaf6; --ink: #1d2320; --muted: #5f6964; --line: #c9cfc8; --fur: #f3ead8; --cloth: #dcc9a3; --leather: #8a5a3c;
+  --accent: #1f5a3c; --dim: #b4441f; --soft: #f1ede2; --tech: #c7d6e6;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--sans); }
+.sheet { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: end; border-bottom: 2px solid var(--ink); padding-bottom: 12px; }
+.brand { font-weight: 800; font-size: 1.7rem; letter-spacing: .05em; color: var(--accent); }
+h1 { font-size: 1.35rem; margin: 0; text-wrap: balance; }
+.meta { font: 12px/1.5 var(--mono); color: var(--muted); margin-left: auto; text-align: right; }
+.sub { color: var(--muted); font-size: .9rem; margin: 2px 0 0; }
+h2 { font: 700 .78rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+section { border-bottom: 1px solid var(--line); padding: 20px 0; }
+.notice { background: var(--soft); border-left: 4px solid var(--dim); padding: 10px 14px; margin: 16px 0 0; font-size: .92rem; }
+.views { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+figure { margin: 0; min-width: 0; }
+figure svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--line); }
+figcaption { font: 600 .74rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; margin-top: 6px; color: var(--muted); }
+svg text { font: 9px var(--mono); fill: var(--ink); }
+svg .d { stroke: var(--dim); stroke-width: .8; fill: none; } svg .dt { fill: var(--dim); }
+svg .fur { fill: var(--fur); stroke: var(--ink); stroke-width: 1.1; } svg .cloth { fill: var(--cloth); stroke: var(--ink); stroke-width: 1.1; }
+svg .tech { fill: var(--tech); stroke: var(--ink); stroke-width: 1; } svg .eye { fill: #10151a; stroke: var(--ink); }
+svg .cut { fill: #fff; stroke: var(--ink); stroke-width: 1; } svg .zip { stroke: var(--dim); stroke-width: 2; stroke-dasharray: 3 2; fill: none; }
+svg .h { fill: none; stroke: var(--muted); stroke-width: .8; stroke-dasharray: 4 3; } svg .grain { stroke: var(--muted); stroke-width: .7; fill: none; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; } .cols > div { min-width: 0; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; color: var(--muted); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
+td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+ol, ul { margin: 0; padding-left: 20px; } li { margin-bottom: 5px; }
+footer { padding-top: 14px; font-size: .82rem; color: var(--muted); }
+</style>
+
+<div class="sheet">
+<header>
+  <div class="brand">BOOZZO</div>
+  <div>
+    <h1>Dossier de patronage de la peluche</h1>
+    <p class="sub">Modèle Exploratrice · à remettre au fabricant de peluches avec le socle BZ-EX-S01</p>
+  </div>
+  <div class="meta">RÉF. BZ-EX-P01<br>ÉCHANTILLON P0 · 22.11.2026<br>Cotes en mm</div>
+</header>
+
+<p class="notice"><strong>Dossier de départ pour le modéliste.</strong> Il donne les mesures finies, la liste des pièces et toutes les contraintes liées à l’électronique. Les développés des pièces sont des estimations géométriques : le patron définitif se met au point chez le fabricant, sur un premier échantillon cousu et garni autour du socle.</p>
+
+<section>
+  <h2>Vues cotées de la peluche finie</h2>
+  <div class="views">
+    <figure>
+      <svg viewBox="0 0 380 350" role="img" aria-label="Peluche vue de face : hauteur 270 millimètres avec le chapeau, tête de 165, ouverture de l’œil de 92, largeur assise de 185">
+        <!-- corps -->
+        <path class="cloth" d="M98 300 Q92 200 150 196 L210 196 Q268 200 262 300 Z"/>
+        <!-- bras -->
+        <ellipse class="fur" cx="88" cy="232" rx="22" ry="40"/><ellipse class="fur" cx="272" cy="232" rx="22" ry="40"/>
+        <!-- jambes (semelles vers l'avant) -->
+        <circle class="fur" cx="128" cy="270" r="32.5"/><circle class="fur" cx="232" cy="270" r="32.5"/>
+        <!-- tête -->
+        <circle class="fur" cx="180" cy="155" r="82.5"/>
+        <circle class="eye" cx="180" cy="155" r="46"/>
+        <circle class="tech" cx="180" cy="90" r="5"/>
+        <!-- chapeau -->
+        <path class="cloth" d="M112 72 Q114 26 180 26 Q246 26 248 72 Z"/>
+        <ellipse class="cloth" cx="180" cy="72" rx="146" ry="12"/>
+        <!-- foulard -->
+        <path d="M130 214 Q180 238 230 214 L222 204 Q180 222 138 204 Z" fill="#a8683f" stroke="#1d2320"/>
+        <!-- cotes -->
+        <path class="d" d="M344 26h16M344 300h16M354 26v274"/><text class="dt" x="368" y="166" transform="rotate(-90 368 166)" text-anchor="middle">270 · avec chapeau</text>
+        <path class="d" d="M97.5 318v10M262.5 318v10M97.5 324h165"/><text class="dt" x="180" y="340" text-anchor="middle">185 · largeur assise (avec jambes)</text>
+        <path class="d" d="M134 155h92"/><text x="180" y="150" text-anchor="middle" style="fill:#fff">Ø 92</text>
+        <path class="d" d="M10 72.5h30M10 237.5h30M22 72.5v165"/><text class="dt" x="16" y="158" transform="rotate(-90 16 158)" text-anchor="middle">Ø 165 · tête</text>
+        <text x="192" y="94">œillet caméra Ø 10</text>
+      </svg>
+      <figcaption>Face</figcaption>
+    </figure>
+
+    <figure>
+      <svg viewBox="0 0 380 350" role="img" aria-label="Peluche vue de dos : fermeture à glissière verticale de 230 millimètres, zone de maille pour le son et l’air, sortie du câble en bas">
+        <path class="cloth" d="M98 300 Q92 200 150 196 L210 196 Q268 200 262 300 Z"/>
+        <ellipse class="fur" cx="88" cy="232" rx="22" ry="40"/><ellipse class="fur" cx="272" cy="232" rx="22" ry="40"/>
+        <circle class="fur" cx="180" cy="155" r="82.5"/>
+        <path class="cloth" d="M112 72 Q114 26 180 26 Q246 26 248 72 Z"/><ellipse class="cloth" cx="180" cy="72" rx="146" ry="12"/>
+        <!-- zone maille technique -->
+        <rect class="tech" x="118" y="262" width="124" height="34" rx="6"/><text x="180" y="282" text-anchor="middle">maille aérée</text>
+        <!-- sac à dos (silhouette, détachable) -->
+        <rect class="h" x="140" y="186" width="80" height="70" rx="8"/><text x="180" y="224" text-anchor="middle">sac à dos amovible</text>
+        <!-- zip -->
+        <path class="zip" d="M180 112V300"/>
+        <circle class="cut" cx="206" cy="291" r="5"/>
+        <path class="d" d="M300 112h16M300 300h16M310 112v188"/><text class="dt" x="324" y="208" transform="rotate(-90 324 208)" text-anchor="middle">zip 230 (dos de la tête au bas)</text>
+        <text x="214" y="308">sortie câble Ø 12</text>
+      </svg>
+      <figcaption>Dos</figcaption>
+    </figure>
+
+    <figure>
+      <svg viewBox="0 0 380 350" role="img" aria-label="Dessous de la peluche : fond ovale de 185 par 135 millimètres qui s’ouvre pour glisser la semelle du socle">
+        <ellipse class="tech" cx="190" cy="170" rx="148" ry="108"/>
+        <ellipse class="h" cx="190" cy="170" rx="128" ry="88"/>
+        <path class="zip" d="M52 190 Q70 270 190 278 Q310 270 328 190"/>
+        <text x="190" y="160" text-anchor="middle">fond en maille aérée</text><text x="190" y="174" text-anchor="middle">semelle du socle 160 × 110 dessous</text>
+        <text x="190" y="298" text-anchor="middle" class="dt">ouverture en U (zip ou velcro) sur l’arrière et les côtés</text>
+        <path class="d" d="M42 30v10M338 30v10M42 36h296"/><text class="dt" x="190" y="26" text-anchor="middle">185</text>
+        <path class="d" d="M352 62h14M352 278h14M360 62v216"/><text class="dt" x="372" y="172" transform="rotate(-90 372 172)" text-anchor="middle">135</text>
+        <text x="190" y="52" text-anchor="middle">avant</text>
+      </svg>
+      <figcaption>Dessous (échelle agrandie)</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="cols">
+  <div>
+    <h2>Mesures finies</h2>
+    <div class="scroll"><table>
+      <tr><th>Mesure</th><th>Cote</th><th>Tolérance</th></tr>
+      <tr><td>Hauteur assise, sans chapeau</td><td class="n">240</td><td class="n">± 5</td></tr>
+      <tr><td>Hauteur assise, avec chapeau</td><td class="n">270</td><td class="n">± 8</td></tr>
+      <tr><td>Tête, diamètre garni</td><td class="n">Ø 165</td><td class="n">± 4</td></tr>
+      <tr><td>Centre de l’œil au-dessus de l’assise</td><td class="n">145</td><td class="n">± 2</td></tr>
+      <tr><td>Ouverture de l’œil dans le tissu</td><td class="n">Ø 92</td><td class="n">± 1</td></tr>
+      <tr><td>Fond du corps (ovale)</td><td class="n">185 × 135</td><td class="n">± 3</td></tr>
+      <tr><td>Jambe : longueur × diamètre</td><td class="n">95 × Ø 65</td><td class="n">± 4</td></tr>
+      <tr><td>Bras : longueur × diamètre</td><td class="n">85 × Ø 45</td><td class="n">± 4</td></tr>
+      <tr><td>Chapeau : diamètre du bord</td><td class="n">Ø 290</td><td class="n">± 8</td></tr>
+    </table></div>
+    <p class="sub">Les trois cotes de l’œil et du fond sont imposées par le socle : elles priment sur le reste.</p>
+  </div>
+  <div>
+    <h2>Ce que la peluche doit laisser passer</h2>
+    <div class="scroll"><table>
+      <tr><th>Ouverture</th><th>Cote</th><th>Rôle</th></tr>
+      <tr><td>Œil</td><td class="n">Ø 92</td><td>Bord renforcé, cousu sur la lèvre souple de la bague (Ø 126 derrière)</td></tr>
+      <tr><td>Œillet caméra</td><td class="n">Ø 10</td><td>65 au-dessus du centre de l’œil, juste sous le bord du chapeau, qui ne doit pas le masquer</td></tr>
+      <tr><td>Voyant caméra</td><td class="n">Ø 3</td><td>À 12 de l’œillet, tissu fin ou œillet translucide</td></tr>
+      <tr><td>Zip du dos</td><td class="n">230</td><td>Du haut du dos de la tête jusqu’au bas : passage de la bague et de l’écran</td></tr>
+      <tr><td>Fond ouvrant</td><td class="n">en U</td><td>Passage de la semelle (160 × 110 × 40) ; curseur de zip caché ou velcro</td></tr>
+      <tr><td>Maille aérée</td><td class="n">fond + bas du dos</td><td>Air de la carte et son des haut-parleurs ; jamais de ouate derrière</td></tr>
+      <tr><td>Micro</td><td class="n">Ø 6</td><td>Sous le foulard, à l’avant, tissu fin</td></tr>
+      <tr><td>Sortie du câble</td><td class="n">Ø 12</td><td>Bas du dos, œillet avec renfort</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section>
+  <h2>Planche des pièces · développés estimés, couture de 6 comprise</h2>
+  <figure>
+    <svg viewBox="0 0 1000 430" role="img" aria-label="Planche des pièces de tissu avec leurs dimensions approximatives">
+      <!-- A bande centrale de tête -->
+      <path class="fur" d="M20 90 Q90 20 230 20 Q370 20 440 90 Q370 160 230 160 Q90 160 20 90 Z"/><circle class="cut" cx="150" cy="90" r="40"/>
+      <text x="230" y="182" text-anchor="middle">A · 430 × 150 · trou Ø 80</text>
+      <path class="grain" d="M260 90h120m-8-4l8 4-8 4"/>
+      <!-- B côtés de tête -->
+      <path class="fur" d="M474 152 A70 70 0 1 1 554 152 Z"/>
+      <text x="514" y="200" text-anchor="middle">B ×2 · Ø 150</text>
+      <!-- C devant du corps -->
+      <path class="cloth" d="M600 30 h100 l30 130 h-160 Z"/><text x="665" y="182" text-anchor="middle">C · 160 × 130</text>
+      <!-- D dos du corps -->
+      <path class="cloth" d="M770 30 h50 l18 130 h-86 Z"/><path class="cloth" d="M860 30 h50 l18 130 h-86 Z"/><path class="zip" d="M840 30v130"/>
+      <text x="850" y="182" text-anchor="middle">D ×2 · 90 × 130 · zip</text>
+      <!-- E fond -->
+      <ellipse class="tech" cx="110" cy="290" rx="98" ry="72"/><text x="110" y="392" text-anchor="middle">E · ovale 197 × 147</text>
+      <!-- F jambe -->
+      <rect class="fur" x="240" y="230" width="150" height="106"/><circle class="cloth" cx="440" cy="270" r="38"/>
+      <text x="315" y="392" text-anchor="middle">F ×2 · 216 × 107</text><text x="440" y="392" text-anchor="middle">G ×2 · Ø 77</text>
+      <!-- H bras -->
+      <path class="fur" d="M510 230 q40 -10 60 20 v60 q-30 30 -60 10 Z"/><path class="fur" d="M600 230 q40 -10 60 20 v60 q-30 30 -60 10 Z"/>
+      <text x="585" y="392" text-anchor="middle">H ×4 · 97 × 70</text>
+      <!-- I chapeau -->
+      <circle class="cloth" cx="770" cy="290" r="74"/><circle class="cut" cx="770" cy="290" r="40"/>
+      <rect class="cloth" x="870" y="232" width="110" height="34"/><circle class="cloth" cx="925" cy="316" r="32"/>
+      <text x="770" y="392" text-anchor="middle">I ×2 · Ø 302 / Ø 160</text>
+      <text x="925" y="392" text-anchor="middle">J · 530 × 70 + Ø 130</text>
+    </svg>
+    <figcaption>Formes schématiques, non à l’échelle entre elles</figcaption>
+  </figure>
+</section>
+
+<section class="cols">
+  <div>
+    <h2>Nomenclature</h2>
+    <div class="scroll"><table>
+      <tr><th>Pièce</th><th>Qté</th><th>Matière</th></tr>
+      <tr><td>A · Bande centrale de tête, 430 × 150, trou de l’œil Ø 80 (Ø 92 fini)</td><td class="n">1</td><td>Bouclette crème</td></tr>
+      <tr><td>B · Côtés de tête, Ø 150, méplat de cou de 80</td><td class="n">2</td><td>Bouclette crème</td></tr>
+      <tr><td>C · Devant du corps 160 × 130 ; D · demi-dos 90 × 130, zip au milieu</td><td class="n">1 + 2</td><td>Toile de coton beige, doublée</td></tr>
+      <tr><td>E · Fond ovale 197 × 147</td><td class="n">1</td><td>Maille 3D aérée</td></tr>
+      <tr><td>F · Jambes 216 × 107</td><td class="n">2</td><td>Bouclette crème</td></tr>
+      <tr><td>G · Semelles de pied Ø 77</td><td class="n">2</td><td>Feutrine ou suédine beige</td></tr>
+      <tr><td>H · Bras 97 × 70 (deux paires)</td><td class="n">4</td><td>Bouclette crème</td></tr>
+      <tr><td>I · Bord de chapeau Ø 302 / Ø 160 ; J · calotte, bande 530 × 70 et rond Ø 130</td><td class="n">2 + 2</td><td>Toile beige, entoilage dans le bord</td></tr>
+      <tr><td>Foulard</td><td class="n">1</td><td>Coton brun, triangle 300 × 300 × 420, cousu</td></tr>
+      <tr><td>Sac à dos décoratif</td><td class="n">1</td><td>Toile beige, sangles similicuir, 80 × 90 × 35</td></tr>
+      <tr><td>Cils, sourire</td><td class="n">—</td><td>Broderie brune</td></tr>
+    </table></div>
+  </div>
+  <div>
+    <h2>Consignes de confection</h2>
+    <ul>
+      <li>Coutures de 6, points serrés ; surpiqûre de sécurité sur toutes les ouvertures.</li>
+      <li>Bord de l’œil renforcé par un biais élastique : il s’accroche dans la gorge de la lèvre de la bague, sans colle.</li>
+      <li>Garnir la tête autour de la bague, 15 à 20 de ouate au minimum ; ne rien garnir derrière l’écran, pour le démontage.</li>
+      <li>Le corps est une housse autour du montant : ouate en manchon, tenue par une doublure, jamais contre la semelle.</li>
+      <li>Bras et jambes garnis et cousus au corps, sans articulation ni armature.</li>
+      <li>Aucune petite pièce rigide rapportée : boutons et boucles brodés ou imprimés, pas en métal, tant que l’âge visé n’est pas fixé.</li>
+      <li>Curseurs de zip masqués sous un rabat cousu.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="cols">
+  <div>
+    <h2>Exigences à transmettre au fabricant</h2>
+    <ul>
+      <li>Jouet avec électronique : EN 71-1, -2 et -3 pour la partie textile, EN IEC 62115 pour la partie électrique.</li>
+      <li>Matières à retard de flamme ou conformes à l’essai d’inflammabilité sur le jouet assemblé.</li>
+      <li>La peluche n’est pas lavable en machine : housse nettoyable en surface, étiquette à prévoir.</li>
+      <li>Âge visé à définir avant le premier échantillon : il change les règles sur les petites pièces et les cordons.</li>
+    </ul>
+  </div>
+  <div>
+    <h2>À valider sur le premier échantillon</h2>
+    <ul>
+      <li>La bague Ø 126 passe par le zip du dos et la semelle par le fond, sans forcer les coutures.</li>
+      <li>L’œil reste centré et le tissu ne masque ni l’écran, ni l’objectif, ni le micro.</li>
+      <li>Le bord du chapeau ne tombe pas devant la caméra.</li>
+      <li>La peluche tient assise seule et ne bascule pas quand on touche l’œil.</li>
+      <li>Température et son, peluche garnie et fermée (voir la fiche du socle).</li>
+    </ul>
+  </div>
+</section>
+
+<footer>BOOZZO · Dossier de patronage BZ-EX-P01 · échantillon P0 · à lire avec la fiche du socle BZ-EX-S01. Développés estimés, à mettre au point par le modéliste du fabricant.</footer>
+</div>
