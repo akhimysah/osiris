@@ -15,6 +15,9 @@ Application web de la peluche BOOZZO. La peluche reste immobile : tout se passe 
 - **Photo** : retour caméra dans l'œil, prise de vue, dernières photos gardées sur l'appareil.
 - **Iris** : quatre couleurs, azur par défaut.
 - **Téléphone** : sur la peluche, l'écran d'un téléphone peut être recopié dans l'œil pour y utiliser ses propres applications. Voir `peluche/README.md` (kit d'installation de la carte, pas encore essayé sur du matériel).
+- **Visages** : BOOZZO reconnaît les personnes qui se sont enregistrées et les salue par leur prénom. Tout tourne sur l'appareil avec face-api (`ui/face/`, open source, MIT) : l'empreinte du visage reste dans le navigateur et peut être effacée. Chaque personne s'enregistre avec son accord (celui d'un parent pour un enfant). La reconnaissance d'un vrai visage n'a pas encore été testée.
+- **Recherche YouTube** : au clavier ou à la voix (« BOOZZO, mets des comptines sur YouTube »), la première vidéo trouvée se lance dans l'œil. Elle passe par le serveur et demande la variable `YOUTUBE_API_KEY` (clé gratuite de l'API YouTube Data v3, environ cent recherches par jour).
+- **Histoires** : trois histoires intégrées, lancées au toucher ou à la voix, lues à voix haute dans l'œil.
 - **Forfait (eSIM)** : écran d'aperçu de l'abonnement mobile de la peluche, souscrit par un parent pour son enfant ou pour lui-même. Rien n'est vendu : les offres sont des exemples (`ESIM_OFFERS` dans `ui/app.js`). Pour l'ouvrir vraiment, il faut un modem 4G avec eSIM dans la peluche, un partenaire eSIM disposant d'une API de revente, un paiement en ligne et des conditions de vente.
 - **WhatsApp, Spotify** : ces tuiles ouvrent l'application officielle. BOOZZO ne les intègre pas : sur un appareil Android, le lien lance l'application installée ; ailleurs, il ouvre son site. Un proche peut avoir un numéro WhatsApp, gardé sur l'appareil.
 
@@ -60,6 +63,7 @@ Variables d'environnement :
 | Variable | Rôle |
 |---|---|
 | `ANTHROPIC_API_KEY` | active l'assistant |
+| `YOUTUBE_API_KEY` | active la recherche YouTube |
 | `HOST`, `PORT` | adresse d'écoute (`0.0.0.0` en ligne) |
 | `DATA_DIR` | dossier de la base SQLite (`.local` par défaut) |
 | `TURN_URLS`, `TURN_USERNAME`, `TURN_CREDENTIAL` | relais pour les appels sur réseaux mobiles |

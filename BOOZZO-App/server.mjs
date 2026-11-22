@@ -1,6 +1,7 @@
 // Serveur BOOZZO, au format « worker » : export default { fetch(req, env) }.
 // env.BUCKET   stockage clé/valeur (R2 en ligne, SQLite en local via dev.mjs)
 // env.TURN     relais facultatif pour les appels : { urls, username, credential }
+// env.YOUTUBE_KEY clé de l'API YouTube Data v3, pour la recherche de vidéos (facultative)
 // env.ASSISTANT fonction async (messages) => { reply } fournie par l'hôte, absente si non configurée
 // FILES est injecté par build.mjs (contenu du dossier ui/).
 
@@ -184,6 +185,28 @@ async function deviceRings(env, device) {
   return json({ rings });
 }
 
+// GET /api/youtube?q=… : recherche de vidéos YouTube intégrables, filtrée « contenu sûr ».
+// Le quota gratuit de l'API est d'environ cent recherches par jour : chaque recherche est gardée une journée.
+async function youtubeSearch(req, env) {
+  if (!env.YOUTUBE_KEY) return json({ error: 'youtube_non_configure' }, 503);
+  const q = (new URL(req.url).searchParams.get('q') || '').trim().toLowerCase().slice(0, 80);
+  if (q.length < 2) return json({ error: 'demande_invalide' }, 400);
+  const key = 'youtube/' + encodeURIComponent(q);
+  const saved = await env.BUCKET.get(key);
+  const cached = saved && (await saved.json());
+  if (cached && Date.now() - cached.at < 24 * 60 * 60 * 1000) return json({ videos: cached.videos });
+  const url = new URL('https://www.googleapis.com/youtube/v3/search');
+  url.search = new URLSearchParams({ part: 'snippet', type: 'video', videoEmbeddable: 'true', safeSearch: 'strict', maxResults: '6', relevanceLanguage: 'fr', q, key: env.YOUTUBE_KEY });
+  const response = await fetch(url);
+  if (!response.ok) return json({ error: response.status === 403 ? 'youtube_quota' : 'youtube_indisponible' }, 502);
+  const data = await response.json();
+  const videos = (data.items || [])
+    .filter((item) => /^[\w-]{11}$/.test(item.id?.videoId || ''))
+    .map((item) => ({ id: item.id.videoId, title: String(item.snippet?.title || '').slice(0, 120), channel: String(item.snippet?.channelTitle || '').slice(0, 60) }));
+  await env.BUCKET.put(key, JSON.stringify({ at: Date.now(), videos }));
+  return json({ videos });
+}
+
 async function api(req, env, path) {
   const post = req.method === 'POST';
   if (req.method !== 'GET' && !post) return json({}, 405);
@@ -194,9 +217,11 @@ async function api(req, env, path) {
   if (path === '/api/config')
     return json({
       assistant: Boolean(env.ASSISTANT),
+      youtube: Boolean(env.YOUTUBE_KEY),
       iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, ...(env.TURN ? [env.TURN] : [])],
     });
   if (path === '/api/chat') return post ? chat(req, env) : json({}, 405);
+  if (path === '/api/youtube') return post ? json({}, 405) : youtubeSearch(req, env);
   if (path === '/api/calls' || path.startsWith('/api/calls/'))
     return calls(req, env, path.split('/').slice(3).filter(Boolean));
   if (path === '/api/contacts' || path.startsWith('/api/contacts/'))

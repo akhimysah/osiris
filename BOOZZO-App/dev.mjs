@@ -21,7 +21,7 @@ const bucket={
   if((test?.etagDoesNotMatch==='*'&&old)||(test?.etagMatches&&test.etagMatches!==old?.etag))return null;
   const etag=randomUUID();db.prepare('INSERT OR REPLACE INTO objects VALUES(?,?,?,?)').run(key,Buffer.from(value),options.httpMetadata?.contentType||null,etag);return {etag}}
 };
-const env={BUCKET:bucket,...(assistant?{ASSISTANT:assistant}:{}),...(turn?{TURN:turn}:{})};
+const env={BUCKET:bucket,...(assistant?{ASSISTANT:assistant}:{}),...(turn?{TURN:turn}:{}),...(process.env.YOUTUBE_API_KEY?{YOUTUBE_KEY:process.env.YOUTUBE_API_KEY}:{})};
 const port=Number(process.env.PORT||4174),origin='http://127.0.0.1:'+port;
 http.createServer(async(req,res)=>{try{
  const parts=[];let size=0;for await(const part of req){size+=part.length;if(size>6000000){res.writeHead(413).end();return}parts.push(part)}
