@@ -299,6 +299,12 @@ function openVideo(app, { spoken = '' } = {}) {
 
 // ---------- Photo ----------
 
+// Affiche un flux caméra dans une vidéo muette et lance la lecture : sans cela, certains
+// navigateurs restent figés sur la première image.
+function showStream(video, stream) {
+  video.srcObject = stream;
+  video.play().catch(() => {});
+}
 async function camera(constraints) {
   if (!navigator.mediaDevices?.getUserMedia) throw new Error('indisponible');
   return navigator.mediaDevices.getUserMedia(constraints);
@@ -315,7 +321,7 @@ async function openPhoto() {
     if (state.screen !== 'photo' || state.camera) return stream.getTracks().forEach((track) => track.stop());
     state.camera = stream;
     screen.innerHTML = '<video class="mirror" autoplay playsinline muted></video>';
-    $('video', screen).srcObject = state.camera;
+    showStream($('video', screen), state.camera);
     renderPhoto();
   } catch (error) {
     if (state.screen === 'photo') sayInEye(cameraError(error), 'Photo');
@@ -629,10 +635,12 @@ function renderCall() {
       }
       <form class="stack" id="contactForm"><input name="name" maxlength="30" required placeholder="Prénom du proche (ex. Mamie)" aria-label="Prénom du proche" autocomplete="off"><input name="phone" type="tel" maxlength="20" placeholder="Numéro WhatsApp, facultatif (ex. +33 6 12 34 56 78)" aria-label="Numéro WhatsApp, facultatif" autocomplete="off"><button class="btn light">Ajouter ce proche</button></form>
       <div class="row"><button class="btn" id="startCall" type="button" ${busy}>${ICON.call}Appeler avec un lien WhatsApp</button></div>
-      <p class="muted">BOOZZO ouvre l’appel et prépare un message WhatsApp avec un lien. Votre proche le touche, et son visage apparaît dans l’œil.</p>`;
+      <p class="muted">BOOZZO ouvre l’appel et prépare un message WhatsApp avec un lien. Votre proche le touche, et son visage apparaît dans l’œil.</p>
+      <div class="row"><button class="btn light" id="deviceTest" type="button" ${busy}>${ICON.photo}Tester ma caméra et mon micro</button></div>
+      <div id="deviceResult"></div>`;
   }
   panel.innerHTML = `${guestMode ? '' : backButton}<h2>Appel dans l’œil</h2>${body}`;
-  if ($('#self') && call.local) $('#self').srcObject = call.local;
+  if ($('#self') && call.local) showStream($('#self'), call.local);
 }
 function setCallStatus(status) {
   call.status = status;
@@ -640,7 +648,7 @@ function setCallStatus(status) {
 }
 function showLocalInEye(badge) {
   screen.innerHTML = `<video class="mirror" autoplay playsinline muted></video><span class="badge">${esc(badge)}</span>`;
-  $('video', screen).srcObject = call.local;
+  showStream($('video', screen), call.local);
 }
 const signal = (type, sdp) => api(`api/calls/${call.id}/signal`, { from: call.role, type, sdp });
 const postRing = (contact, body) =>
@@ -909,6 +917,57 @@ function endCall(sendBye = true, show = true) {
   if (state.wake) startWake();
 }
 
+// ---------- Test de la caméra et du micro avant un appel ----------
+
+async function testDevices() {
+  stopCamera();
+  const result = (html) => $('#deviceResult') && ($('#deviceResult').innerHTML = html);
+  result('<p class="muted">Ouverture de la caméra et du micro…</p>');
+  let stream;
+  try {
+    stream = await camera({ video: { facingMode: 'user' }, audio: true });
+  } catch (error) {
+    sayInEye(cameraError(error), 'Test');
+    return result(`<p class="error">${esc(cameraError(error))}</p>`);
+  }
+  if (state.screen !== 'call' || call.role || call.busy) return stream.getTracks().forEach((track) => track.stop());
+  state.camera = stream;
+  screen.innerHTML = '<video class="mirror" autoplay playsinline muted></video><span class="badge">Test de la caméra</span>';
+  const video = $('video', screen);
+  showStream(video, stream);
+  // Niveau du micro, mesuré sur quelques secondes.
+  unlockAudio();
+  let heard = false;
+  let analyser = null;
+  try {
+    analyser = audio.createAnalyser();
+    audio.createMediaStreamSource(stream).connect(analyser);
+  } catch {}
+  const samples = new Uint8Array(analyser?.fftSize || 0);
+  const report = () => {
+    if (state.camera !== stream) return clearInterval(timer), clearInterval(meter);
+    const image = video.videoWidth
+      ? `<p>✅ Caméra : image reçue (${video.videoWidth} × ${video.videoHeight}). Vous devez vous voir dans l’œil.</p>`
+      : '<p>⏳ Caméra : en attente de l’image…</p>';
+    const sound = heard
+      ? '<p>✅ Micro : votre voix est captée.</p>'
+      : '<p>⏳ Micro : dites quelques mots…</p>';
+    result(`${image}${sound}<div class="row"><button class="btn light" id="deviceStop" type="button">Arrêter le test</button></div>`);
+  };
+  const meter = setInterval(() => {
+    if (!analyser || heard) return;
+    analyser.getByteTimeDomainData(samples);
+    if (Math.max(...samples.map((v) => Math.abs(v - 128))) > 6) heard = true;
+  }, 80);
+  const timer = setInterval(report, 500);
+  report();
+}
+function stopDeviceTest() {
+  stopCamera();
+  screen.replaceChildren();
+  renderCall();
+}
+
 // ---------- Proches et appels entrants ----------
 
 // Le numéro WhatsApp reste sur cet appareil : il n'est pas envoyé au serveur.
@@ -1075,6 +1134,10 @@ document.addEventListener('click', (event) => {
       return snap();
     case 'quiet':
       return stopSpeaking();
+    case 'deviceTest':
+      return testDevices();
+    case 'deviceStop':
+      return stopDeviceTest();
     case 'startCall':
       return startCall('eye');
     case 'answer':
