@@ -12,6 +12,7 @@ Application web de la peluche BOOZZO. La peluche reste immobile : tout se passe 
 - **YouTube** : lecture d'une vidéo dans l'œil à partir de son lien ; les favoris nommés se lancent à la voix.
 - **Photo** : retour caméra dans l'œil, prise de vue, dernières photos gardées sur l'appareil.
 - **Iris** : quatre couleurs, azur par défaut.
+- **WhatsApp, Spotify, TikTok** : ces tuiles ouvrent l'application officielle. BOOZZO ne les intègre pas : sur un appareil Android, le lien lance l'application installée ; ailleurs, il ouvre son site. Un proche peut avoir un numéro WhatsApp, gardé sur l'appareil.
 
 ## Démarrer
 
@@ -38,6 +39,27 @@ ANTHROPIC_API_KEY=... node dev.mjs
 
 La clé reste sur le serveur ; elle n'est jamais envoyée au navigateur. Chaque réponse est facturée à l'usage sur le compte de la clé.
 
+## Mettre en ligne (HTTPS)
+
+Caméra, micro et appels exigent HTTPS. Le plus simple est Render, qui lit le fichier `render.yaml` à la racine du dépôt :
+
+1. Ouvrir https://render.com/deploy?repo=https://github.com/akhimysah/osiris/tree/claude/boozzo-prototype-lab-xghudf et se connecter avec GitHub.
+2. Quand Render demande `ANTHROPIC_API_KEY`, coller une clé créée sur https://console.anthropic.com (facultatif : sans clé, seul l'assistant est inactif).
+3. Valider. Render donne une adresse `https://….onrender.com` : c'est l'application.
+
+Sur l'offre gratuite, le service s'endort après 15 minutes sans visite (premier chargement lent) et les proches enregistrés sont effacés à chaque redémarrage. Pour les garder, passer à une offre payante avec un disque et définir `DATA_DIR` sur ce disque.
+
+Autre hébergeur : le `Dockerfile` fourni lance la même application (port 8080, données dans `/data`).
+
+Variables d'environnement :
+
+| Variable | Rôle |
+|---|---|
+| `ANTHROPIC_API_KEY` | active l'assistant |
+| `HOST`, `PORT` | adresse d'écoute (`0.0.0.0` en ligne) |
+| `DATA_DIR` | dossier de la base SQLite (`.local` par défaut) |
+| `TURN_URLS`, `TURN_USERNAME`, `TURN_CREDENTIAL` | relais pour les appels sur réseaux mobiles |
+
 ## Organisation
 
 - `ui/index.html`, `ui/style.css`, `ui/app.js` : l'interface (peluche, œil, panneau de commandes).
@@ -51,7 +73,7 @@ La clé reste sur le serveur ; elle n'est jamais envoyée au navigateur. Chaque 
 - Caméra, micro et appels exigent HTTPS dès qu'on quitte `127.0.0.1`. Pour un appel entre deux vrais téléphones, l'application doit être hébergée en HTTPS.
 - Les appels utilisent un serveur STUN public. Sur certains réseaux (4G, Wi-Fi d'entreprise), il faudra ajouter un relais TURN.
 - La reconnaissance vocale dépend du navigateur (Chrome, Safari). L'écoute continue du mot « BOOZZO » est expérimentale.
-- WhatsApp, Spotify et les autres applications tierces ne sont pas intégrés : les appels sont ceux de BOOZZO.
+- WhatsApp, Spotify et TikTok s'ouvrent dans leur application officielle, pas dans l'œil de l'aperçu web. Ils n'apparaîtront dans l'œil que sur un prototype dont l'écran rond est l'écran d'un appareil Android.
 - Un proche ne reçoit un appel que si sa page est ouverte : il n'y a pas encore de notification sur téléphone verrouillé.
 - Les proches et les favoris sont enregistrés dans le navigateur de l'appareil BOOZZO : ils ne se retrouvent pas encore d'un appareil à l'autre.
 - Pas de reconnaissance faciale ni de comptes utilisateurs pour l'instant.
