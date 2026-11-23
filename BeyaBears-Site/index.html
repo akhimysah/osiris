@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06080f">
+<meta name="description" content="BeyaBear's, la peluche dont l'œil est un écran : appels vidéo, histoires, assistant vocal et veilleuse.">
+<!--PAGE-->
+<title>BeyaBear's</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css">
+<!--/HEAD-->
+</head>
+<body>
+<!--BODY-->
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#haut" aria-label="BeyaBear's, retour en haut">
+      <svg viewBox="0 0 34 30" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="#ead9b8"/><circle cx="26" cy="8" r="6.5" fill="#ead9b8"/><circle cx="17" cy="17" r="12.5" fill="#ead9b8"/><circle cx="17" cy="16" r="6.6" fill="#06080f"/><circle cx="17" cy="16" r="5" fill="none" stroke="#2e8bff" stroke-width="2.2"/><circle cx="19" cy="14" r="1.3" fill="#fff"/></svg>
+      BeyaBear's
+    </a>
+    <nav aria-label="Sections">
+      <a href="#oeil">L'œil</a>
+      <a href="#compagnons">Compagnons</a>
+      <a href="#film">Le film</a>
+      <a href="#collection">Collection</a>
+      <a href="#technologie">Technologie</a>
+    </nav>
+    <a class="btn solid" href="https://akhimysah.github.io/osiris/boozzo/">Essayer la démo</a>
+  </div>
+</header>
+
+<main id="haut">
+  <section class="hero">
+    <video autoplay muted loop playsinline preload="auto" poster="media/ciel.jpg" aria-label="Des peluches BeyaBear's tombent du ciel au milieu des nuages">
+      <source src="media/ciel.mp4" type="video/mp4">
+    </video>
+    <div class="shade"></div>
+    <div class="wrap">
+      <h1><span>Un regard.</span><span class="glow">Mille émotions.</span></h1>
+      <p>BeyaBear's est la peluche dont l'œil est un écran. Elle appelle les proches, raconte des histoires, répond aux questions et veille la nuit.</p>
+      <div class="actions">
+        <a class="btn solid" href="#oeil">Découvrir l'œil</a>
+        <a class="btn line" href="#film">Voir le film</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band manifest">
+    <div class="wrap rise">
+      <p>Un doudou que l'on serre dans ses bras. <em>Un écran rond que l'on regarde dans les yeux.</em></p>
+      <div class="facts">
+        <div><b>1 œil</b><span>Un écran rond tactile au centre du visage, à la place des yeux cousus.</span></div>
+        <div><b>10 compagnons</b><span>Dix personnages, chacun avec sa tenue, sa couleur d'iris et son univers.</span></div>
+        <div><b>0 clavier</b><span>Tout se commande à la voix ou d'un doigt sur l'œil.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="oeil">
+    <div class="wrap">
+      <div class="head rise">
+        <span class="label">L'œil</span>
+        <h2 class="title">Tout se passe dans son regard.</h2>
+        <p class="lead">La peluche ne bouge pas. C'est son œil qui change : un iris vivant au repos, puis l'écran de ce que l'enfant demande.</p>
+      </div>
+      <div class="eye-grid">
+        <div class="modes rise" role="tablist" aria-label="Ce que l'œil sait faire">
+          <button class="mode" role="tab" data-view="iris" type="button"><i>01</i><b>Le regard</b><span>Au repos, un iris lumineux à la couleur du compagnon.</span></button>
+          <button class="mode" role="tab" data-view="call" type="button"><i>02</i><b>Appels vidéo</b><span>Le visage de mamie apparaît dans l'œil. Les proches rejoignent l'appel depuis un simple lien.</span></button>
+          <button class="mode" role="tab" data-view="story" type="button"><i>03</i><b>Histoires du soir</b><span>Une voix douce raconte, l'œil s'habille de nuit et d'étoiles.</span></button>
+          <button class="mode" role="tab" data-view="talk" type="button"><i>04</i><b>Assistant vocal</b><span>L'enfant pose sa question à voix haute, la peluche répond avec des mots simples.</span></button>
+          <button class="mode" role="tab" data-view="video" type="button"><i>05</i><b>Vidéos</b><span>Dessins animés et clips se regardent directement dans l'œil.</span></button>
+          <button class="mode" role="tab" data-view="meteo" type="button"><i>06</i><b>Météo</b><span>Le temps qu'il fait dehors et la carte des nuages de sa ville.</span></button>
+          <button class="mode" role="tab" data-view="clock" type="button"><i>07</i><b>Horloge</b><span>L'heure en grands chiffres lumineux, lisible de l'autre bout de la chambre.</span></button>
+          <button class="mode" role="tab" data-view="night" type="button"><i>08</i><b>Veilleuse</b><span>Une lumière chaude qui rassure jusqu'au sommeil.</span></button>
+        </div>
+        <div class="stage rise">
+          <div class="eyeball">
+            <div class="rim"><div class="glass" aria-live="polite">
+              <div class="view v-iris" data-view="iris" role="img" aria-label="Iris bleu lumineux"></div>
+              <div class="view v-call" data-view="call"><div class="stack"><div class="who">M</div><b>Mamie</b><small>Appel en cours</small><div class="keys"><u></u><u class="end"></u><u></u></div></div></div>
+              <div class="view v-story" data-view="story"><div class="stack"><div class="moon"></div><b>Le petit nuage qui voulait voyager</b><div class="bar"></div><small>Histoire du soir</small></div></div>
+              <div class="view v-talk" data-view="talk"><div class="stack"><div class="wave"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><b>« Pourquoi le ciel est bleu ? »</b><small>Je t'écoute</small></div></div>
+              <div class="view v-video" data-view="video"><img src="media/envol.webp" alt="" loading="lazy"><div class="play"></div></div>
+              <div class="view v-meteo" data-view="meteo"><div class="stack"><div class="sun"></div><b>18°</b><small>Grand soleil</small></div></div>
+              <div class="view v-clock" data-view="clock"><div class="stack"><b id="clockNow">20:30</b><small>Bonne soirée</small></div></div>
+              <div class="view v-night" data-view="night" role="img" aria-label="Lumière chaude de veilleuse"></div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="compagnons" style="padding-top:0">
+    <div class="wrap head rise">
+      <span class="label">Les compagnons</span>
+      <h2 class="title">Chacun son regard, chacun son monde.</h2>
+      <p class="lead">Dix personnages à collectionner. La couleur de l'iris annonce leur caractère : la créativité, le jeu, la stratégie, la gourmandise, le rêve, l'aventure.</p>
+    </div>
+    <div class="rail" tabindex="0" aria-label="Galerie des compagnons">
+      <figure class="card"><img src="media/explorateur.webp" alt="Peluche exploratrice à l'iris ambre, son regard ouvre un portail vers une montagne" loading="lazy"><figcaption><b>L'exploratrice</b><span>Iris ambre. Son regard ouvre des portes sur le monde.</span></figcaption></figure>
+      <figure class="card"><img src="media/artiste.webp" alt="Peluche à l'iris rose entourée de papillons de couleur et d'un chevalet" loading="lazy"><figcaption><b>L'artiste</b><span>Iris rose. Elle peint avec la lumière.</span></figcaption></figure>
+      <figure class="card"><img src="media/stratege.webp" alt="Peluche à l'iris bleu devant un échiquier lumineux" loading="lazy"><figcaption><b>Le stratège</b><span>Iris bleu. Il a toujours un coup d'avance.</span></figcaption></figure>
+      <figure class="card"><img src="media/sportif.webp" alt="Peluche à l'iris vert avec un ballon de football" loading="lazy"><figcaption><b>Le sportif</b><span>Iris vert. De l'énergie à revendre.</span></figcaption></figure>
+      <figure class="card"><img src="media/patissiere.webp" alt="Peluche en toque de chef à l'iris bleu, entourée de gâteaux" loading="lazy"><figcaption><b>La pâtissière</b><span>Iris azur. Elle transforme la cuisine en fête.</span></figcaption></figure>
+      <figure class="card"><img src="media/reveuse.webp" alt="Peluche à l'iris doré assise sur un nuage, entourée d'étoiles" loading="lazy"><figcaption><b>La rêveuse</b><span>Iris doré. Elle allume les étoiles avant de dormir.</span></figcaption></figure>
+      <figure class="card"><img src="media/equipage.webp" alt="Les compagnons BeyaBear's réunis dans la nacelle d'une montgolfière" loading="lazy"><figcaption><b>L'équipage au complet</b><span>Dix compagnons, une seule nacelle.</span></figcaption></figure>
+    </div>
+    <div class="wrap rail-tools">
+      <button class="round" data-rail="-1" type="button" aria-label="Compagnon précédent">←</button>
+      <button class="round" data-rail="1" type="button" aria-label="Compagnon suivant">→</button>
+    </div>
+  </section>
+
+  <section class="band" id="film" style="padding-top:0">
+    <div class="wrap">
+      <div class="head rise">
+        <span class="label">Le film</span>
+        <h2 class="title">Le bonheur tombe du ciel.</h2>
+        <p class="lead">Une montgolfière, des cigognes et des centaines de parachutes rouges : c'est ainsi qu'un BeyaBear's arrive dans les bras d'un enfant.</p>
+      </div>
+      <div class="film rise">
+        <video id="filmVideo" autoplay muted loop playsinline preload="metadata" poster="media/film.jpg" aria-label="Film BeyaBear's : des cigognes livrent les peluches depuis une montgolfière">
+          <source src="media/film.mp4" type="video/mp4">
+        </video>
+        <button id="filmToggle" type="button">Pause</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tones" id="coloris">
+    <div class="wrap tone-grid">
+      <div class="bear rise" style="--tone-fur:#ead9b8;--tone-edge:#1b2a66;--tone-eye:#2e8bff" role="img" aria-label="Tête d'ourson BeyaBear's dans le coloris choisi">
+        <u class="ear-l"></u><u class="ear-r"></u><u class="face"></u><u class="pupil"></u>
+      </div>
+      <div class="head rise">
+        <span class="label">Six coloris</span>
+        <h2 class="title">Coloris <span id="toneName">Marine</span>.</h2>
+        <p class="lead">La même silhouette, six personnalités. La fourrure change, la lumière de l'œil aussi.</p>
+        <div class="swatches" role="group" aria-label="Choisir un coloris">
+          <button class="swatch" type="button" aria-pressed="false" data-fur="#a9683a" data-edge="#4a2412" data-eye="#ff8a1f"><i style="background:#a9683a"></i>Chocolat</button>
+          <button class="swatch" type="button" aria-pressed="true" data-fur="#ead9b8" data-edge="#1b2a66" data-eye="#2e8bff"><i style="background:#1b2a66"></i>Marine</button>
+          <button class="swatch" type="button" aria-pressed="false" data-fur="#8aa04a" data-edge="#34451a" data-eye="#7dff3a"><i style="background:#8aa04a"></i>Kaki</button>
+          <button class="swatch" type="button" aria-pressed="false" data-fur="#f2a7b8" data-edge="#a8324a" data-eye="#ff4fa3"><i style="background:#f2a7b8"></i>Rose poudré</button>
+          <button class="swatch" type="button" aria-pressed="false" data-fur="#a3cdf2" data-edge="#1f5d94" data-eye="#2e8bff"><i style="background:#a3cdf2"></i>Bleu ciel</button>
+          <button class="swatch" type="button" aria-pressed="false" data-fur="#bda2e6" data-edge="#3d1f73" data-eye="#b44dff"><i style="background:#bda2e6"></i>Violet</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="collection">
+    <div class="wrap split">
+      <img class="rise" src="media/atelier.webp" alt="Collection BeyaBear's : blouson, sweat, tee-shirts, sac à dos, casquette, gourde et casque aux couleurs de la marque" loading="lazy">
+      <div class="head rise">
+        <span class="label">La collection</span>
+        <h2 class="title">Une marque qui se porte.</h2>
+        <p class="lead">Le logo brodé en relief, façon fourrure, passe du doudou au vestiaire. Une ligne streetwear pour les enfants et pour leurs parents.</p>
+        <ul class="pieces">
+          <li>Blouson teddy</li><li>Sweat à capuche</li><li>Tee-shirt</li><li>Casquette</li><li>Sac à dos</li><li>Tote bag</li><li>Gourde</li><li>Casque audio</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="technologie" style="padding-top:0">
+    <div class="wrap">
+      <div class="head rise">
+        <span class="label">Technologie</span>
+        <h2 class="title">Un ordinateur caché sous la fourrure.</h2>
+        <p class="lead">Rien ne dépasse : l'écran affleure le visage, la caméra tient dans un œillet de dix millimètres, le son sort du dos.</p>
+      </div>
+      <div class="spec rise">
+        <div><small>Écran</small><b>Rond, 3,4 pouces</b><span>Tactile, 800 × 800 pixels, verre renforcé.</span></div>
+        <div><small>Caméra</small><b>12 mégapixels</b><span>Dissimulée au-dessus de l'œil. Seul le petit objectif est visible.</span></div>
+        <div><small>Son</small><b>Stéréo 2 × 3 W</b><span>Deux haut-parleurs et une voix douce, enregistrée phrase par phrase.</span></div>
+        <div><small>Voix</small><b>Commande vocale</b><span>On l'appelle par son nom, elle ouvre ce qu'on lui demande.</span></div>
+        <div><small>Reconnaissance</small><b>Elle reconnaît les siens</b><span>Les visages de la famille sont enregistrés sur l'appareil.</span></div>
+        <div><small>Connexion</small><b>Wi-Fi et Bluetooth</b><span>Forfait mobile familial en préparation.</span></div>
+      </div>
+      <p class="note">Caractéristiques du prototype en cours d'assemblage. Elles peuvent évoluer avant la série.</p>
+
+      <div class="care">
+        <article class="rise"><h3>Les parents choisissent les contacts</h3><p>La peluche n'appelle et ne reçoit que les proches enregistrés par la famille.</p></article>
+        <article class="rise"><h3>Des mots à hauteur d'enfant</h3><p>Les réponses sont courtes, simples et adaptées à tous les âges.</p></article>
+        <article class="rise"><h3>Un doudou avant tout</h3><p>Quand l'écran s'éteint, il reste une peluche que l'on emmène partout.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band final">
+    <img src="media/famille.webp" alt="" loading="lazy">
+    <div class="wrap rise">
+      <h2>Regardez-le dans l'œil.</h2>
+      <p>La démonstration fonctionne dès maintenant dans un navigateur : le menu, les appels, les histoires et la voix.</p>
+      <div class="actions">
+        <a class="btn solid" href="https://akhimysah.github.io/osiris/boozzo/">Essayer la démo</a>
+        <a class="btn line" href="#oeil">Revoir l'œil</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 BeyaBear's</span>
+    <span>Un regard. Mille émotions.</span>
+  </div>
+</footer>
+<script src="app.js"></script>
+<!--/BODY-->
+</body>
+</html>
