@@ -1,4 +1,4 @@
-// BOOZZO — l'application de l'œil.
+// BeyaBear’s — l'application de l'œil.
 // La peluche reste immobile : tout se passe dans l'écran rond (#eye).
 // Le panneau (#panel) sert de télécommande sur téléphone ou ordinateur.
 
@@ -56,7 +56,7 @@ const APPS = [
   ['iris', 'Iris', 'c-iris'],
   ['esim', 'Forfait', 'c-esim'],
 ];
-// Applications officielles : BOOZZO ne les intègre pas, il les ouvre. Sur un appareil Android,
+// Applications officielles : BeyaBear’s ne les intègre pas, il les ouvre. Sur un appareil Android,
 // le lien lance l'application installée ; ailleurs, il ouvre son site dans un nouvel onglet.
 const EXTERNAL = [
   // WhatsApp Web gère les appels audio et vidéo depuis 2026 ; sur téléphone, le lien ouvre l'application.
@@ -75,7 +75,7 @@ const guestMode = Boolean(guestCallId || contactId);
 const kiosk = params.has('oeil');
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-// Identifiant de cet appareil BOOZZO : ses proches lui sont rattachés.
+// Identifiant de cet appareil BeyaBear’s : ses proches lui sont rattachés.
 const uuid = () =>
   crypto.randomUUID?.() ??
   '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16));
@@ -92,7 +92,7 @@ const state = {
   color: COLORS[store.get('color')] ? store.get('color') : 'Azur',
   assistant: false,
   youtube: false, // la recherche YouTube est-elle disponible sur ce serveur ?
-  server: true, // faux quand la page est servie seule, sans le serveur BOOZZO (démonstration)
+  server: true, // faux quand la page est servie seule, sans le serveur BeyaBear’s (démonstration)
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
   talk: [], // conversation avec l'assistant : { role, content }
   camera: null,
@@ -147,7 +147,7 @@ function qrSvg(text) {
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) path += `M${c + 2} ${r + 2}h1v1h-1z`;
   return `<svg class="qr" viewBox="0 0 ${n + 4} ${n + 4}" shape-rendering="crispEdges" role="img" aria-label="QR code de l’appel"><rect width="100%" height="100%" fill="#fff"/><path fill="#000" d="${path}"/></svg>`;
 }
-const backButton = '<button class="back" data-go="menu" type="button">‹ Accueil BOOZZO</button>';
+const backButton = '<button class="back" data-go="menu" type="button">‹ Accueil BeyaBear’s</button>';
 
 // ---------- Navigation ----------
 
@@ -188,18 +188,18 @@ function openMenu({ page = 0 } = {}) {
   const pages = Math.ceil(tiles.length / 6);
   state.menuPage = ((page % pages) + pages) % pages;
   screen.innerHTML = `<div class="menu"><div class="clock">${time}</div><div class="grid">${tiles.slice(state.menuPage * 6, state.menuPage * 6 + 6).join('')}</div>
-    <div class="dock"><button data-go="home" type="button" aria-label="Revenir à l’iris">${ICON.home}</button><button data-listen type="button" aria-label="Parler à BOOZZO">${ICON.mic}</button><button data-page type="button" aria-label="Autres applications">${ICON.next}</button></div></div>`;
+    <div class="dock"><button data-go="home" type="button" aria-label="Revenir à l’iris">${ICON.home}</button><button data-listen type="button" aria-label="Parler à BeyaBear’s">${ICON.mic}</button><button data-page type="button" aria-label="Autres applications">${ICON.next}</button></div></div>`;
   renderHome();
 }
 function renderHome() {
-  panel.innerHTML = `<h2>Bonjour, je suis BOOZZO</h2>
+  panel.innerHTML = `<h2>Bonjour, je suis BeyaBear’s</h2>
     <p class="muted">Touchez mon œil ou choisissez une application. Vous pouvez aussi me parler.</p>
     <div class="apps">${APPS.map(([id, label, color]) => `<button data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.map((app) => externalTile(app)).join('')}</div>
-    <div class="row"><button class="btn" data-listen type="button">${ICON.mic}Parler à BOOZZO</button></div>
+    <div class="row"><button class="btn" data-listen type="button">${ICON.mic}Parler à BeyaBear’s</button></div>
     ${
       SpeechRecognition
-        ? `<label class="check"><input type="checkbox" id="wake" ${state.wake ? 'checked' : ''}> Écouter en continu le mot « BOOZZO »</label>
-           <p class="muted">Exemples : « BOOZZO, mets YouTube », « BOOZZO, appelle », « BOOZZO, raconte une histoire ».</p>`
+        ? `<label class="check"><input type="checkbox" id="wake" ${state.wake ? 'checked' : ''}> Écouter en continu le mot « Beya »</label>
+           <p class="muted">Exemples : « Beya, mets YouTube », « Beya, appelle », « Beya, raconte une histoire ».</p>`
         : '<p class="muted">La reconnaissance vocale n’est pas disponible dans ce navigateur. Utilisez Chrome ou Safari, ou écrivez à l’assistant.</p>'
     }`;
 }
@@ -214,10 +214,10 @@ function offerExternal([, label, , , url]) {
 // quand le téléphone lance la recopie, son écran passe au-dessus de l'œil ; quand il l'arrête, l'œil revient.
 
 function openPhone() {
-  sayInEye('Sur le téléphone, lancez la recopie de l’écran vers BOOZZO.', 'Téléphone');
+  sayInEye('Sur le téléphone, lancez la recopie de l’écran vers BeyaBear’s.', 'Téléphone');
   panel.innerHTML = `${backButton}<h2>Mon téléphone dans l’œil</h2>
-    <p>Affichez l’écran de votre téléphone dans l’œil de BOOZZO pour y retrouver toutes vos applications.</p>
-    <p><strong>iPhone</strong><br>Ouvrez le Centre de contrôle, touchez « Recopie de l’écran », puis choisissez « BOOZZO ». Pour arrêter, touchez « Arrêter la recopie ».</p>
+    <p>Affichez l’écran de votre téléphone dans l’œil de BeyaBear’s pour y retrouver toutes vos applications.</p>
+    <p><strong>iPhone</strong><br>Ouvrez le Centre de contrôle, touchez « Recopie de l’écran », puis choisissez « BeyaBear’s ». Pour arrêter, touchez « Arrêter la recopie ».</p>
     <p><strong>Android</strong><br>Reliez le téléphone à la peluche par câble USB, ou en Wi-Fi après l’avoir autorisé une première fois (voir le guide d’installation).</p>
     <p class="muted">La recopie fonctionne uniquement sur la peluche, une fois sa carte installée avec le kit du dossier « peluche ». Le téléphone et la peluche doivent être sur le même Wi-Fi.</p>`;
 }
@@ -256,7 +256,7 @@ function openClock() {
   const now = new Date();
   panel.innerHTML = `${backButton}<h2>Heure</h2>
     <p>Il est ${now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}, ${now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.</p>
-    <p class="muted">L’heure s’affiche dans l’œil en grands chiffres rouges. Dites « BOOZZO, quelle heure est-il ? » pour l’afficher.</p>`;
+    <p class="muted">L’heure s’affiche dans l’œil en grands chiffres rouges. Dites « Beya, quelle heure est-il ? » pour l’afficher.</p>`;
 }
 
 // ---------- Torche : l'œil éclaire ----------
@@ -293,7 +293,7 @@ async function phoneLamp(on) {
 function renderTorch() {
   screen.innerHTML = `<div class="beam beam-${torch.mode}"></div>`;
   panel.innerHTML = `${backButton}<h2>Torche</h2>
-    <p>L’œil de BOOZZO éclaire. ${torch.lamp ? 'La lampe du téléphone est allumée aussi.' : 'Montez la luminosité de l’écran au maximum pour plus de lumière.'}</p>
+    <p>L’œil de BeyaBear’s éclaire. ${torch.lamp ? 'La lampe du téléphone est allumée aussi.' : 'Montez la luminosité de l’écran au maximum pour plus de lumière.'}</p>
     <div class="row">
       <button class="btn ${torch.mode === 'white' ? '' : 'light'}" type="button" data-torch="white" aria-pressed="${torch.mode === 'white'}">Lumière blanche</button>
       <button class="btn ${torch.mode === 'night' ? '' : 'light'}" type="button" data-torch="night" aria-pressed="${torch.mode === 'night'}">Veilleuse</button>
@@ -467,7 +467,7 @@ function renderWeather() {
         .join('')
     : '';
   panel.innerHTML = `${backButton}<h2>Météo</h2>
-    ${now ? `<p><strong>${esc(place.name)}</strong>${place.region ? ', ' + esc(place.region) : ''} : ${label.toLowerCase()}, ${Math.round(now.temperature_2m)}° maintenant.</p>` : `<p>${esc(weather.message || 'Indiquez la ville où vous habitez : BOOZZO affiche le temps qu’il y fait dans son œil.')}</p>`}
+    ${now ? `<p><strong>${esc(place.name)}</strong>${place.region ? ', ' + esc(place.region) : ''} : ${label.toLowerCase()}, ${Math.round(now.temperature_2m)}° maintenant.</p>` : `<p>${esc(weather.message || 'Indiquez la ville où vous habitez : BeyaBear’s affiche le temps qu’il y fait dans son œil.')}</p>`}
     ${place ? `<div class="row"><button class="btn" id="mapToggle" type="button">${weather.view === 'map' ? 'Voir la météo du jour' : 'Voir la carte animée'}</button></div>` : ''}
     ${weather.view === 'map' ? '<p class="muted">Les nuages ou les pluies des dernières heures défilent dans l’œil, autour de votre ville.</p>' : ''}
     ${days ? `<ul class="favs">${days}</ul>` : ''}
@@ -523,7 +523,7 @@ const faceState = { ready: false, status: 'Préparation…', last: '' };
 function renderFaces() {
   const list = faces();
   panel.innerHTML = `${backButton}<h2>Visages</h2>
-    <p>BOOZZO reconnaît les personnes qui se sont enregistrées et les salue par leur prénom.</p>
+    <p>BeyaBear’s reconnaît les personnes qui se sont enregistrées et les salue par leur prénom.</p>
     <p class="notice">Chaque personne s’enregistre elle-même, avec son accord (celui d’un parent pour un enfant). L’empreinte du visage reste sur cet appareil et peut être effacée à tout moment.</p>
     <p><strong id="faceStatus">${esc(faceState.status)}</strong></p>
     <form class="line" id="faceForm"><input name="name" maxlength="30" required placeholder="Prénom à enregistrer" aria-label="Prénom" autocomplete="off"><button class="btn" ${faceState.ready ? '' : 'disabled'}>Enregistrer ce visage</button></form>
@@ -598,14 +598,14 @@ function enrollFace(name) {
 const ESIM_OFFERS = [
   { id: 'decouverte', name: 'Découverte', detail: 'Appels vidéo et assistant, usage occasionnel' },
   { id: 'famille', name: 'Famille', detail: 'Appels, vidéos et musique au quotidien' },
-  { id: 'voyage', name: 'Voyage', detail: 'Pour emmener BOOZZO en vacances, sans Wi-Fi' },
+  { id: 'voyage', name: 'Voyage', detail: 'Pour emmener BeyaBear’s en vacances, sans Wi-Fi' },
 ];
 function openEsim() {
   const saved = store.get('esim', {});
   const who = saved.who === 'adulte' ? 'adulte' : 'enfant';
   sayInEye(saved.offer ? 'Votre choix est noté.' : 'Pas encore de forfait.', 'Forfait');
-  panel.innerHTML = `${backButton}<h2>Forfait BOOZZO</h2>
-    <p>Avec un forfait eSIM, BOOZZO se connecte tout seul, partout, sans Wi-Fi. C’est un parent qui souscrit, pour son enfant ou pour lui-même.</p>
+  panel.innerHTML = `${backButton}<h2>Forfait BeyaBear’s</h2>
+    <p>Avec un forfait eSIM, BeyaBear’s se connecte tout seul, partout, sans Wi-Fi. C’est un parent qui souscrit, pour son enfant ou pour lui-même.</p>
     <p class="notice"><strong>Aperçu.</strong> La souscription n’est pas encore ouverte : rien n’est vendu ni facturé ici. Les offres ci-dessous sont des exemples, leurs prix restent à définir.</p>
     <p class="muted">Pour qui ?</p>
     <div class="row">
@@ -691,7 +691,7 @@ function playVideo(app, id) {
   screen.innerHTML = `<iframe title="${VIDEO[app].label}" allow="autoplay; encrypted-media" playsinline src="${VIDEO[app].src(id)}"></iframe>`;
   focusEye();
 }
-// Recherche YouTube : par le serveur BOOZZO, qui détient la clé de l'API YouTube.
+// Recherche YouTube : par le serveur BeyaBear’s, qui détient la clé de l'API YouTube.
 const search = { q: '', videos: [], message: '' };
 function searchResultsHtml() {
   if (search.message) return `<p class="muted">${esc(search.message)}${search.q ? ` <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(search.q)}" target="_blank" rel="noopener">Ouvrir la recherche sur YouTube</a>, puis copiez le lien de la vidéo.` : ''}</p>`;
@@ -720,8 +720,8 @@ async function searchYoutube(q) {
     show();
   }
 }
-// Mots à retirer d'une phrase comme « BOOZZO, mets des comptines sur YouTube » pour garder la recherche.
-const SEARCH_NOISE = /\b(boozzo|bouzo|mets?|mettre|lance|ouvre|montre|affiche|joue|cherche|trouve|moi|nous|sur|dans|you ?tube|videos?|une?|des|du|de la|de|les?|la|l|s il te plait|stp)\b/g;
+// Mots à retirer d'une phrase comme « Beya, mets des comptines sur YouTube » pour garder la recherche.
+const SEARCH_NOISE = /\b(beya ?bears?|bea ?bears?|beya|bea|baya|mets?|mettre|lance|ouvre|montre|affiche|joue|cherche|trouve|moi|nous|sur|dans|you ?tube|videos?|une?|des|du|de la|de|les?|la|l|s il te plait|stp)\b/g;
 function openVideo(app, { spoken = '' } = {}) {
   const { label, hint, placeholder, starters } = VIDEO[app];
   const favorites = store.get(videoKey(app), []);
@@ -787,7 +787,7 @@ function renderPhoto() {
   panel.innerHTML = `${backButton}<h2>Photo</h2>
     <div class="row">
       ${state.camera ? `<button class="btn" id="snap" type="button">${ICON.photo}Prendre la photo</button>` : `<button class="btn" data-go="photo" type="button">${ICON.photo}Nouvelle photo</button>`}
-      ${state.shot ? '<a class="btn light" id="save" download="boozzo-photo.jpg">Enregistrer</a>' : ''}
+      ${state.shot ? '<a class="btn light" id="save" download="beyabears-photo.jpg">Enregistrer</a>' : ''}
     </div>
     ${shots.length ? `<p class="muted">Dernières photos</p><div class="shots">${shots.map((s, i) => `<button type="button" data-shot="${i}" aria-label="Photo ${i + 1}"><img alt="" src="${s}"></button>`).join('')}</div>` : '<p class="muted">Les photos restent sur cet appareil.</p>'}`;
   if (state.shot) $('#save').href = state.shot;
@@ -810,10 +810,10 @@ async function snap() {
 function showShot(dataUrl) {
   stopCamera();
   state.shot = dataUrl;
-  screen.innerHTML = `<img alt="Photo prise par BOOZZO" src="${dataUrl}">`;
+  screen.innerHTML = `<img alt="Photo prise par BeyaBear’s" src="${dataUrl}">`;
 }
 
-// ---------- Voix : parole de BOOZZO ----------
+// ---------- Voix : parole de BeyaBear’s ----------
 
 let speechRun = 0;
 function stopSpeaking() {
@@ -835,7 +835,7 @@ function frenchVoice() {
   const voices = window.speechSynthesis?.getVoices() || [];
   return voices.find((v) => /^fr/i.test(v.lang) && /am[ée]lie|audrey|aurelie|google/i.test(v.name)) || voices.find((v) => /^fr/i.test(v.lang));
 }
-// La voix de BOOZZO. Les phrases prévues (histoires, petites réponses) ont un enregistrement dans voix/ :
+// La voix de BeyaBear’s. Les phrases prévues (histoires, petites réponses) ont un enregistrement dans voix/ :
 // une voix douce, la même sur tous les appareils, que l'iPhone lit comme n'importe quel son.
 // Les autres phrases (réponses de l'assistant, heure, prénoms) passent par la voix de l'appareil.
 const voice = new Audio();
@@ -883,9 +883,9 @@ function sayRecorded(sentence) {
   });
 }
 // Dit le texte phrase par phrase et affiche la phrase en cours dans l'œil.
-async function speak(text, label = 'BOOZZO') {
+async function speak(text, label = 'BeyaBear’s') {
   stopSpeaking();
-  stopRecognizer(); // BOOZZO ne doit pas s'entendre parler
+  stopRecognizer(); // BeyaBear’s ne doit pas s'entendre parler
   const run = speechRun;
   for (const sentence of splitSentences(text)) {
     if (run !== speechRun) return;
@@ -903,14 +903,14 @@ function openChat() {
 }
 function renderChat() {
   panel.innerHTML = `${backButton}<h2>Assistant</h2>
-    ${state.assistant ? '' : '<p class="notice"><strong>Mode démonstration.</strong> BOOZZO répond ici avec quelques réponses et histoires intégrées. La conversation libre, sur n’importe quel sujet, s’active quand l’assistant est branché (voir README).</p>'}
+    ${state.assistant ? '' : '<p class="notice"><strong>Mode démonstration.</strong> BeyaBear’s répond ici avec quelques réponses et histoires intégrées. La conversation libre, sur n’importe quel sujet, s’active quand l’assistant est branché (voir README).</p>'}
     <div class="talk" id="talk">${state.talk.map((m) => `<div class="${m.role}">${esc(m.content)}</div>`).join('')}</div>
     <div class="row"><button class="btn" data-listen type="button">${ICON.mic}Parler</button><button class="btn light" id="quiet" type="button">Silence</button></div>
-    <form class="line" id="chatForm"><input name="text" maxlength="500" required placeholder="Ou écrivez ici…" aria-label="Message pour BOOZZO" autocomplete="off"><button class="btn">Envoyer</button></form>`;
+    <form class="line" id="chatForm"><input name="text" maxlength="500" required placeholder="Ou écrivez ici…" aria-label="Message pour BeyaBear’s" autocomplete="off"><button class="btn">Envoyer</button></form>`;
   const talk = $('#talk');
   talk.scrollTop = talk.scrollHeight;
 }
-// ---------- Réponses intégrées : BOOZZO sans assistant branché ----------
+// ---------- Réponses intégrées : BeyaBear’s sans assistant branché ----------
 // Quelques réponses et histoires embarquées, pour que la peluche parle même sans serveur ni clé.
 // Ce n'est pas une intelligence artificielle : ce qui n'est pas prévu ici reçoit une réponse d'attente.
 
@@ -926,7 +926,7 @@ function openStories({ play = false } = {}) {
 }
 function renderStories(playing = -1) {
   panel.innerHTML = `${backButton}<h2>Histoires</h2>
-    <p class="muted">Touchez une histoire : BOOZZO la raconte à voix haute, et elle défile dans son œil.</p>
+    <p class="muted">Touchez une histoire : BeyaBear’s la raconte à voix haute, et elle défile dans son œil.</p>
     <ul class="favs">${STORIES.map((story, i) => `<li><button class="btn ${i === playing ? '' : 'light'}" type="button" data-story="${i}">${ICON.story}${story.title}</button></li>`).join('')}</ul>
     <div class="row"><button class="btn light" id="quiet" type="button">Arrêter l’histoire</button></div>
     ${state.assistant ? '<div class="row"><button class="btn light" id="newStory" type="button">Inventer une nouvelle histoire</button></div>' : ''}`;
@@ -951,7 +951,7 @@ async function builtInReply(spoken) {
         ? `Il est ${now.toLocaleTimeString('fr-FR', { hour: 'numeric', minute: '2-digit' }).replace(':', ' heures ')}.`
         : /quel jour|la date|on est quel/.test(text)
           ? `Nous sommes le ${now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.`
-          : /qui es.tu|tu es qui|comment tu t.appelles|ton nom|c.est quoi boozzo/.test(text)
+          : /qui es.tu|tu es qui|comment tu t.appelles|ton nom|c.est quoi (beya|bea)/.test(text)
             ? REPLIES.who
             : /que sais.tu|tu sais faire|peux.tu faire|tu fais quoi|a quoi tu sers/.test(text)
               ? REPLIES.skills
@@ -998,7 +998,7 @@ async function ask(text) {
     state.talk.push({ role: 'assistant', content: reply });
     if (state.screen !== 'chat' || run !== speechRun) return;
     renderChat();
-    speak(reply, story ? 'Histoire' : 'BOOZZO');
+    speak(reply, story ? 'Histoire' : 'BeyaBear’s');
   } catch (error) {
     state.talk.pop();
     if (state.screen !== 'chat') return;
@@ -1092,10 +1092,10 @@ function listen() {
     stopRecognizer();
   }
 }
-// Écoute continue : n'agit que si la phrase contient « BOOZZO » (ou ce que le navigateur en transcrit).
-const WAKE = /\b(bo+u?[zs]{1,2}[oa]u?t?|bou[zs]+ou|bo[zs]o|bouz+eau)\b[\s,.!?]*/i;
+// Écoute continue : n'agit que si la phrase contient « BeyaBear’s » (ou ce que le navigateur en transcrit).
+const WAKE = /(?:^|[\s,.!?])((?:b[eéè]y?a|baya)(?:[\s-]?b(?:ear|er|ère|air|aire)s?)?)(?![a-zà-ÿ])[\s,.!?]*/i;
 function startWake() {
-  // Pas d'écoute continue pendant un appel (micro partagé) ni pendant que BOOZZO parle.
+  // Pas d'écoute continue pendant un appel (micro partagé) ni pendant que BeyaBear’s parle.
   if (!SpeechRecognition || !state.wake || recognizer || call.role || call.busy || window.speechSynthesis?.speaking) return;
   const r = (recognizer = new SpeechRecognition());
   r.lang = 'fr-FR';
@@ -1133,7 +1133,7 @@ function startWake() {
 
 // ---------- Appels vidéo dans l'œil (WebRTC entre deux appareils) ----------
 // Signalisation : celui qui ouvre l'appel écrit avec le rôle 'eye', celui qui le rejoint avec 'guest'.
-// BOOZZO ouvre l'appel quand il appelle ; le proche l'ouvre quand c'est lui qui appelle BOOZZO.
+// BeyaBear’s ouvre l'appel quand il appelle ; le proche l'ouvre quand c'est lui qui appelle BeyaBear’s.
 
 const call = { id: '', role: '', pc: null, local: null, cursor: '', timer: 0, muted: false, status: '', connected: false, busy: false, ring: '', name: '', polls: 0, run: 0, peer: null, conns: [], remote: '', media: null, wa: null };
 // Adresse de la page sans ses paramètres : l'application peut être servie dans un sous-dossier.
@@ -1142,7 +1142,7 @@ const callLink = () => `${pageUrl}?appel=${call.id}`;
 const contactLink = (id) => `${pageUrl}?proche=${id}`;
 const contacts = () => store.get('contacts', []);
 const myRingSide = guestMode ? 'guest' : 'eye';
-const peerLabel = () => call.name || (guestMode ? 'BOOZZO' : 'ton proche');
+const peerLabel = () => call.name || (guestMode ? 'BeyaBear’s' : 'ton proche');
 
 function openCall({ start = false, spoken = '' } = {}) {
   renderCall();
@@ -1159,7 +1159,7 @@ function renderCall() {
   let body;
   if (active) {
     // Message WhatsApp prêt à envoyer : le proche touche le lien et l'appel démarre.
-    const message = encodeURIComponent(`Appel vidéo BOOZZO : touche ce lien pour me rejoindre. ${callLink()}`);
+    const message = encodeURIComponent(`Appel vidéo BeyaBear’s : touche ce lien pour me rejoindre. ${callLink()}`);
     const invite =
       !guestMode && !call.ring && call.role === 'eye' && !call.connected
         ? `<div class="row"><a class="btn" href="https://wa.me/${call.wa?.phone || ''}?text=${message}" target="_blank" rel="noopener">${ICON.chat}Envoyer${call.wa ? ' à ' + esc(call.wa.name) : ''} par WhatsApp</a>
@@ -1181,29 +1181,29 @@ function renderCall() {
       <div class="row"><button class="btn" data-call="accept" type="button" ${busy}>${ICON.call}Répondre</button><button class="btn danger" data-call="decline" type="button">Refuser</button></div>`;
   } else if (contactId) {
     body = state.me
-      ? `<p>${esc(call.status || `Bonjour ${state.me.name} ! Vous êtes relié à la peluche BOOZZO.`)}</p>
-         <div class="row"><button class="btn" id="callBoozzo" type="button" ${busy}>${ICON.call}Appeler BOOZZO</button></div>
-         <p class="muted">Gardez cette page ouverte pour recevoir les appels de BOOZZO, et touchez-la une fois pour activer la sonnerie. Ajoutez-la à l’écran d’accueil de votre téléphone pour la retrouver.</p>`
-      : `<p>${esc(call.status || 'Connexion à BOOZZO…')}</p>`;
+      ? `<p>${esc(call.status || `Bonjour ${state.me.name} ! Vous êtes relié à la peluche BeyaBear’s.`)}</p>
+         <div class="row"><button class="btn" id="callBoozzo" type="button" ${busy}>${ICON.call}Appeler BeyaBear’s</button></div>
+         <p class="muted">Gardez cette page ouverte pour recevoir les appels de BeyaBear’s, et touchez-la une fois pour activer la sonnerie. Ajoutez-la à l’écran d’accueil de votre téléphone pour la retrouver.</p>`
+      : `<p>${esc(call.status || 'Connexion à BeyaBear’s…')}</p>`;
   } else if (guestCallId) {
-    body = `<p>${esc(call.status || 'Un proche vous appelle depuis sa peluche BOOZZO.')}</p>
+    body = `<p>${esc(call.status || 'Un proche vous appelle depuis sa peluche BeyaBear’s.')}</p>
       <div class="row"><button class="btn" id="answer" type="button" ${busy}>${ICON.call}Répondre</button></div>
       <p class="muted">Votre caméra et votre micro seront partagés avec votre proche pendant l’appel.</p>`;
   } else {
     const list = contacts();
     const fresh = state.newContact;
-    body = `<p>${esc(call.status || 'Appelez un proche : son visage apparaît dans l’œil de BOOZZO.')}</p>
+    body = `<p>${esc(call.status || 'Appelez un proche : son visage apparaît dans l’œil de BeyaBear’s.')}</p>
       ${list.length ? `<ul class="favs">${list.map((c) => `<li><button class="btn" type="button" data-contact="${c.id}" ${busy}>${ICON.call}${esc(c.name)}</button>${c.phone ? `<button class="btn light wa" type="button" data-wa="${c.id}" ${busy} title="Ouvrir un appel et envoyer le lien par WhatsApp">Lien WhatsApp</button>` : ''}<button class="x" type="button" data-link="${c.id}" aria-label="Lien de ${esc(c.name)}" title="Afficher le lien">QR</button><button class="x" type="button" data-forget="${c.id}" aria-label="Retirer ${esc(c.name)}">×</button></li>`).join('')}</ul>` : ''}
       ${
         fresh
           ? `<div class="invite"><p><strong>Lien de ${esc(fresh.name)}</strong></p>${qrSvg(contactLink(fresh.id))}
-             <p class="muted">À ouvrir une seule fois sur le téléphone de ${esc(fresh.name)}, qui garde la page. Ensuite, dites « BOOZZO, appelle ${esc(fresh.name)} ».</p>
+             <p class="muted">À ouvrir une seule fois sur le téléphone de ${esc(fresh.name)}, qui garde la page. Ensuite, dites « Beya, appelle ${esc(fresh.name)} ».</p>
              <div class="row"><button class="btn light" data-share="${esc(contactLink(fresh.id))}" type="button">Envoyer le lien</button></div></div>`
           : ''
       }
       <form class="stack" id="contactForm"><input name="name" maxlength="30" required placeholder="Prénom du proche (ex. Mamie)" aria-label="Prénom du proche" autocomplete="off"><input name="phone" type="tel" maxlength="20" placeholder="Numéro WhatsApp, facultatif (ex. +33 6 12 34 56 78)" aria-label="Numéro WhatsApp, facultatif" autocomplete="off"><button class="btn light">Ajouter ce proche</button></form>
       <div class="row"><button class="btn" id="startCall" type="button" ${busy}>${ICON.call}Appeler avec un lien WhatsApp</button></div>
-      <p class="muted">BOOZZO ouvre l’appel et prépare un message WhatsApp avec un lien. Votre proche le touche, et son visage apparaît dans l’œil.</p>
+      <p class="muted">BeyaBear’s ouvre l’appel et prépare un message WhatsApp avec un lien. Votre proche le touche, et son visage apparaît dans l’œil.</p>
       <div class="row"><button class="btn light" id="deviceTest" type="button" ${busy}>${ICON.photo}Tester ma caméra et mon micro</button></div>
       <div id="deviceResult"></div>
       <details><summary>Réglages du relais vidéo</summary>
@@ -1257,7 +1257,7 @@ async function startCall(role, { callId = '', contact = null, wa = null } = {}) 
   setCallStatus('Ouverture de la caméra…');
   await serverReady;
   if (run !== call.run) return;
-  // Sans serveur BOOZZO, l'appel par lien passe par le relais public PeerJS ; la sonnerie d'un proche, elle, a besoin du serveur.
+  // Sans serveur BeyaBear’s, l'appel par lien passe par le relais public PeerJS ; la sonnerie d'un proche, elle, a besoin du serveur.
   const viaRelay = role === 'eye' ? !state.server : callId.startsWith(RELAY_PREFIX);
   if (viaRelay && contact?.id) {
     call.busy = false;
@@ -1301,14 +1301,14 @@ async function startCall(role, { callId = '', contact = null, wa = null } = {}) 
   call.timer = setInterval(pollCall, 1000);
 }
 
-// ---------- Appel par lien sans serveur BOOZZO : relais public PeerJS (open source, MIT) ----------
-// L'identifiant de l'appel est celui de BOOZZO sur le relais ; le proche qui ouvre le lien l'appelle directement.
+// ---------- Appel par lien sans serveur BeyaBear’s : relais public PeerJS (open source, MIT) ----------
+// L'identifiant de l'appel est celui de BeyaBear’s sur le relais ; le proche qui ouvre le lien l'appelle directement.
 // Pour utiliser son propre relais PeerServer : définir window.BOOZZO_PEER = { host, port, path, secure }.
 
 const RELAY_PREFIX = 'boozzo-';
 // Serveurs utilisés pour relier les deux appareils. Quand deux réseaux ne peuvent pas se joindre directement
 // (4G, certaines box), la vidéo doit passer par un serveur TURN. Ceux du relais public PeerJS sont un dépannage ;
-// un serveur TURN à soi peut être enregistré sur l'appareil BOOZZO (Appels > Réglages du relais vidéo).
+// un serveur TURN à soi peut être enregistré sur l'appareil BeyaBear’s (Appels > Réglages du relais vidéo).
 function relayIceServers() {
   const own = store.get('turn', null);
   return [
@@ -1332,7 +1332,7 @@ function diagText() {
   const path = { host: 'directe (même réseau)', srflx: 'directe (Internet)', prflx: 'directe (Internet)', relay: 'par le serveur de secours' }[diag.path];
   return [
     `Relais de mise en relation : ${diag.relay ? 'connecté' : 'non connecté'}`,
-    `${guestMode ? 'BOOZZO' : 'Votre proche'} : ${diag.peer ? 'présent' : 'pas encore là'}`,
+    `${guestMode ? 'BeyaBear’s' : 'Votre proche'} : ${diag.peer ? 'présent' : 'pas encore là'}`,
     `Liaison vidéo : ${video}${path ? ' · ' + path : ''}`,
     `Serveur de secours : ${diag.kinds.has('relay') ? 'disponible' : 'non disponible'}`,
   ];
@@ -1465,10 +1465,10 @@ async function startRelayCall(role, callId, run) {
     setCallStatus('Appel ouvert. Envoyez le lien, puis revenez sur cette page.');
   } else {
     call.remote = id;
-    // BOOZZO peut être momentanément en veille : on rappelle pendant deux minutes. Une tentative a vingt
+    // BeyaBear’s peut être momentanément en veille : on rappelle pendant deux minutes. Une tentative a vingt
     // secondes pour aboutir : la relancer plus tôt couperait une connexion en train de s'établir.
     let deadline = Date.now() + 120000;
-    let failure = 'BOOZZO ne répond pas. Demandez un nouveau lien.';
+    let failure = 'BeyaBear’s ne répond pas. Demandez un nouveau lien.';
     let retry = 0;
     dropped = () => {
       deadline = Date.now() + 30000;
@@ -1493,7 +1493,7 @@ async function startRelayCall(role, callId, run) {
     };
     peer.on('error', (error) => {
       if (peer !== call.peer || call.connected || error.type !== 'peer-unavailable') return;
-      setCallStatus('En attente de BOOZZO… gardez cette page ouverte.');
+      setCallStatus('En attente de BeyaBear’s… gardez cette page ouverte.');
       clearTimeout(retry);
       retry = setTimeout(dial, 3000);
     });
@@ -1724,7 +1724,7 @@ function unlockAudio() {
   } catch {}
 }
 document.addEventListener('pointerdown', unlockAudio);
-// Même règle pour la voix de BOOZZO : sur iPhone, elle ne parle qu'après un premier toucher.
+// Même règle pour la voix de BeyaBear’s : sur iPhone, elle ne parle qu'après un premier toucher.
 document.addEventListener('pointerdown', () => primeSpeech());
 const pageTitle = document.title;
 let ringer = 0;
@@ -1748,7 +1748,7 @@ function ringStart() {
   };
   ringer = setInterval(melody, 1800);
   melody();
-  document.title = '📞 Appel · BOOZZO';
+  document.title = '📞 Appel · BeyaBear’s';
   if (audio?.state !== 'running') toast('Touchez l’écran pour entendre la sonnerie.');
 }
 function ringStop() {
@@ -1790,7 +1790,7 @@ function declineIncoming() {
   call.status = 'Appel refusé.';
   renderCall();
 }
-// Surveille les appels entrants : ceux des proches côté BOOZZO, ceux de BOOZZO côté proche.
+// Surveille les appels entrants : ceux des proches côté BeyaBear’s, ceux de BeyaBear’s côté proche.
 async function watchRings() {
   if (call.role || call.busy) return;
   try {
@@ -1799,7 +1799,7 @@ async function watchRings() {
       const me = await api(`api/contacts/${contactId}`);
       const first = !state.me;
       state.me = me;
-      if (me.ring?.from === 'eye') incoming = { contact: me.id, name: 'BOOZZO', call: me.ring.call };
+      if (me.ring?.from === 'eye') incoming = { contact: me.id, name: 'BeyaBear’s', call: me.ring.call };
       if (first && !incoming) renderCall();
     } else if (contacts().length) {
       incoming = (await api(`api/devices/${deviceId}/rings`)).rings[0] || null;
@@ -1851,7 +1851,7 @@ document.addEventListener('click', (event) => {
   if (data.forget) return forgetContact(data.forget);
   if (data.wa) return startCall('eye', { wa: contacts().find((c) => c.id === data.wa) });
   if (data.share) {
-    if (navigator.share) return navigator.share({ title: 'BOOZZO', url: data.share }).catch(() => {});
+    if (navigator.share) return navigator.share({ title: 'BeyaBear’s', url: data.share }).catch(() => {});
     return navigator.clipboard?.writeText(data.share).then(
       () => toast('Lien copié.'),
       () => toast(data.share),
@@ -1900,7 +1900,7 @@ document.addEventListener('click', (event) => {
       call.local?.getAudioTracks().forEach((track) => (track.enabled = !call.muted));
       return renderCall();
     case 'callBoozzo':
-      return startCall('eye', { contact: { id: contactId, name: 'BOOZZO' } });
+      return startCall('eye', { contact: { id: contactId, name: 'BeyaBear’s' } });
   }
   // Toucher l'œil pendant un appel : relancer le son si le navigateur l'avait bloqué.
   if (!button && call.connected && event.target.closest('#eye')) return $('video.remote', screen)?.play().catch(() => {});
@@ -1962,7 +1962,7 @@ window.addEventListener('pagehide', () => {
 
 // ---------- Démarrage ----------
 
-// Le serveur BOOZZO répond-il ? Sinon la page tourne seule (démonstration) et les appels passent par le relais.
+// Le serveur BeyaBear’s répond-il ? Sinon la page tourne seule (démonstration) et les appels passent par le relais.
 const serverReady = api('api/config')
   .then((config) => {
     state.assistant = Boolean(config.assistant);
