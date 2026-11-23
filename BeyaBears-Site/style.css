@@ -310,6 +310,10 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
 
 @media (max-width: 900px) {
   .nav nav { display: none; }
+  .hero { display: block; min-height: 0; }
+  .hero video { position: relative; inset: auto; height: auto; aspect-ratio: 1248 / 704; object-fit: contain; z-index: 0; }
+  .hero .shade { display: none; }
+  .hero .wrap { padding-block: 26px 44px; }
   .nav .btn { margin-left: auto; }
   .eye-grid, .tone-grid, .split { grid-template-columns: minmax(0, 1fr); }
   .eye-grid .stage { order: -1; }
