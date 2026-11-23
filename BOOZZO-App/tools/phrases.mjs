@@ -1,4 +1,4 @@
-// Liste les phrases que BOOZZO dit sans assistant (ui/paroles.js), avec le nom de leur fichier audio.
+// Liste les phrases que BeyaBear’s dit sans assistant (ui/paroles.js), avec le nom de leur fichier audio.
 // Usage : node tools/phrases.mjs > phrases.json
 import fs from 'node:fs';
 import vm from 'node:vm';

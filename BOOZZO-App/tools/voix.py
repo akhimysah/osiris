@@ -1,4 +1,4 @@
-"""Génère les voix de BOOZZO : un fichier audio par phrase de ui/paroles.js.
+"""Génère les voix de BeyaBear’s : un fichier audio par phrase de ui/paroles.js.
 
 Voix : Piper « fr-siwis-medium » (moteur Piper open source ; voix sous licence CC BY 4.0,
 jeu de données SIWIS — mention de l'auteur requise). Les fichiers sont générés une fois pour
@@ -18,8 +18,8 @@ out = pathlib.Path(out)
 out.mkdir(parents=True, exist_ok=True)
 phrases = json.load(open(phrases_file, encoding="utf8"))
 for key, sentence in phrases:
-    # Prononciation du nom : il s'écrit BOOZZO et se dit « bozo ».
-    spoken = sentence.replace("BOOZZO", "Bozo")
+    # Prononciation du nom : il s'écrit BeyaBear’s et se dit « béya bèrz » ; on l'appelle « Beya ».
+    spoken = sentence.replace("BeyaBear’s", "Béya Bèrz").replace("Beya", "Béya")
     with tempfile.NamedTemporaryFile(suffix=".wav") as wav:
         # length_scale > 1 ralentit légèrement la voix, pour un ton plus posé.
         subprocess.run([piper, "--model", model, "--length_scale", "1.08", "--output_file", wav.name], input=spoken.encode("utf8"), check=True, capture_output=True)

@@ -29,4 +29,4 @@ http.createServer(async(req,res)=>{try{
  const request=new Request(new URL(req.url,proto+'://'+(req.headers.host||'127.0.0.1:'+port)),{method:req.method,headers:req.headers,body:parts.length?Buffer.concat(parts):undefined});
  const response=await worker.fetch(request,env);
  res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));
-}catch{res.writeHead(500).end('Erreur du serveur local.')}}).listen(port,process.env.HOST||'127.0.0.1',()=>console.log('BOOZZO · '+origin+(assistant?' · assistant actif':' · assistant non configuré (ANTHROPIC_API_KEY absent)')));
+}catch{res.writeHead(500).end('Erreur du serveur local.')}}).listen(port,process.env.HOST||'127.0.0.1',()=>console.log('BeyaBear’s · '+origin+(assistant?' · assistant actif':' · assistant non configuré (ANTHROPIC_API_KEY absent)')));
