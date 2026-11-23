@@ -218,6 +218,19 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -.
 .round { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--text); font-size: 1.2rem; cursor: pointer; transition: border-color .2s; }
 .round:hover { border-color: rgba(255, 255, 255, .5); }
 
+/* Moments de vie */
+.life { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: clamp(36px, 5vw, 60px); }
+.life figure { position: relative; margin: 0; border-radius: 26px; overflow: hidden; background: var(--panel); }
+.life video { width: 100%; height: 100%; object-fit: cover; }
+.life .wide { grid-column: span 2; aspect-ratio: 898 / 512; }
+.life .tall { aspect-ratio: 512 / 646; }
+.life .long { grid-column: span 2; }
+.life figcaption { position: absolute; inset: auto 0 0 0; padding: 54px 22px 18px; background: linear-gradient(180deg, transparent, rgba(4, 6, 12, .86)); display: flex; flex-direction: column; gap: 2px; }
+.life figcaption b { font: 700 clamp(1.05rem, 1.8vw, 1.4rem)/1.1 var(--display); letter-spacing: -.02em; }
+.life figcaption span { color: #cfd6e6; font-size: .9rem; }
+.pays { flex: none; width: min(62vw, 300px); margin: 0; border-radius: 24px; overflow: hidden; scroll-snap-align: start; background: #f6f0ee; }
+.pays img { width: 100%; height: auto; }
+
 /* Film */
 .film { position: relative; margin-top: clamp(36px, 5vw, 60px); border-radius: 30px; overflow: hidden; background: var(--panel); aspect-ratio: 16 / 9; }
 .film video { width: 100%; height: 100%; object-fit: cover; }
@@ -290,6 +303,9 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
   .eyeball { width: min(100%, 360px); }
   .bear { width: min(100%, 280px); }
   .facts, .spec, .care { grid-template-columns: minmax(0, 1fr); }
+  .life { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .life figure { border-radius: 20px; }
+  .life .long { aspect-ratio: 16 / 9; }
   .card { border-radius: 20px; }
   .card figcaption { padding: 40px 18px 16px; }
   .film { border-radius: 20px; }
