@@ -78,4 +78,30 @@
     bear.style.setProperty('--tone-eye', s.dataset.eye);
     toneName.textContent = s.textContent.trim();
   }));
+
+  // Fiches des compagnons
+  const fiche = $('#fiche');
+  if (fiche && fiche.showModal) {
+    $$('[data-fiche]').forEach((b) => b.addEventListener('click', () => {
+      $('#ficheImg').src = 'media/gz/p-' + b.dataset.fiche + '.webp';
+      $('#ficheImg').alt = b.dataset.nom;
+      $('#ficheNom').textContent = b.dataset.nom;
+      $('#ficheRole').textContent = b.dataset.role;
+      $('#ficheTexte').textContent = b.dataset.texte;
+      fiche.dataset.nom = b.dataset.nom;
+      fiche.showModal();
+    }));
+    $('#ficheClose').addEventListener('click', () => fiche.close());
+    fiche.addEventListener('click', (e) => { if (e.target === fiche) fiche.close(); });
+    $('#ficheBook').addEventListener('click', () => { $('#bookPick').value = fiche.dataset.nom; fiche.close(); });
+  }
+
+  // Réservation : le formulaire est prêt, l'enregistrement se branchera avec l'hébergement.
+  const book = $('#bookForm');
+  if (book) book.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const msg = $('#bookMsg'), name = $('#bookName').value.trim(), mail = $('#bookMail').value.trim();
+    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) { msg.textContent = 'Indiquez votre prénom et une adresse e-mail valide.'; return; }
+    msg.textContent = 'Merci ' + name + ' ! Démonstration : les inscriptions seront enregistrées à l’ouverture officielle du site.';
+  });
 })();
