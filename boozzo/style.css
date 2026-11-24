@@ -471,3 +471,13 @@ html { scroll-behavior: smooth; }
 /* Téléphone : boutons du haut sur une seule ligne */
 .ghost { white-space: nowrap; }
 @media (max-width: 700px) { .tools .ghost:not(.mic) { padding: 9px 12px; font-size: .84rem; } }
+
+/* Téléphone : l'œil reste en haut de l'écran pendant qu'on fait défiler les commandes dessous */
+@media (max-width: 700px) {
+  .stage.eyeView { position: sticky; top: calc(6px + env(safe-area-inset-top, 0px)); z-index: 6; padding: 14px; }
+  .stage.eyeView .plushBox { max-width: min(100%, 42svh); }
+  main { padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
+}
+/* Ouverte depuis l'écran d'accueil du téléphone : on respecte l'encoche */
+.top { padding-top: calc(14px + env(safe-area-inset-top, 0px)); }
+.l-tip { margin: 16px 0 0; padding: 14px 16px; border-radius: 16px; background: #eef4ff; color: #3d4d73; font-size: .92rem; line-height: 1.5; }
