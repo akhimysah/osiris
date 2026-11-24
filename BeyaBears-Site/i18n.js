@@ -115,6 +115,8 @@
 "Total": ["Total", "Total"], "Moyen de paiement": ["Payment method", "Método de pago"],
 "À titre indicatif : le paiement n'est pas encore ouvert. Aucun numéro de carte n'est demandé et rien n'est débité.": ["For illustration only: payment is not open yet. No card number is requested and nothing is charged.", "A título indicativo: el pago aún no está abierto. No se pide ningún número de tarjeta y no se cobra nada."],
 "Réserver ces compagnons": ["Reserve these companions", "Reservar estos compañeros"], "Ajouter au panier · 249 €": ["Add to cart · €249", "Añadir al carrito · 249 €"],
+"En mouvement": ["In motion", "En movimiento"], "Noah prend vie.": ["Noah comes to life.", "Noah cobra vida."],
+"Au repos, l'écran devient un grand œil qui cligne, suit du regard et sourit. C'est lui qui donne son caractère à chaque compagnon.": ["At rest, the screen becomes a big eye that blinks, follows you and smiles. It gives each companion its personality.", "En reposo, la pantalla se convierte en un gran ojo que parpadea, sigue con la mirada y sonríe. Es lo que da carácter a cada compañero."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
@@ -131,6 +133,7 @@
   const AT = {
 "Panier": ["Cart", "Carrito"], "Fermer": ["Close", "Cerrar"], "Langue": ["Language", "Idioma"], "Sections": ["Sections", "Secciones"], "BeyaBear's, retour en haut": ["BeyaBear's, back to top", "BeyaBear's, volver arriba"],
 "Ce que l'œil sait faire": ["What the eye can do", "Lo que el ojo sabe hacer"], "Collection du monde": ["World collection", "Colección del mundo"], "Collections streetwear": ["Streetwear collections", "Colecciones streetwear"],
+"Noah l'Explorateur fait coucou de la patte": ["Noah the Explorer waves a paw", "Noah el Explorador saluda con la pata"], "Noah tourne la tête et regarde autour de lui": ["Noah turns his head and looks around", "Noah gira la cabeza y mira a su alrededor"], "Noah cligne de l'œil et sourit": ["Noah winks and smiles", "Noah guiña el ojo y sonríe"],
 "Iris bleu lumineux": ["Glowing blue iris", "Iris azul luminoso"], "Lumière chaude de veilleuse": ["Warm night light", "Luz cálida de noche"],
   };
   const altFor = (fr) => {

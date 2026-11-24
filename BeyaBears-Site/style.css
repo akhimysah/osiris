@@ -459,3 +459,4 @@ html[lang="fr"] [data-intl] { display: none !important; }
 .cart fieldset input:focus-visible + span { outline: 2px solid var(--eye-soft); outline-offset: 2px; }
 .cart .btn { width: 100%; margin-top: 14px; }
 @media (max-width: 480px) { .brand { font-size: 0; gap: 0; } .nav .wrap { gap: 6px; } }
+.clips video { width: 100%; aspect-ratio: 1280 / 704; object-fit: cover; }
