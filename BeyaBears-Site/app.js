@@ -50,10 +50,13 @@
     const cur = sonCurrent();
     ambient.forEach((v) => {
       if (!v.offsetParent || 'silent' in v.dataset) return;
-      const wasPaused = v.paused;
+      const wasPaused = v.paused, away = wasPaused && !inView(v);
       v.muted = false;
       const p = v.play();
-      if (p && p.then) p.then(() => { if (v !== cur) { v.muted = true; if (wasPaused && !inView(v)) v.pause(); } }).catch(() => { v.muted = true; });
+      // Les vidéos hors écran sont remises en pause tout de suite : le téléphone retient l'autorisation du son,
+      // mais ne se met pas à charger et jouer toutes les vidéos du site en même temps.
+      if (away) { v.pause(); v.muted = true; if (p && p.catch) p.catch(() => {}); return; }
+      if (p && p.then) p.then(() => { if (v !== cur) v.muted = true; }).catch(() => { v.muted = true; });
     });
   };
   const sonSet = (on) => { sonOn = on; if (sonToggle) sonToggle.classList.remove('ask'); if (on) sonUnlock(); sonPaint(); sonSync(); };
@@ -308,15 +311,14 @@
     try { history.scrollRestoration = 'manual'; } catch (e) {}
     if (scrollY > 40 || location.hash) { P = 1; stage.classList.add('open'); }
     else {
-      root.classList.add('diveLock'); scrollTo(0, 0);
       const live = () => !P && !t0 && !(document.querySelector('#gate') && !document.querySelector('#gate').hidden);
       let sy = 0;
       // Personne n'a rien à faire : l'œil s'ouvre de lui-même peu après l'arrivée. La page ne peut donc jamais rester bloquée.
-      let seen = 0; const wait = setInterval(() => { if (P || t0) return clearInterval(wait); if (live() && ++seen >= 5) { clearInterval(wait); diveIn(); } }, 500);
+      let seen = 0; const wait = setInterval(() => { if (P || t0) return clearInterval(wait); if (live() && ++seen >= 3) { clearInterval(wait); diveIn(); } }, 500);
       addEventListener('wheel', (e) => { if (live() && e.deltaY > 0) diveIn(); }, { passive: true });
       addEventListener('keydown', (e) => { if (live() && [' ', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) diveIn(); });
       stage.addEventListener('touchstart', (e) => { sy = e.touches[0].clientY; }, { passive: true });
-      stage.addEventListener('touchmove', (e) => { if (P >= 1) return; if (e.cancelable) e.preventDefault(); if (live() && sy - e.touches[0].clientY > 14) diveIn(); }, { passive: false });
+      stage.addEventListener('touchmove', (e) => { if (live() && sy - e.touches[0].clientY > 14) diveIn(); }, { passive: true });
     }
     hint.addEventListener('click', diveIn);
     dEye.addEventListener('click', diveIn);

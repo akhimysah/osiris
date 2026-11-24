@@ -717,7 +717,7 @@ body.entered .hero h1 span, body.entered .hero .verbs, body.entered .hero .verbs
 .hwLink i { width: 9px; height: 9px; border-radius: 50%; background: var(--eye); animation: travel 1.5s ease-in-out infinite; } .hwLink i:nth-child(2) { animation-delay: .2s; } .hwLink i:nth-child(3) { animation-delay: .4s; }
 @keyframes travel { 0%, 100% { opacity: .2; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.2); } }
 .hwBear { position: relative; border-radius: 28px; overflow: hidden; box-shadow: 0 30px 70px rgba(20, 100, 230, .26); }
-.hwBear img { display: block; width: 100%; }
+.hwBear img { display: block; width: 100%; height: auto; }
 .hwEye { position: absolute; left: 30.7%; top: 44.75%; width: 43.3%; aspect-ratio: 1; border-radius: 50%; background: linear-gradient(160deg, #20305e, #0b1020 70%); color: #fff; display: grid; place-content: center; justify-items: center; gap: 3%; container-type: inline-size; text-align: center; }
 .hwEye .who { width: 36cqw; aspect-ratio: 1; border-radius: 50%; background: linear-gradient(140deg, #ffd7a8, #f09a6a); color: #3a1c0c; font: 800 16cqw/36cqw var(--display); }
 .hwEye b { font: 800 9cqw/1 var(--display); } .hwEye small { font: 700 4.4cqw/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: #7dffb0; }
