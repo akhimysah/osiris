@@ -80,6 +80,43 @@
     toneName.textContent = s.textContent.trim();
   }));
 
+  // Panier : il garde les compagnons choisis ; le paiement n'est pas ouvert (aucune carte demandée).
+  const PRICE = 249;
+  let cart = {};
+  try { cart = JSON.parse(localStorage.getItem('panier')) || {}; } catch {}
+  const cartSave = () => { try { localStorage.setItem('panier', JSON.stringify(cart)); } catch {} };
+  const cartCountAll = () => Object.values(cart).reduce((a, b) => a + b, 0);
+  function cartDraw() {
+    const n = cartCountAll(), ids = Object.keys(cart);
+    $('#cartCount').textContent = n; $('#cartCount').hidden = !n;
+    $('#cartList').innerHTML = ids.map((id) => {
+      const b = $(`[data-fiche="${id}"]`);
+      return `<li><img src="media/gz/p-${id}.webp" alt=""><div><b>${b.dataset.nom}</b><span>${b.dataset.role} · ${T('249 €')}</span></div><div class="qty"><button type="button" data-less="${id}" aria-label="−">−</button><span>${cart[id]}</span><button type="button" data-more="${id}" aria-label="+">+</button></div></li>`;
+    }).join('');
+    $('#cartEmpty').hidden = n > 0; $('#cartFull').hidden = !n;
+    const total = n * PRICE;
+    $('#cartTotal').textContent = document.documentElement.lang === 'en' ? '€' + total : total + ' €';
+  }
+  function cartAdd(id) { cart[id] = (cart[id] || 0) + 1; cartSave(); cartDraw(); }
+  $('#cartOpen').addEventListener('click', () => { cartDraw(); $('#cart').showModal(); });
+  $('#cartClose').addEventListener('click', () => $('#cart').close());
+  $('#cart').addEventListener('click', (e) => {
+    if (e.target === $('#cart')) return $('#cart').close();
+    const b = e.target.closest('[data-less],[data-more]');
+    if (!b) return;
+    const id = b.dataset.less || b.dataset.more;
+    cart[id] = (cart[id] || 0) + (b.dataset.more ? 1 : -1);
+    if (cart[id] <= 0) delete cart[id];
+    cartSave(); cartDraw();
+  });
+  $('#cartGo').addEventListener('click', () => {
+    const first = Object.keys(cart)[0];
+    if (first) $('#bookPick').value = $(`[data-fiche="${first}"]`).dataset.nom;
+    $('#cart').close(); location.hash = '#reserver'; $('#bookName').focus({ preventScroll: true });
+  });
+  document.addEventListener('langue', cartDraw);
+  cartDraw();
+
   // Fiches des compagnons
   const fiche = $('#fiche');
   if (fiche && fiche.showModal) {
@@ -90,11 +127,12 @@
       $('#ficheRole').textContent = b.dataset.role;
       $('#ficheTexte').textContent = b.dataset.texte;
       fiche.dataset.nom = b.dataset.nom;
+      fiche.dataset.id = b.dataset.fiche;
       fiche.showModal();
     }));
     $('#ficheClose').addEventListener('click', () => fiche.close());
     fiche.addEventListener('click', (e) => { if (e.target === fiche) fiche.close(); });
-    $('#ficheBook').addEventListener('click', () => { $('#bookPick').value = fiche.dataset.nom; fiche.close(); });
+    $('#ficheAdd').addEventListener('click', () => { cartAdd(fiche.dataset.id); fiche.close(); $('#cart').showModal(); });
   }
 
   // Réservation : le formulaire est prêt, l'enregistrement se branchera avec l'hébergement.

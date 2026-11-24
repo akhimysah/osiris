@@ -28,6 +28,7 @@
       <a href="#offre">Prix</a>
       <a href="#collection">Boutique</a>
     </nav>
+    <button class="cartBtn" id="cartOpen" type="button" aria-label="Panier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.5l2.2 11h10.6l2-8H7"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><b id="cartCount" hidden>0</b></button>
     <div class="langs" role="group" aria-label="Langue"><button type="button" data-lang="fr">FR</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="es">ES</button></div>
     <a class="btn demo" href="https://akhimysah.github.io/osiris/beyabears/?v=7" target="_blank" rel="noopener">Essayer la démo</a>
     <a class="btn line res" href="#reserver">Réserver · 249 €</a>
@@ -89,7 +90,7 @@
               <div class="view v-call" data-view="call"><div class="stack"><div class="who">M</div><b>Mamie</b><small>Appel en cours</small><div class="keys"><u></u><u class="end"></u><u></u></div></div></div>
               <div class="view v-story" data-view="story"><div class="stack"><div class="moon"></div><b>Le petit nuage qui voulait voyager</b><div class="bar"></div><small>Histoire du soir</small></div></div>
               <div class="view v-talk" data-view="talk"><div class="stack"><div class="wave"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><b>« Pourquoi le ciel est bleu ? »</b><small>Je t'écoute</small></div></div>
-              <div class="view v-video" data-view="video"><img src="media/envol.webp" alt="" loading="lazy"><div class="play"></div></div>
+              <div class="view v-video" data-view="video"><img src="media/cabriolet.jpg" alt="" loading="lazy"><div class="play"></div></div>
               <div class="view v-meteo" data-view="meteo"><div class="stack"><div class="sun"></div><b>18°</b><small>Grand soleil</small></div></div>
               <div class="view v-clock" data-view="clock"><div class="stack"><b id="clockNow">20:30</b><small>Bonne soirée</small></div></div>
               <div class="view v-night" data-view="night" role="img" aria-label="Lumière chaude de veilleuse"></div>
@@ -111,7 +112,7 @@
         <h2 class="title">Dix compagnons, dix caractères.</h2>
         <p class="lead">Blouson teddy, casquette, casque audio : chacun a son style et son prénom. Tous ont le même écran rond au milieu du visage.</p>
       </div>
-      <figure class="roster rise"><img src="media/gz/collection.webp" alt="Les dix peluches BeyaBear’s de la collection, chacune avec sa tenue et son prénom" loading="lazy"></figure>
+      <figure class="roster rise" data-fr><img src="media/gz/collection.webp" alt="Les dix peluches BeyaBear’s de la collection, chacune avec sa tenue et son prénom" loading="lazy"></figure>
       <ul class="names rise"><li><button type="button" data-fiche="noah" data-nom="Noah" data-role="L’Explorateur" data-texte="Lunettes d’aviateur et blouson de cuir. Toujours partant pour découvrir ce qu’il y a derrière la colline."><img src="media/gz/p-noah.webp" alt="" loading="lazy"><b>Noah</b><span>L’Explorateur</span></button></li><li><button type="button" data-fiche="alya" data-nom="Alya" data-role="La Créative" data-texte="Casquette rose et grand nœud. Elle dessine, invente et transforme tout en projet."><img src="media/gz/p-alya.webp" alt="" loading="lazy"><b>Alya</b><span>La Créative</span></button></li><li><button type="button" data-fiche="aaron" data-nom="Aaron" data-role="Le Geek" data-texte="Casque sur les oreilles, il connaît tous les jeux et adore expliquer comment ça marche."><img src="media/gz/p-aaron.webp" alt="" loading="lazy"><b>Aaron</b><span>Le Geek</span></button></li><li><button type="button" data-fiche="mila" data-nom="Mila" data-role="La Star" data-texte="Bandana rouge à pois. Elle chante, elle danse, et la chambre devient une scène."><img src="media/gz/p-mila.webp" alt="" loading="lazy"><b>Mila</b><span>La Star</span></button></li><li><button type="button" data-fiche="kai" data-nom="Kaï" data-role="Le Sportif" data-texte="Casquette verte et survêtement. Il ne tient pas en place et motive tout le monde."><img src="media/gz/p-kai.webp" alt="" loading="lazy"><b>Kaï</b><span>Le Sportif</span></button></li><li><button type="button" data-fiche="naya" data-nom="Naya" data-role="La Rêveuse" data-texte="Casque violet et papillons. Elle a toujours une histoire en tête."><img src="media/gz/p-naya.webp" alt="" loading="lazy"><b>Naya</b><span>La Rêveuse</span></button></li><li><button type="button" data-fiche="sana" data-nom="Sana" data-role="La Douce" data-texte="Bonnet et écharpe en grosse maille. La spécialiste des câlins et des mots gentils."><img src="media/gz/p-sana.webp" alt="" loading="lazy"><b>Sana</b><span>La Douce</span></button></li><li><button type="button" data-fiche="enzo" data-nom="Enzo" data-role="Le Stratège" data-texte="Bonnet marine. Il réfléchit avant d’agir et gagne souvent aux échecs."><img src="media/gz/p-enzo.webp" alt="" loading="lazy"><b>Enzo</b><span>Le Stratège</span></button></li><li><button type="button" data-fiche="zayn" data-nom="Zayn" data-role="Le Protecteur" data-texte="Capuche rouge et noire. Il veille sur les siens et rassure quand il fait nuit."><img src="media/gz/p-zayn.webp" alt="" loading="lazy"><b>Zayn</b><span>Le Protecteur</span></button></li><li><button type="button" data-fiche="luna" data-nom="Luna" data-role="La Poétique" data-texte="Bob bleu ciel et écharpe. Elle regarde les nuages et y trouve des poèmes."><img src="media/gz/p-luna.webp" alt="" loading="lazy"><b>Luna</b><span>La Poétique</span></button></li></ul>
       <p class="note">Touchez un compagnon pour ouvrir sa fiche.</p>
       <div class="head rise" style="margin-top:clamp(48px,7vw,90px)">
@@ -119,7 +120,7 @@
         <h2 class="title" style="font-size:clamp(1.8rem,3.6vw,3rem)">D’autres modèles à venir.</h2>
         <p class="lead">Les dix compagnons ci-dessus forment la collection principale. Léa, Izan, Rayan et d’autres, comme Kareem, Dara, Elio, Yanis ou Nova, montrent à titre indicatif les modèles qui pourront la rejoindre.</p>
       </div>
-      <div class="ads trio rise">
+      <div class="ads trio rise" data-fr>
         <figure class=""><img src="media/gz/lea.webp" alt="Léa, la créative : peluche à casquette rose et casque audio" loading="lazy"></figure>
         <figure class=""><img src="media/gz/izan.webp" alt="Izan, le créatif : peluche à casquette rouge et blouson teddy" loading="lazy"></figure>
         <figure class=""><img src="media/gz/rayan.webp" alt="Rayan : peluche à casquette marine installée dans un fauteuil en cuir" loading="lazy"></figure>
@@ -151,13 +152,13 @@
         <li><b>Communiquer</b><span>Appeler ses proches en vidéo et leur envoyer des photos.</span></li>
         <li><b>Rêver</b><span>Des histoires du soir et une veilleuse pour s’endormir.</span></li>
       </ul>
-      <div class="film rise"><video autoplay muted loop playsinline preload="metadata" poster="media/moments.jpg" aria-label="Quatre moments avec BeyaBear’s : jouer, appeler sa famille, s’endormir avec une histoire, regarder une vidéo"><source src="media/moments.mp4" type="video/mp4"></video></div>
+      <div class="film rise" data-fr><video autoplay muted loop playsinline preload="metadata" poster="media/moments.jpg" aria-label="Quatre moments avec BeyaBear’s : jouer, appeler sa famille, s’endormir avec une histoire, regarder une vidéo"><source src="media/moments.mp4" type="video/mp4"></video></div>
       <div class="ads rise">
-        <figure class="wide"><img src="media/gz/ecran.webp" alt="Gros plan sur l’écran rond de la peluche et ses six applications" loading="lazy"></figure>
-        <figure class=""><img src="media/gz/apprendre.webp" alt="Peluche affichant des applications pour apprendre à lire, compter et dessiner" loading="lazy"></figure>
+        <figure class="wide" data-fr><img src="media/gz/ecran.webp" alt="Gros plan sur l’écran rond de la peluche et ses six applications" loading="lazy"></figure>
+        <figure class="" data-fr><img src="media/gz/apprendre.webp" alt="Peluche affichant des applications pour apprendre à lire, compter et dessiner" loading="lazy"></figure>
         <figure class=""><img src="media/gz/tactile.webp" alt="Une fille touche une application sur l’écran de sa peluche" loading="lazy"></figure>
         <figure class=""><img src="media/gz/videos.webp" alt="Une enfant touche l’écran de Noah, qui affiche une vidéo YouTube" loading="lazy"></figure>
-        <figure class=""><img src="media/gz/alya.webp" alt="Alya et son écran d’applications" loading="lazy"></figure>
+        <figure class="" data-fr><img src="media/gz/alya.webp" alt="Alya et son écran d’applications" loading="lazy"></figure>
       </div>
       <div class="head rise" style="margin-top:clamp(48px,7vw,90px)">
         <span class="label">Pour qui</span>
@@ -231,8 +232,8 @@
         </ul>
       </div>
       <div class="ads rise">
-        <figure class="wide"><img src="media/gz/boutique.webp" alt="Trois peluches BeyaBear’s entourées de la collection : gourde, mug, casquette, sweat, tee-shirts, tote bag, sac à dos, stickers et porte-clés" loading="lazy"></figure>
-        <figure class="wide"><img src="media/gz/boutique-officielle.webp" alt="La collection officielle : dix peluches et les produits dérivés, gourde, mug, casquette, tee-shirt, sweat, carnet et stickers" loading="lazy"></figure>
+        <figure class="wide" data-fr><img src="media/gz/boutique.webp" alt="Trois peluches BeyaBear’s entourées de la collection : gourde, mug, casquette, sweat, tee-shirts, tote bag, sac à dos, stickers et porte-clés" loading="lazy"></figure>
+        <figure class="wide" data-fr><img src="media/gz/boutique-officielle.webp" alt="La collection officielle : dix peluches et les produits dérivés, gourde, mug, casquette, tee-shirt, sweat, carnet et stickers" loading="lazy"></figure>
       </div>
       </div>
     <div class="head wrap rise" style="margin-top:clamp(48px,7vw,90px)">
@@ -243,7 +244,7 @@
     <div class="wrap">
       <div class="brandrow rise">
         <figure><img src="media/gz/logo-bb.webp" alt="Monogramme BB brodé façon fourrure, avec la tête d’ourson et son œil lumineux" loading="lazy"></figure>
-        <figure><img src="media/gz/identite.webp" alt="Planche d’identité : logo principal, monogramme BB et six coloris, chocolat, marine, kaki, rose poudré, bleu ciel et violet" loading="lazy"></figure>
+        <figure class="" data-fr><img src="media/gz/identite.webp" alt="Planche d’identité : logo principal, monogramme BB et six coloris, chocolat, marine, kaki, rose poudré, bleu ciel et violet" loading="lazy"></figure>
       </div>
       <p class="note">Concepts de produits dérivés, non encore en vente. Les prénoms affichés sur ces visuels illustrent de futurs modèles possibles.</p>
     </div>
@@ -257,7 +258,7 @@
         <p class="lead">Un lieu où l’on vient choisir son compagnon, l’essayer et repartir avec tout son univers : peluches, casques, montres et accessoires.</p>
       </div>
       <div class="film rise"><video autoplay muted loop playsinline preload="metadata" poster="media/danse.jpg" aria-label="Trois oursons BeyaBear’s dansent au milieu de la boutique, l’œil allumé"><source src="media/danse.mp4" type="video/mp4"></video></div>
-      <figure class="roster rise" style="margin-top:18px"><img src="media/gz/magasin.webp" alt="Concept de boutique BeyaBear’s : cinq peluches sur un présentoir central, entourées d’écrans et d’accessoires" loading="lazy"></figure>
+      <figure class="roster rise" style="margin-top:18px" data-fr><img src="media/gz/magasin.webp" alt="Concept de boutique BeyaBear’s : cinq peluches sur un présentoir central, entourées d’écrans et d’accessoires" loading="lazy"></figure>
       <p class="note">Image de concept. Aucune boutique n’est ouverte à ce jour.</p>
     </div>
   </section>
@@ -294,7 +295,7 @@
   </section>
 
   <section class="band final" id="reserver">
-    <img src="media/gz/equipe.webp" alt="" loading="lazy">
+    <img src="media/gz/equipe.webp" alt="" loading="lazy" data-fr><img src="media/avion.jpg" alt="" loading="lazy" data-intl>
     <div class="wrap rise">
       <h2>Réservez le vôtre.</h2>
       <p>249 € au lancement. Inscrivez-vous pour être prévenu en premier, sans rien payer aujourd’hui.</p>
@@ -322,7 +323,21 @@
 <dialog class="fiche" id="fiche" aria-labelledby="ficheNom">
   <img id="ficheImg" src="" alt="">
   <div><span class="label" id="ficheRole"></span><h3 id="ficheNom"></h3><p id="ficheTexte"></p>
-  <div class="actions"><a class="btn solid" id="ficheBook" href="#reserver">Réserver celui-ci · 249 €</a><button class="btn line" id="ficheClose" type="button">Fermer</button></div></div>
+  <div class="actions"><button class="btn solid" id="ficheAdd" type="button">Ajouter au panier · 249 €</button><button class="btn line" id="ficheClose" type="button">Fermer</button></div></div>
+</dialog>
+<dialog class="cart" id="cart" aria-labelledby="cartTitle">
+  <header><h3 id="cartTitle">Votre panier</h3><button class="round" id="cartClose" type="button" aria-label="Fermer">×</button></header>
+  <ul id="cartList"></ul>
+  <p class="empty" id="cartEmpty">Votre panier est vide. Touchez un compagnon dans la collection pour l’ajouter.</p>
+  <div id="cartFull">
+    <p class="total"><span>Total</span><b id="cartTotal">0 €</b></p>
+    <fieldset><legend>Moyen de paiement</legend>
+      <label><input type="radio" name="pay" id="payVisa" value="Visa" checked><span>Visa</span></label>
+      <label><input type="radio" name="pay" id="payMc" value="Mastercard"><span>Mastercard</span></label>
+    </fieldset>
+    <p class="note">À titre indicatif : le paiement n’est pas encore ouvert. Aucun numéro de carte n’est demandé et rien n’est débité.</p>
+    <button class="btn solid" id="cartGo" type="button">Réserver ces compagnons</button>
+  </div>
 </dialog>
 <script src="i18n.js"></script>
 <script src="app.js"></script>

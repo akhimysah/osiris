@@ -111,6 +111,10 @@
 "Bob bleu ciel et écharpe. Elle regarde les nuages et y trouve des poèmes.": ["Sky-blue bucket hat and scarf. She watches the clouds and finds poems in them.", "Gorro azul cielo y bufanda. Mira las nubes y encuentra poemas en ellas."],
 "Indiquez votre prénom et une adresse e-mail valide.": ["Enter your first name and a valid email address.", "Indica tu nombre y un correo electrónico válido."],
 "Merci": ["Thank you", "Gracias"], "Démonstration : les inscriptions seront enregistrées à l'ouverture officielle du site.": ["Demonstration: sign-ups will be recorded when the site officially opens.", "Demostración: las inscripciones se registrarán en la apertura oficial del sitio."],
+"Votre panier": ["Your cart", "Tu carrito"], "Votre panier est vide. Touchez un compagnon dans la collection pour l'ajouter.": ["Your cart is empty. Tap a companion in the collection to add it.", "Tu carrito está vacío. Toca un compañero de la colección para añadirlo."],
+"Total": ["Total", "Total"], "Moyen de paiement": ["Payment method", "Método de pago"],
+"À titre indicatif : le paiement n'est pas encore ouvert. Aucun numéro de carte n'est demandé et rien n'est débité.": ["For illustration only: payment is not open yet. No card number is requested and nothing is charged.", "A título indicativo: el pago aún no está abierto. No se pide ningún número de tarjeta y no se cobra nada."],
+"Réserver ces compagnons": ["Reserve these companions", "Reservar estos compañeros"], "Ajouter au panier · 249 €": ["Add to cart · €249", "Añadir al carrito · 249 €"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
@@ -124,10 +128,26 @@
   for (let n; (n = walker.nextNode()); ) if (!n.parentElement.closest('script,style') && D[norm(n.nodeValue)]) nodes.push([n, n.nodeValue]);
   const attrs = [];
   document.querySelectorAll('[data-texte],[data-role]').forEach((e) => ['data-texte', 'data-role'].forEach((k) => e.hasAttribute(k) && attrs.push([e, k, e.getAttribute(k)])));
+  const AT = {
+"Panier": ["Cart", "Carrito"], "Fermer": ["Close", "Cerrar"], "Langue": ["Language", "Idioma"], "Sections": ["Sections", "Secciones"], "BeyaBear's, retour en haut": ["BeyaBear's, back to top", "BeyaBear's, volver arriba"],
+"Ce que l'œil sait faire": ["What the eye can do", "Lo que el ojo sabe hacer"], "Collection du monde": ["World collection", "Colección del mundo"], "Collections streetwear": ["Streetwear collections", "Colecciones streetwear"],
+"Iris bleu lumineux": ["Glowing blue iris", "Iris azul luminoso"], "Lumière chaude de veilleuse": ["Warm night light", "Luz cálida de noche"],
+  };
+  const altFor = (fr) => {
+    if (lang === 'fr') return fr;
+    const hit = AT[norm(fr)] || D[norm(fr)];
+    if (hit) return hit[lang === 'en' ? 0 : 1];
+    const pays = norm(fr).match(/^Ourson BeyaBear's en tenue (.+)$/);
+    if (pays) return (lang === 'en' ? "BeyaBear's bear in the outfit of " : "Osito BeyaBear's con el traje de ") + tr(pays[1]);
+    return lang === 'en' ? "BeyaBear's visual" : "Imagen de BeyaBear's";
+  };
+  const labels = [];
+  document.querySelectorAll('[alt],[aria-label],[placeholder]').forEach((e) => ['alt', 'aria-label', 'placeholder'].forEach((k) => { const v = e.getAttribute(k); if (v && /[a-zà-ÿ]{3}/i.test(v) && !/@/.test(v)) labels.push([e, k, v]); }));
   function apply() {
     document.documentElement.lang = lang;
     nodes.forEach(([n, fr]) => { const lead = fr.match(/^\s*/)[0], tail = fr.match(/\s*$/)[0]; n.nodeValue = lang === 'fr' ? fr : lead + tr(fr) + tail; });
     attrs.forEach(([e, k, fr]) => e.setAttribute(k, tr(fr)));
+    labels.forEach(([e, k, fr]) => e.setAttribute(k, altFor(fr)));
     document.querySelectorAll('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
   }
   document.addEventListener('click', (event) => {
@@ -136,6 +156,7 @@
     lang = b.dataset.lang;
     try { localStorage.setItem('langue', lang); } catch {}
     apply();
+    document.dispatchEvent(new Event('langue'));
   });
   apply();
 })();
