@@ -103,8 +103,13 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -.
 .film + .ads { margin-top: 18px; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 
+/* Bande vidéo de séparation */
+.sep { position: relative; }
+.sep video { width: 100%; height: clamp(240px, 52vh, 560px); object-fit: cover; }
+.sep::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, var(--night) 0%, transparent 16%, transparent 84%, var(--night) 100%); }
+
 /* Phrase manifeste */
-.manifest { border-bottom: 1px solid var(--line); }
+.manifest { border-bottom: 0; }
 .manifest p {
   font: 600 clamp(1.7rem, 4.4vw, 3.6rem)/1.12 var(--display); letter-spacing: -.03em;
   max-width: 22ch; text-wrap: balance;
