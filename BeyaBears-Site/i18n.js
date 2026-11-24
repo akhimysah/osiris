@@ -169,6 +169,7 @@
 "12 pays, 1 seul trophée": ["12 countries, 1 trophy", "12 países, 1 solo trofeo"],
 "Douze oursons aux couleurs de leur pays entrent sur la pelouse. Et vous, quelle équipe choisissez-vous ?": ["Twelve bears in their country's colours walk onto the pitch. Which team do you pick?", "Doce ositos con los colores de su país saltan al césped. ¿Y tú, qué equipo eliges?"],
 "Ce site se regarde avec le son.": ["This site is best with sound.", "Este sitio se disfruta con sonido."], "Entrer avec le son": ["Enter with sound", "Entrar con sonido"], "Entrer sans le son": ["Enter without sound", "Entrar sin sonido"], "Son activé": ["Sound on", "Sonido activado"], "Son coupé": ["Sound off", "Sonido apagado"],
+"Noah se présente, dans votre langue.": ["Noah introduces himself, in your language.", "Noah se presenta, en tu idioma."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();

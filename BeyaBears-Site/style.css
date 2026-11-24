@@ -541,3 +541,7 @@ html:not([lang="fr"]) .row:not([data-fr]):nth-child(n) .zoom { order: 0; }
 .sonToggle[aria-pressed="true"] i::after { display: none; }
 .sonToggle.ask { animation: ask 1.2s ease-in-out infinite; }
 @keyframes ask { 50% { box-shadow: 0 0 0 8px rgba(46, 139, 255, .35); } }
+
+/* Noah en gros plan, sans le panneau de droite */
+.film.noah { aspect-ratio: 770 / 704; width: min(100%, 560px); margin-inline: auto; }
+html[lang="es"] [data-not="es"] { display: none !important; }
