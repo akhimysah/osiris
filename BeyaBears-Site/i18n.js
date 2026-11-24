@@ -195,6 +195,22 @@
 "Cinq jeux au doigt, dont la Course au miel : l'ourson court, saute et attrape les pots.": ["Five touch games, including Honey run: the bear runs, jumps and catches the pots.", "Cinco juegos táctiles, entre ellos Carrera de miel: el osito corre, salta y atrapa los tarros."], "Course au miel": ["Honey run", "Carrera de miel"], "pots de miel": ["honey pots", "tarros de miel"],
 "Il vous suit du regard. Touchez-le, il change de couleur.": ["It follows you with its eye. Tap it and it changes colour.", "Te sigue con la mirada. Tócalo y cambia de color."],
 "Regardez-le dans les yeux.": ["Look it in the eye.", "Míralo a los ojos."], "Faites défiler": ["Scroll", "Desliza"], "Entrez dans son monde.": ["Step into its world.", "Entra en su mundo."],
+"BeyaBear's est une peluche dont l'œil est un écran. Vos proches l'appellent depuis leur téléphone, et leur visage apparaît dedans.": ["BeyaBear's is a plush whose eye is a screen. Your loved ones call it from their phone, and their face appears inside.", "BeyaBear's es un peluche cuyo ojo es una pantalla. Los tuyos lo llaman desde su teléfono y su cara aparece dentro."],
+"Comment ça marche": ["How it works", "Cómo funciona"],
+"Un téléphone, une peluche, un regard.": ["A phone, a plush, a look.", "Un teléfono, un peluche, una mirada."],
+"La peluche a un écran rond à la place de l'œil. Elle se connecte au Wi-Fi de la maison, et tout se pilote depuis un téléphone.": ["The plush has a round screen in place of its eye. It connects to your home Wi-Fi, and everything is controlled from a phone.", "El peluche tiene una pantalla redonda en lugar del ojo. Se conecta al Wi-Fi de casa y todo se controla desde un teléfono."],
+"Téléphone de mamie": ["Grandma's phone", "Teléfono de la abuela"],
+"Peluche BeyaBear's": ["BeyaBear's plush", "Peluche BeyaBear's"],
+"Appeler en vidéo": ["Video call", "Videollamada"],
+"Internet": ["Internet", "Internet"],
+"Le parent installe": ["The parent sets up", "El padre instala"],
+"Il allume la peluche, la connecte au Wi-Fi et crée son compte sur son téléphone. Cinq minutes.": ["They switch on the plush, connect it to Wi-Fi and create an account on their phone. Five minutes.", "Enciende el peluche, lo conecta al Wi-Fi y crea su cuenta en el teléfono. Cinco minutos."],
+"Il invite les proches": ["They invite loved ones", "Invita a los suyos"],
+"Il envoie un lien à mamie, à papa, à tonton. Ils n'ont rien à installer : le lien suffit.": ["They send a link to grandma, dad, uncle. Nothing to install: the link is enough.", "Envía un enlace a la abuela, a papá, al tío. No hay que instalar nada: basta el enlace."],
+"Le proche appelle": ["The loved one calls", "El familiar llama"],
+"Mamie touche le lien sur son téléphone. La peluche sonne, et son visage apparaît dans l'œil.": ["Grandma taps the link on her phone. The plush rings, and her face appears in the eye.", "La abuela toca el enlace en su teléfono. El peluche suena y su cara aparece en el ojo."],
+"L'enfant répond": ["The child answers", "El niño responde"],
+"Il touche l'œil ou dit « Beya, réponds ». Il peut aussi demander une histoire, un jeu ou une vidéo.": ["They touch the eye or say “Beya, answer”. They can also ask for a story, a game or a video.", "Toca el ojo o dice «Beya, responde». También puede pedir un cuento, un juego o un vídeo."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
@@ -217,6 +233,7 @@
 "Agrandir l'image": ["Enlarge the image", "Ampliar la imagen"], "Image agrandie": ["Enlarged image", "Imagen ampliada"],
 "Les dix compagnons BeyaBear's présentés un par un": ["The ten BeyaBear's companions introduced one by one", "Los diez compañeros BeyaBear's presentados uno a uno"],
 "Changer la couleur de l'œil": ["Change the eye colour", "Cambiar el color del ojo"],
+"Ourson BeyaBear's dont l'écran affiche le visage de mamie": ["BeyaBear's bear whose screen shows grandma's face", "Osito BeyaBear's cuya pantalla muestra la cara de la abuela"],
 "Iris bleu lumineux": ["Glowing blue iris", "Iris azul luminoso"], "Lumière chaude de veilleuse": ["Warm night light", "Luz cálida de noche"],
   };
   const altFor = (fr) => {

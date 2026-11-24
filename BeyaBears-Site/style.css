@@ -699,3 +699,35 @@ main { padding-top: 0; }
 .diveShine { background: radial-gradient(circle, #fff 0 45%, rgba(255,255,255,0) 70%); }
 body.entered .hero h1 span, body.entered .hero .verbs, body.entered .hero .verbs + p, body.entered .hero .actions { animation: none; }
 .hero h1 .glow { display: block; }
+
+/* ---------- Comment ça marche : du téléphone à la peluche ---------- */
+.diveA { top: clamp(78px, 11svh, 130px); font: inherit; }
+.diveA p { margin: 0; font: 800 clamp(2rem, 6.6vw, 5.2rem)/1.04 var(--display); letter-spacing: -.04em; color: var(--text); }
+.diveA span { display: block; max-width: 34ch; margin: 14px auto 0; font: 600 clamp(.95rem, 1.5vw, 1.2rem)/1.45 var(--body); letter-spacing: 0; color: #3d4d73; }
+.how { background: #fff; }
+.hw { display: grid; grid-template-columns: minmax(0, .8fr) auto minmax(0, 1.2fr); gap: clamp(14px, 3vw, 40px); align-items: center; max-width: 900px; margin: clamp(36px, 5vw, 60px) auto 0; }
+.hwPhone { justify-self: end; width: min(100%, 220px); aspect-ratio: 9 / 18; border-radius: 34px; background: #0b1020; padding: 8px; box-shadow: 0 30px 70px rgba(8, 28, 80, .28); }
+.hwPhone .scr { height: 100%; border-radius: 27px; background: linear-gradient(#eef4ff, #fff); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px; text-align: center; }
+.hwPhone small { font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.hwPhone .av { width: 64px; height: 64px; border-radius: 50%; background: var(--blue); color: #fff; font: 800 1.6rem/64px var(--display); }
+.hwPhone b { font-size: 1.15rem; font-weight: 800; } .hwPhone span { font-size: .74rem; color: var(--muted); }
+.callBtn { margin-top: 8px; padding: 10px 14px; border-radius: 999px; background: #22c55e; color: #fff; font-weight: 700; font-size: .78rem; animation: ringing 1.6s ease-in-out infinite; }
+@keyframes ringing { 50% { box-shadow: 0 0 0 9px rgba(34, 197, 94, .22); } }
+.hwLink { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--eye); font-weight: 700; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+.hwLink i { width: 9px; height: 9px; border-radius: 50%; background: var(--eye); animation: travel 1.5s ease-in-out infinite; } .hwLink i:nth-child(2) { animation-delay: .2s; } .hwLink i:nth-child(3) { animation-delay: .4s; }
+@keyframes travel { 0%, 100% { opacity: .2; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.2); } }
+.hwBear { position: relative; border-radius: 28px; overflow: hidden; box-shadow: 0 30px 70px rgba(20, 100, 230, .26); }
+.hwBear img { display: block; width: 100%; }
+.hwEye { position: absolute; left: 30.7%; top: 44.75%; width: 43.3%; aspect-ratio: 1; border-radius: 50%; background: linear-gradient(160deg, #20305e, #0b1020 70%); color: #fff; display: grid; place-content: center; justify-items: center; gap: 3%; container-type: inline-size; text-align: center; }
+.hwEye .who { width: 36cqw; aspect-ratio: 1; border-radius: 50%; background: linear-gradient(140deg, #ffd7a8, #f09a6a); color: #3a1c0c; font: 800 16cqw/36cqw var(--display); }
+.hwEye b { font: 800 9cqw/1 var(--display); } .hwEye small { font: 700 4.4cqw/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: #7dffb0; }
+.hwSteps { list-style: none; padding: 0; margin: clamp(34px, 5vw, 56px) 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.hwSteps li { background: #f5f9ff; border-radius: 24px; padding: 24px 20px; display: flex; flex-direction: column; gap: 8px; }
+.hwSteps i { width: 38px; height: 38px; border-radius: 50%; background: var(--blue); color: #fff; font: 800 1.05rem/38px var(--display); font-style: normal; text-align: center; }
+.hwSteps b { font-size: 1.12rem; font-weight: 800; margin-top: 6px; } .hwSteps span { color: var(--muted); font-size: .96rem; line-height: 1.5; }
+@media (max-width: 900px) {
+  .hw { grid-template-columns: minmax(0, 1fr); justify-items: center; } .hwPhone { justify-self: center; width: 190px; } .hwLink { flex-direction: column; } .hwBear { width: 100%; }
+  .hwSteps { grid-template-columns: minmax(0, 1fr); gap: 12px; } .hwSteps li { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; } .hwSteps li b { margin: 0; } .hwSteps li span { grid-column: 2; }
+}
+.nav nav { gap: 20px; } .nav nav a { white-space: nowrap; font-size: .88rem; }
+@media (max-width: 1180px) { .nav nav { display: none; } .nav .langs { margin-left: auto; } }
