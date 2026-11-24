@@ -148,6 +148,7 @@
     nodes.forEach(([n, fr]) => { const lead = fr.match(/^\s*/)[0], tail = fr.match(/\s*$/)[0]; n.nodeValue = lang === 'fr' ? fr : lead + tr(fr) + tail; });
     attrs.forEach(([e, k, fr]) => e.setAttribute(k, tr(fr)));
     labels.forEach(([e, k, fr]) => e.setAttribute(k, altFor(fr)));
+    document.querySelectorAll('a[href*="/osiris/beyabears/"]').forEach((a) => { const u = new URL(a.href); u.searchParams.set('lang', lang); a.href = u.href; });
     document.querySelectorAll('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
   }
   document.addEventListener('click', (event) => {

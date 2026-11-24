@@ -244,3 +244,4 @@ body.kiosk .stage.eyeView .eye { box-shadow: none; }
 .kb .s { width: 8cqw; background: #ffffff12; } .kb .m { width: 11cqw; font-size: 3.8cqw; } .kb .sp { width: 20cqw; font-size: 3.4cqw; }
 .kb .ok { width: 14cqw; background: #f4e8d2; color: #10131c; font-size: 4.4cqw; }
 body.kiosk .kbOpen { bottom: 2cqw; }
+.kb[hidden], .kbOpen[hidden] { display: none; }
