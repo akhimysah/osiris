@@ -27,6 +27,7 @@ const ICON = {
   youtube: svg('<path d="M8 5v14l11-7z"/>', true),
   photo: svg('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
   chat: svg('<path d="M4 5h16v11H9l-5 4z"/>'),
+  games: svg('<rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4"/><circle cx="16" cy="13" r="1.3"/>'),
   story: svg('<path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M8 8h8"/>'),
   iris: svg('<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
   home: svg('<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>'),
@@ -48,6 +49,7 @@ const APPS = [
   ['photo', 'Photo', 'c-photo'],
   ['story', 'Histoires', 'c-story'],
   ['chat', 'Assistant', 'c-chat'],
+  ['games', 'Jeux', 'c-games'],
   ['clock', 'Heure', 'c-clock'],
   ['weather', 'Météo', 'c-weather'],
   ['torch', 'Torche', 'c-torch'],
@@ -172,7 +174,7 @@ function go(name, options = {}) {
   stopSpeaking();
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames })[name](options);
 }
 
 function openHome() {
@@ -1036,6 +1038,7 @@ function command(spoken) {
   if (/\b(meteo|quel temps|temps qu.il fait|il fait beau|pleut|nuages)\b/.test(text)) return go('weather', { map: /\b(carte|nuages|radar)\b/.test(text) }), true;
   if (order && /\bassistant\b/.test(text)) return go('chat'), true;
   if (order && /\b(forfait|abonnement|esim)\b/.test(text)) return go('esim'), true;
+  if (/\b(jeux?|jouer|joue|on joue)\b/.test(text) && !/you ?tube|musique|video/.test(text)) return go('games', /paire|memo/.test(text) ? { game: 'paires' } : /etoile/.test(text) ? { game: 'etoiles' } : {}), true;
   if (/\b(reconnais|qui suis.je|visages?)\b/.test(text)) return go('face'), true;
   if (color && (/\b(iris|œil|oeil|yeux|couleur)\b/.test(text) || /\ben\s/.test(text))) return go('home'), setColor(color[1]), true;
   if (order && /\b(iris|œil|oeil)\b/.test(text)) return go('home'), true;
