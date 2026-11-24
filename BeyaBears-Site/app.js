@@ -270,17 +270,14 @@
   const dive = $('#dive'), dEye = $('#diveEye');
   if (dive && dEye && !calm) {
     const A = $('#diveA'), B = $('#diveB'), hint = $('#diveGo'), shine = $('#diveShine');
-    const stage = dEye.parentElement; let shift = 0;
+    const stage = dEye.parentElement, root = document.documentElement, DUR = 3200; let P = 0, t0 = 0;
     let px = 0, py = 0, tx = 0, ty = 0, raf = 0, last = 0;
     const clamp = (v) => Math.max(0, Math.min(1, v));
     const draw = (now) => {
       raf = 0;
-      const r = dive.getBoundingClientRect(), vw = stage.clientWidth || innerWidth, vh = stage.clientHeight || innerHeight;
-      if (r.bottom < 0 || r.top > innerHeight) return;
-      const p = clamp(-r.top / (r.height - vh));
-      // Filet de sécurité : si le téléphone ne garde pas la scène collée en haut, on la recale nous-mêmes.
-      const want = r.top > 0 ? r.top : Math.min(0, r.bottom - vh), err = want - stage.getBoundingClientRect().top;
-      if (Math.abs(err) > 1) { shift += err; stage.style.transform = 'translate3d(0,' + shift.toFixed(1) + 'px,0)'; }
+      const vw = stage.clientWidth || innerWidth, vh = stage.clientHeight || innerHeight;
+      if (t0) { const k = Math.min(1, (now - t0) / DUR); P = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; if (k >= 1) { t0 = 0; opened(); } }
+      const p = P;
       // Sans souris, l'œil regarde doucement autour de lui
       if (now - last > 2200) { tx = Math.sin(now / 1500) * .6; ty = Math.cos(now / 2100) * .35; }
       px += (tx - px) * .12; py += (ty - py) * .12;
@@ -298,26 +295,31 @@
       hint.style.opacity = (1 - clamp(p / .08)).toFixed(2);
       const b = clamp((p - .74) / .16);
       B.style.opacity = b.toFixed(2); B.style.transform = 'translateY(-50%) scale(' + (.86 + b * .14).toFixed(3) + ')';
-      if (p < .999) raf = requestAnimationFrame(draw);
+      if (t0 || (p < .999 && stage.getBoundingClientRect().bottom > 0)) raf = requestAnimationFrame(draw);
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(draw); };
     addEventListener('scroll', kick, { passive: true });
     addEventListener('resize', kick);
     addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; last = performance.now(); kick(); }, { passive: true });
-    // Un toucher sur l'œil (ou sur le bouton) fait la plongée tout seul, sans avoir à faire défiler.
-    let auto = 0;
-    const diveIn = () => {
-      if (auto) return;
-      const from = scrollY, to = scrollY + dive.getBoundingClientRect().bottom - stage.clientHeight, t0 = performance.now(), dur = 4200;
-      if (to - from < 40) return;
-      document.documentElement.style.scrollBehavior = 'auto';
-      const stop = () => { cancelAnimationFrame(auto); auto = 0; document.documentElement.style.scrollBehavior = ''; removeEventListener('wheel', stop); removeEventListener('touchstart', stop); };
-      const step = (now) => { const k = Math.min(1, (now - t0) / dur), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; scrollTo(0, from + (to - from) * e); if (k < 1) auto = requestAnimationFrame(step); else stop(); };
-      auto = requestAnimationFrame(step);
-      setTimeout(() => { addEventListener('wheel', stop, { passive: true }); addEventListener('touchstart', stop, { passive: true }); }, 300);
-    };
+    // L'œil s'ouvre tout seul, au toucher ou au premier geste. Tant qu'il est fermé, la page ne bouge pas :
+    // plus rien ne dépend du défilement, donc même comportement sur tous les téléphones.
+    const opened = () => { root.classList.remove('diveLock'); stage.classList.add('open'); };
+    const diveIn = () => { if (P || t0) return; t0 = performance.now(); kick(); };
+    try { history.scrollRestoration = 'manual'; } catch (e) {}
+    if (scrollY > 40 || location.hash) { P = 1; stage.classList.add('open'); }
+    else {
+      root.classList.add('diveLock'); scrollTo(0, 0);
+      const live = () => !P && !t0 && !(document.querySelector('#gate') && !document.querySelector('#gate').hidden);
+      let sy = 0;
+      addEventListener('wheel', (e) => { if (live() && e.deltaY > 0) diveIn(); }, { passive: true });
+      addEventListener('keydown', (e) => { if (live() && [' ', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) diveIn(); });
+      stage.addEventListener('touchstart', (e) => { sy = e.touches[0].clientY; }, { passive: true });
+      stage.addEventListener('touchmove', (e) => { if (P >= 1) return; if (e.cancelable) e.preventDefault(); if (live() && sy - e.touches[0].clientY > 14) diveIn(); }, { passive: false });
+    }
     hint.addEventListener('click', diveIn);
-    dEye.addEventListener('click', () => { const r = dive.getBoundingClientRect(); if (-r.top / (r.height - innerHeight) < .6) diveIn(); });
+    dEye.addEventListener('click', diveIn);
+    const more = document.querySelector('#diveMore');
+    if (more) more.addEventListener('click', () => { const n = dive.nextElementSibling; if (n) scrollTo({ top: n.getBoundingClientRect().top + scrollY - 60, behavior: 'smooth' }); });
     kick();
   }
 })();
