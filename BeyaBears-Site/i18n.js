@@ -136,6 +136,7 @@
 "Sa peluche": ["Their plush", "Su peluche"],
 "À son image": ["Just like them", "A su imagen"],
 "Chaque enfant choisit le compagnon qui lui ressemble, avec son prénom et sa tenue.": ["Each child picks the companion that looks like them, with its name and outfit.", "Cada niño elige el compañero que se le parece, con su nombre y su ropa."],
+"Au quotidien": ["Every day", "En el día a día"], "Toujours près de toi": ["Always close to you", "Siempre cerca de ti"], "Jouer, appeler la famille, s'endormir avec une histoire, regarder une vidéo : quatre moments d'une journée avec BeyaBear's.": ["Playing, calling family, falling asleep with a story, watching a video: four moments of a day with BeyaBear's.", "Jugar, llamar a la familia, dormirse con un cuento, ver un vídeo: cuatro momentos de un día con BeyaBear's."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();

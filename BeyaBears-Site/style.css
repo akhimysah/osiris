@@ -490,3 +490,6 @@ html[lang="fr"] [data-only="fr"], html[lang="en"] [data-only="en"], html[lang="e
 .box .round { position: absolute; top: 10px; right: 10px; background: rgba(6, 8, 15, .8); }
 @media (max-width: 900px) { .row { grid-template-columns: minmax(0, 1fr); gap: 16px; } .row:nth-child(even) .zoom { order: 0; } .zoom { border-radius: 20px; } }
 html:not([lang="fr"]) .row:not([data-fr]):nth-child(n) .zoom { order: 0; }
+.zoom.vid { cursor: default; }
+.zoom.vid::after { display: none; }
+.zoom.vid video { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
