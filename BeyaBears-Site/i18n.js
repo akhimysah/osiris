@@ -134,6 +134,7 @@
 "Panier": ["Cart", "Carrito"], "Fermer": ["Close", "Cerrar"], "Langue": ["Language", "Idioma"], "Sections": ["Sections", "Secciones"], "BeyaBear's, retour en haut": ["BeyaBear's, back to top", "BeyaBear's, volver arriba"],
 "Ce que l'œil sait faire": ["What the eye can do", "Lo que el ojo sabe hacer"], "Collection du monde": ["World collection", "Colección del mundo"], "Collections streetwear": ["Streetwear collections", "Colecciones streetwear"],
 "Noah l'Explorateur fait coucou de la patte": ["Noah the Explorer waves a paw", "Noah el Explorador saluda con la pata"], "Noah tourne la tête et regarde autour de lui": ["Noah turns his head and looks around", "Noah gira la cabeza y mira a su alrededor"], "Noah cligne de l'œil et sourit": ["Noah winks and smiles", "Noah guiña el ojo y sonríe"],
+"Les dix compagnons BeyaBear's vus de près, l'un après l'autre": ["The ten BeyaBear's companions seen up close, one after another", "Los diez compañeros BeyaBear's vistos de cerca, uno tras otro"],
 "Iris bleu lumineux": ["Glowing blue iris", "Iris azul luminoso"], "Lumière chaude de veilleuse": ["Warm night light", "Luz cálida de noche"],
   };
   const altFor = (fr) => {
