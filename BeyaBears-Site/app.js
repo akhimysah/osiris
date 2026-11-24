@@ -304,13 +304,15 @@
     // L'œil s'ouvre tout seul, au toucher ou au premier geste. Tant qu'il est fermé, la page ne bouge pas :
     // plus rien ne dépend du défilement, donc même comportement sur tous les téléphones.
     const opened = () => { root.classList.remove('diveLock'); stage.classList.add('open'); };
-    const diveIn = () => { if (P || t0) return; t0 = performance.now(); kick(); };
+    const diveIn = () => { if (P || t0) return; t0 = performance.now(); kick(); setTimeout(() => { if (P < 1) { t0 = 0; P = 1; kick(); } opened(); }, DUR + 400); };
     try { history.scrollRestoration = 'manual'; } catch (e) {}
     if (scrollY > 40 || location.hash) { P = 1; stage.classList.add('open'); }
     else {
       root.classList.add('diveLock'); scrollTo(0, 0);
       const live = () => !P && !t0 && !(document.querySelector('#gate') && !document.querySelector('#gate').hidden);
       let sy = 0;
+      // Personne n'a rien à faire : l'œil s'ouvre de lui-même peu après l'arrivée. La page ne peut donc jamais rester bloquée.
+      let seen = 0; const wait = setInterval(() => { if (P || t0) return clearInterval(wait); if (live() && ++seen >= 5) { clearInterval(wait); diveIn(); } }, 500);
       addEventListener('wheel', (e) => { if (live() && e.deltaY > 0) diveIn(); }, { passive: true });
       addEventListener('keydown', (e) => { if (live() && [' ', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) diveIn(); });
       stage.addEventListener('touchstart', (e) => { sy = e.touches[0].clientY; }, { passive: true });
