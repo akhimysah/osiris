@@ -118,6 +118,7 @@
 "En mouvement": ["In motion", "En movimiento"], "Noah prend vie.": ["Noah comes to life.", "Noah cobra vida."],
 "Au repos, l'écran devient un grand œil qui cligne, suit du regard et sourit. C'est lui qui donne son caractère à chaque compagnon.": ["At rest, the screen becomes a big eye that blinks, follows you and smiles. It gives each companion its personality.", "En reposo, la pantalla se convierte en un gran ojo que parpadea, sigue con la mirada y sonríe. Es lo que da carácter a cada compañero."],
 "Activer le son": ["Turn sound on", "Activar el sonido"], "Couper le son": ["Turn sound off", "Quitar el sonido"],
+"Écouter Noah": ["Listen to Noah", "Escuchar a Noah"], "Arrêter": ["Stop", "Parar"], "Noah se présente, dans votre langue. Touchez la vidéo pour l'écouter.": ["Noah introduces himself, in your language. Tap the video to listen.", "Noah se presenta, en tu idioma. Toca el vídeo para escucharlo."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
@@ -136,6 +137,7 @@
 "Ce que l'œil sait faire": ["What the eye can do", "Lo que el ojo sabe hacer"], "Collection du monde": ["World collection", "Colección del mundo"], "Collections streetwear": ["Streetwear collections", "Colecciones streetwear"],
 "Noah l'Explorateur fait coucou de la patte": ["Noah the Explorer waves a paw", "Noah el Explorador saluda con la pata"], "Noah tourne la tête et regarde autour de lui": ["Noah turns his head and looks around", "Noah gira la cabeza y mira a su alrededor"], "Noah cligne de l'œil et sourit": ["Noah winks and smiles", "Noah guiña el ojo y sonríe"],
 "Les dix compagnons BeyaBear's vus de près, l'un après l'autre": ["The ten BeyaBear's companions seen up close, one after another", "Los diez compañeros BeyaBear's vistos de cerca, uno tras otro"],
+"Noah l'Explorateur se présente": ["Noah the Explorer introduces himself", "Noah el Explorador se presenta"],
 "Iris bleu lumineux": ["Glowing blue iris", "Iris azul luminoso"], "Lumière chaude de veilleuse": ["Warm night light", "Luz cálida de noche"],
   };
   const altFor = (fr) => {

@@ -463,3 +463,12 @@ html[lang="fr"] [data-intl] { display: none !important; }
 .clips figure { position: relative; }
 .snd { position: absolute; left: 10px; bottom: 10px; height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); background: rgba(6,8,15,.7); color: #fff; font: 600 .8rem/1 var(--body); cursor: pointer; }
 .snd[aria-pressed="true"] { background: var(--cream); color: #10131c; border-color: var(--cream); }
+
+/* Un clip parlant par langue */
+[data-only] { display: none; }
+html[lang="fr"] [data-only="fr"], html[lang="en"] [data-only="en"], html[lang="es"] [data-only="es"] { display: block; }
+.talk { position: relative; }
+.listen { position: absolute; inset: 0; margin: auto; width: max-content; height: 62px; padding: 0 30px 0 24px; border-radius: 999px; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; color: #fff; font: 700 1.15rem/1 var(--body); background: linear-gradient(135deg, #58b6ff, var(--eye) 60%, #1a5fd0); box-shadow: 0 0 0 6px rgba(255, 255, 255, .18), 0 16px 44px rgba(0, 0, 0, .5); }
+.listen::before { content: ""; border-left: 14px solid #fff; border-block: 9px solid transparent; }
+.talk.playing .listen { inset: auto auto 14px 14px; margin: 0; height: 40px; padding: 0 16px; font-size: .85rem; background: rgba(6, 8, 15, .7); box-shadow: none; border: 1px solid rgba(255, 255, 255, .4); }
+.talk.playing .listen::before { border: 0; width: 10px; height: 12px; border-inline: 3px solid #fff; }

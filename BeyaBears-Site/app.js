@@ -16,6 +16,7 @@
 
   // Vidéos : toujours muettes, en pause hors écran
   $$('video').forEach((v) => {
+    if (v.closest('.talk')) return;
     v.muted = true; v.defaultMuted = true;
     if (calm) { v.removeAttribute('autoplay'); v.pause(); return; }
     if ('IntersectionObserver' in window) {
@@ -24,15 +25,20 @@
       }, { threshold: .2 }).observe(v);
     }
   });
-  // Son des clips : coupé au départ (les navigateurs bloquent le son automatique), activé par un bouton, un clip à la fois.
-  const sndPaint = () => $$('[data-snd]').forEach((b) => { const on = !b.previousElementSibling.muted; b.setAttribute('aria-pressed', String(on)); b.textContent = T(on ? 'Couper le son' : 'Activer le son'); });
-  $$('[data-snd]').forEach((b) => b.addEventListener('click', () => {
-    const v = b.previousElementSibling, on = v.muted;
-    $$('[data-snd]').forEach((o) => { o.previousElementSibling.muted = true; });
-    if (on) { v.muted = false; v.volume = 1; v.currentTime = 0; v.play().catch(() => {}); }
-    sndPaint();
-  }));
-  document.addEventListener('langue', sndPaint);
+  // Clips parlants : un par langue. Le son ne peut démarrer qu'après un toucher, d'où le grand bouton.
+  const talks = $$('.talk');
+  const talkStop = (box) => { const v = $('video', box); v.pause(); box.classList.remove('playing'); $('[data-listen]', box).textContent = T('Écouter Noah'); };
+  talks.forEach((box) => {
+    const v = $('video', box), btn = $('[data-listen]', box);
+    v.dataset.talk = '1';
+    btn.addEventListener('click', () => {
+      if (box.classList.contains('playing')) return talkStop(box);
+      v.muted = false; v.volume = 1; v.currentTime = 0;
+      v.play().then(() => { box.classList.add('playing'); btn.textContent = T('Arrêter'); }).catch(() => { v.controls = true; });
+    });
+    v.addEventListener('ended', () => talkStop(box));
+  });
+  document.addEventListener('langue', () => talks.forEach(talkStop));
   const filmBtn = $('#filmToggle'), film = $('#filmVideo');
   if (filmBtn && film) {
     const paint = () => { filmBtn.textContent = T(film.paused ? 'Lire' : 'Pause'); };
