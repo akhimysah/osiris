@@ -270,13 +270,17 @@
   const dive = $('#dive'), dEye = $('#diveEye');
   if (dive && dEye && !calm) {
     const A = $('#diveA'), B = $('#diveB'), hint = $('#diveGo'), shine = $('#diveShine');
+    const stage = dEye.parentElement; let shift = 0;
     let px = 0, py = 0, tx = 0, ty = 0, raf = 0, last = 0;
     const clamp = (v) => Math.max(0, Math.min(1, v));
     const draw = (now) => {
       raf = 0;
-      const r = dive.getBoundingClientRect(), vw = innerWidth, vh = innerHeight;
-      if (r.bottom < 0 || r.top > vh) return;
+      const r = dive.getBoundingClientRect(), vw = stage.clientWidth || innerWidth, vh = stage.clientHeight || innerHeight;
+      if (r.bottom < 0 || r.top > innerHeight) return;
       const p = clamp(-r.top / (r.height - vh));
+      // Filet de sécurité : si le téléphone ne garde pas la scène collée en haut, on la recale nous-mêmes.
+      const want = r.top > 0 ? r.top : Math.min(0, r.bottom - vh), err = want - stage.getBoundingClientRect().top;
+      if (Math.abs(err) > 1) { shift += err; stage.style.transform = 'translate3d(0,' + shift.toFixed(1) + 'px,0)'; }
       // Sans souris, l'œil regarde doucement autour de lui
       if (now - last > 2200) { tx = Math.sin(now / 1500) * .6; ty = Math.cos(now / 2100) * .35; }
       px += (tx - px) * .12; py += (ty - py) * .12;
@@ -304,7 +308,7 @@
     let auto = 0;
     const diveIn = () => {
       if (auto) return;
-      const from = scrollY, to = dive.offsetTop + dive.offsetHeight - innerHeight, t0 = performance.now(), dur = 4200;
+      const from = scrollY, to = scrollY + dive.getBoundingClientRect().bottom - stage.clientHeight, t0 = performance.now(), dur = 4200;
       if (to - from < 40) return;
       document.documentElement.style.scrollBehavior = 'auto';
       const stop = () => { cancelAnimationFrame(auto); auto = 0; document.documentElement.style.scrollBehavior = ''; removeEventListener('wheel', stop); removeEventListener('touchstart', stop); };

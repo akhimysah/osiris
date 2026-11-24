@@ -36,7 +36,7 @@ body::before {
   height: env(safe-area-inset-top, 0px); background: var(--night);
 }
 img, video { display: block; max-width: 100%; }
-main { overflow-x: clip; }
+main > :not(.dive):not(.try) { overflow-x: clip; }
 a { color: inherit; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -.03em; line-height: 1.02; }
