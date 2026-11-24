@@ -40,7 +40,31 @@
     v.muted = !sonOn; v.volume = 1;
     if (v.paused) v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
   });
-  $$('[data-son]').forEach((b) => b.addEventListener('click', () => { sonOn = !sonOn; sonPaint(); sonSync(); }));
+  // iPhone n'autorise le son que sur les vidéos lancées pendant un toucher : au premier toucher, on les « déverrouille » toutes.
+  let sonUnlocked = false;
+  const sonUnlock = () => {
+    if (sonUnlocked) return;
+    sonUnlocked = true;
+    sonBands.forEach((band) => $$('video', band).forEach((v) => {
+      if (!v.offsetParent) return;
+      const wasPaused = v.paused;
+      v.muted = false;
+      const p = v.play();
+      if (p && p.then) p.then(() => { if (wasPaused && v !== sonCurrent()) { v.pause(); v.muted = true; } }).catch(() => {});
+    }));
+  };
+  const sonCurrent = () => { for (const band of sonBands) { const r = band.getBoundingClientRect(); if (r.bottom > innerHeight * 0.25 && r.top < innerHeight * 0.75) return sonVideo(band); } return null; };
+  $$('[data-son]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); sonOn = !sonOn; if (sonOn) sonUnlock(); sonPaint(); sonSync(); }));
+  // Premier toucher n'importe où sur la page : le son des bandes s'active pour toute la visite.
+  const sonFirst = (e) => {
+    if (e.target.closest && e.target.closest('[data-son],[data-listen],.talk')) return;
+    document.removeEventListener('click', sonFirst, true);
+    document.removeEventListener('touchend', sonFirst, true);
+    if (sonOn) return;
+    sonOn = true; sonUnlock(); sonPaint(); sonSync();
+  };
+  document.addEventListener('click', sonFirst, true);
+  document.addEventListener('touchend', sonFirst, true);
   if (sonBands.length) {
     sonBands.forEach((band) => $$('video', band).forEach((v) => { v.dataset.band = '1'; }));
     addEventListener('scroll', sonSync, { passive: true });
@@ -57,6 +81,7 @@
     v.dataset.talk = '1';
     btn.addEventListener('click', () => {
       if (box.classList.contains('playing')) return talkStop(box);
+      if (typeof sonOn !== 'undefined' && sonOn) { sonOn = false; sonPaint(); sonSync(); }
       v.muted = false; v.volume = 1; v.currentTime = 0;
       v.play().then(() => { box.classList.add('playing'); btn.textContent = T('Arrêter'); }).catch(() => { v.controls = true; });
     });
