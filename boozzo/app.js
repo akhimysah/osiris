@@ -194,10 +194,12 @@ function openMenu({ page = 0 } = {}) {
   renderHome();
 }
 function renderHome() {
-  panel.innerHTML = `<h2>Bonjour, je suis BeyaBear’s</h2>
-    <p class="muted">Touchez mon œil ou choisissez une application. Vous pouvez aussi me parler.</p>
+  panel.innerHTML = `<span class="pill">La peluche dont l’œil est un écran</span>
+    <h2 class="hello">Bonjour, je suis <em>BeyaBear’s</em></h2>
+    <p class="lead">Touchez mon œil ou choisissez une application. Vous pouvez aussi me parler.</p>
+    <div class="row"><button class="btn go" data-listen type="button">${ICON.mic}Parler à BeyaBear’s</button></div>
+    <h3 class="sub">Mes <em>applications</em></h3>
     <div class="apps">${APPS.map(([id, label, color]) => `<button data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.map((app) => externalTile(app)).join('')}</div>
-    <div class="row"><button class="btn" data-listen type="button">${ICON.mic}Parler à BeyaBear’s</button></div>
     ${
       SpeechRecognition
         ? `<label class="check"><input type="checkbox" id="wake" ${state.wake ? 'checked' : ''}> Écouter en continu le mot « Beya »</label>
