@@ -117,6 +117,7 @@
 "Réserver ces compagnons": ["Reserve these companions", "Reservar estos compañeros"], "Ajouter au panier · 249 €": ["Add to cart · €249", "Añadir al carrito · 249 €"],
 "En mouvement": ["In motion", "En movimiento"], "Noah prend vie.": ["Noah comes to life.", "Noah cobra vida."],
 "Au repos, l'écran devient un grand œil qui cligne, suit du regard et sourit. C'est lui qui donne son caractère à chaque compagnon.": ["At rest, the screen becomes a big eye that blinks, follows you and smiles. It gives each companion its personality.", "En reposo, la pantalla se convierte en un gran ojo que parpadea, sigue con la mirada y sonríe. Es lo que da carácter a cada compañero."],
+"Activer le son": ["Turn sound on", "Activar el sonido"], "Couper le son": ["Turn sound off", "Quitar el sonido"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();

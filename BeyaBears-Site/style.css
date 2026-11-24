@@ -460,3 +460,6 @@ html[lang="fr"] [data-intl] { display: none !important; }
 .cart .btn { width: 100%; margin-top: 14px; }
 @media (max-width: 480px) { .brand { font-size: 0; gap: 0; } .nav .wrap { gap: 6px; } }
 .clips video { width: 100%; aspect-ratio: 1280 / 704; object-fit: cover; }
+.clips figure { position: relative; }
+.snd { position: absolute; left: 10px; bottom: 10px; height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); background: rgba(6,8,15,.7); color: #fff; font: 600 .8rem/1 var(--body); cursor: pointer; }
+.snd[aria-pressed="true"] { background: var(--cream); color: #10131c; border-color: var(--cream); }

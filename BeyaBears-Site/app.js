@@ -16,7 +16,7 @@
 
   // Vidéos : toujours muettes, en pause hors écran
   $$('video').forEach((v) => {
-    v.muted = true; v.defaultMuted = true; v.volume = 0;
+    v.muted = true; v.defaultMuted = true;
     if (calm) { v.removeAttribute('autoplay'); v.pause(); return; }
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(([e]) => {
@@ -24,6 +24,15 @@
       }, { threshold: .2 }).observe(v);
     }
   });
+  // Son des clips : coupé au départ (les navigateurs bloquent le son automatique), activé par un bouton, un clip à la fois.
+  const sndPaint = () => $$('[data-snd]').forEach((b) => { const on = !b.previousElementSibling.muted; b.setAttribute('aria-pressed', String(on)); b.textContent = T(on ? 'Couper le son' : 'Activer le son'); });
+  $$('[data-snd]').forEach((b) => b.addEventListener('click', () => {
+    const v = b.previousElementSibling, on = v.muted;
+    $$('[data-snd]').forEach((o) => { o.previousElementSibling.muted = true; });
+    if (on) { v.muted = false; v.volume = 1; v.currentTime = 0; v.play().catch(() => {}); }
+    sndPaint();
+  }));
+  document.addEventListener('langue', sndPaint);
   const filmBtn = $('#filmToggle'), film = $('#filmVideo');
   if (filmBtn && film) {
     const paint = () => { filmBtn.textContent = T(film.paused ? 'Lire' : 'Pause'); };
