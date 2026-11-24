@@ -115,7 +115,7 @@ function toast(message) {
   toast.timer = setTimeout(() => ($('#toast').textContent = ''), 4500);
 }
 function sayInEye(text, label = '') {
-  screen.innerHTML = `<div class="say${text.length > 90 ? ' long' : ''}${label === 'Histoire' ? ' story' : ''}"><span>${label ? `<small>${esc(label)}</small>` : ''}${esc(text)}</span></div>`;
+  screen.innerHTML = `<div class="say${text.length > 90 ? ' long' : ''}${label === 'Histoire' ? ' story' : ''}"><span>${label ? `<small>${esc(L(label))}</small>` : ''}${esc(text)}</span></div>`;
 }
 function applyColor() {
   $('#iris').style.filter = `hue-rotate(${COLORS[state.color][1]}deg) saturate(1.25)`;
@@ -901,7 +901,7 @@ async function speak(text, label = 'BeyaBear’s') {
 
 function openChat() {
   renderChat();
-  sayInEye('Je t’écoute.', 'Assistant');
+  sayInEye(L('Je t’écoute.'), 'Assistant');
 }
 function renderChat() {
   panel.innerHTML = `${backButton}<h2>Assistant</h2>
@@ -924,13 +924,13 @@ let jokeIndex = 0;
 function openStories({ play = false } = {}) {
   renderStories();
   if (play) return playStory(storyIndex++ % STORIES.length);
-  sayInEye('Choisis une histoire.', 'Histoire');
+  sayInEye(L('Choisis une histoire.'), 'Histoire');
 }
 function renderStories(playing = -1) {
-  panel.innerHTML = `${backButton}<h2>Histoires</h2>
-    <p class="muted">Touchez une histoire : BeyaBear’s la raconte à voix haute, et elle défile dans son œil.</p>
+  panel.innerHTML = `${L(backButton)}<h2>${L('Histoires')}</h2>
+    <p class="muted">${L('Touchez une histoire : BeyaBear’s la raconte à voix haute, et elle défile dans son œil.')}</p>
     <ul class="favs">${STORIES.map((story, i) => `<li><button class="btn ${i === playing ? '' : 'light'}" type="button" data-story="${i}">${ICON.story}${story.title}</button></li>`).join('')}</ul>
-    <div class="row"><button class="btn light" id="quiet" type="button">Arrêter l’histoire</button></div>
+    <div class="row"><button class="btn light" id="quiet" type="button">${L('Arrêter l’histoire')}</button></div>
     ${state.assistant ? '<div class="row"><button class="btn light" id="newStory" type="button">Inventer une nouvelle histoire</button></div>' : ''}`;
 }
 function playStory(index) {
@@ -1873,7 +1873,7 @@ document.addEventListener('click', (event) => {
       return snap();
     case 'quiet':
       stopSpeaking();
-      return state.screen === 'story' ? (renderStories(), sayInEye('Choisis une histoire.', 'Histoire')) : undefined;
+      return state.screen === 'story' ? (renderStories(), sayInEye(L('Choisis une histoire.'), 'Histoire')) : undefined;
     case 'newStory':
       return ask('Raconte-moi une courte histoire douce.');
     case 'torchEye':

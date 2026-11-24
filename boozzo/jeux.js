@@ -16,26 +16,26 @@ function gameSave(id, value, lower) {
 function openGames(options = {}) {
   gameRun++;
   if (options.game) return startGame(options.game);
-  screen.innerHTML = `<div class="game pick four"><small>Jeux</small>${GAME_LIST.map(([id, name]) => `<button type="button" data-jeu="${id}">${name}</button>`).join('')}</div>`;
+  screen.innerHTML = `<div class="game pick four"><small>${L('Jeux')}</small>${GAME_LIST.map(([id, name]) => `<button type="button" data-jeu="${id}">${L(name)}</button>`).join('')}</div>`;
   renderGames();
   focusEye();
 }
 function renderGames(note = '') {
-  panel.innerHTML = `${backButton}<h2>Jeux</h2>
-    <p>${note || 'Deux jeux pensés pour l’écran rond : ils se jouent du bout du doigt, directement dans l’œil.'}</p>
-    <div class="row">${GAME_LIST.map(([id, name]) => `<button class="btn${state.game === id ? '' : ' light'}" type="button" data-jeu="${id}">${name}</button>`).join('')}</div>
-    <ul class="muted">${GAME_LIST.map(([id, name, how]) => `<li><strong>${name}</strong> : ${how}${gameBest(id) != null ? ` Record : ${gameBest(id)} ${{ miel: 'pots', paires: 'coups', etoiles: 'étoiles', calcul: 'sur 10' }[id]}.` : ''}</li>`).join('')}</ul>`;
+  panel.innerHTML = `${L(backButton)}<h2>${L('Jeux')}</h2>
+    <p>${note || L('Cinq jeux pensés pour l’écran rond : ils se jouent du bout du doigt, directement dans l’œil.')}</p>
+    <div class="row">${GAME_LIST.map(([id, name]) => `<button class="btn${state.game === id ? '' : ' light'}" type="button" data-jeu="${id}">${L(name)}</button>`).join('')}</div>
+    <ul class="muted">${GAME_LIST.map(([id, name, how]) => `<li><strong>${L(name)}</strong> : ${L(how)}${gameBest(id) != null ? ` ${L('Record')} : ${gameBest(id)} ${L({ miel: 'pots', paires: 'coups', etoiles: 'étoiles', calcul: 'sur 10' }[id])}.` : ''}</li>`).join('')}</ul>`;
 }
 function startGame(id) {
   gameRun++;
   state.game = id;
   focusEye();
   ({ miel: playHoney, paires: playPairs, etoiles: playStars, calcul: playMaths, dessin: playDraw })[id](gameRun);
-  renderGames(GAME_LIST.find((g) => g[0] === id)[2]);
+  renderGames(L(GAME_LIST.find((g) => g[0] === id)[2]));
 }
 function gameOver(title, line, id) {
-  screen.innerHTML = `<div class="game pick"><small>${title}</small><b>${line}</b><button type="button" data-jeu="${id}">Rejouer</button><button type="button" data-jeu="">Autre jeu</button></div>`;
-  renderGames(`${title} ${line}`);
+  screen.innerHTML = `<div class="game pick"><small>${L(title)}</small><b>${line}</b><button type="button" data-jeu="${id}">${L('Rejouer')}</button><button type="button" data-jeu="">${L('Autre jeu')}</button></div>`;
+  renderGames(`${L(title)} ${line}`);
 }
 document.addEventListener('click', (event) => {
   const button = event.target.closest('[data-jeu]');
@@ -49,7 +49,7 @@ function playPairs(run) {
   const faces = ['🌙', '⭐', '🍎', '🐟', '🌸', '🚀'];
   const cards = [...faces, ...faces].sort(() => Math.random() - 0.5);
   let open = [], found = 0, moves = 0, lock = false;
-  screen.innerHTML = `<div class="game pairs"><small id="pairsInfo">0 coup</small><div class="cards">${cards.map((face, i) => `<button type="button" data-card="${i}" aria-label="Carte ${i + 1}"><span>${face}</span></button>`).join('')}</div></div>`;
+  screen.innerHTML = `<div class="game pairs"><small id="pairsInfo">0 ${L('coup')}</small><div class="cards">${cards.map((face, i) => `<button type="button" data-card="${i}" aria-label="Carte ${i + 1}"><span>${face}</span></button>`).join('')}</div></div>`;
   const box = screen.querySelector('.cards');
   box.addEventListener('click', (event) => {
     const card = event.target.closest('[data-card]');
@@ -58,14 +58,14 @@ function playPairs(run) {
     open.push(card);
     if (open.length < 2) return;
     moves++;
-    screen.querySelector('#pairsInfo').textContent = `${moves} coup${moves > 1 ? 's' : ''}`;
+    screen.querySelector('#pairsInfo').textContent = `${moves} ${L(moves > 1 ? 'coups' : 'coup')}`;
     const [a, b] = open;
     open = [];
     if (cards[a.dataset.card] === cards[b.dataset.card]) {
       a.classList.add('ok'); b.classList.add('ok');
       if (++found === faces.length) {
         gameSave('paires', moves, true);
-        setTimeout(() => run === gameRun && gameOver('Bravo !', `${moves} coups`, 'paires'), 700);
+        setTimeout(() => run === gameRun && gameOver('Bravo !', `${moves} ${L('coups')}`, 'paires'), 700);
       }
     } else {
       lock = true;
@@ -117,7 +117,7 @@ function playStars(run) {
     ctx.fillStyle = '#f4e8d2';
     ctx.beginPath(); ctx.roundRect(basket - 44, 384, 88, 30, 15); ctx.fill();
     screen.querySelector('#starsInfo').textContent = `${score} · ${Math.max(0, Math.ceil((end - now) / 1000))} s`;
-    if (now >= end) { gameSave('etoiles', score); return gameOver('Fini !', `${score} étoile${score > 1 ? 's' : ''}`, 'etoiles'); }
+    if (now >= end) { gameSave('etoiles', score); return gameOver('Fini !', `${score} ${L(score > 1 ? 'étoiles' : 'étoile')}`, 'etoiles'); }
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
@@ -128,7 +128,7 @@ function playMaths(run) {
   let round = 0, good = 0;
   const next = () => {
     if (run !== gameRun) return;
-    if (round === 10) { gameSave('calcul', good); return gameOver('Bravo !', `${good} sur 10`, 'calcul'); }
+    if (round === 10) { gameSave('calcul', good); return gameOver('Bravo !', `${good} ${L('sur 10')}`, 'calcul'); }
     round++;
     const plus = Math.random() < 0.6;
     let a = 1 + Math.floor(Math.random() * 9), b = 1 + Math.floor(Math.random() * 9);
@@ -259,7 +259,7 @@ function playHoney(run) {
         if (o.t === 'log') { ctx.fillStyle = '#7a4a22'; ctx.beginPath(); ctx.roundRect(o.x - 17, oy - o.h, 34, o.h, 6); ctx.fill(); ctx.fillStyle = '#c99a5b'; ctx.beginPath(); ctx.ellipse(o.x, oy - o.h, 17, 6, 0, 0, 7); ctx.fill(); }
         else { ctx.fillStyle = '#ffffffb0'; ctx.beginPath(); ctx.ellipse(o.x - 2, oy - 22, 10, 7, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#ffcf2e'; ctx.beginPath(); ctx.ellipse(o.x, oy - 12, 15, 11, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#2b2118'; ctx.fillRect(o.x - 5, oy - 22, 4, 20); ctx.fillRect(o.x + 4, oy - 21, 4, 18); }
         const top = oy - o.h, hit = Math.abs(o.x - X) < o.w / 2 + 13 && y > top + 6 && y - 80 < oy - 2;
-        if (hit && hurt <= 0 && started) { lives--; hurt = 1.2; if (lives <= 0) { gameSave('miel', score); return gameOver('Fini !', `${score} pot${score > 1 ? 's' : ''} de miel`, 'miel'); } }
+        if (hit && hurt <= 0 && started) { lives--; hurt = 1.2; if (lives <= 0) { gameSave('miel', score); return gameOver('Fini !', `${score} ${L(score > 1 ? 'pots de miel' : 'pot de miel')}`, 'miel'); } }
       }
     }
     for (let i = puffs.length - 1; i >= 0; i--) { const p = puffs[i]; p.a -= dt * 2.4; p.y -= 60 * dt; if (p.a <= 0) { puffs.splice(i, 1); continue; } ctx.fillStyle = `rgba(255,255,255,${p.a})`; ctx.font = '700 20px system-ui'; ctx.textAlign = 'center'; ctx.fillText('+1', p.x, p.y); }
@@ -268,7 +268,7 @@ function playHoney(run) {
     ctx.textAlign = 'center'; ctx.fillStyle = '#10131c'; ctx.font = '800 30px system-ui';
     pot(205, 84); ctx.fillStyle = '#10131c'; ctx.fillText(String(score), 245, 94);
     for (let i = 0; i < 3; i++) { ctx.fillStyle = i < lives ? '#e5484d' : '#0003'; ctx.beginPath(); ctx.arc(216 + i * 24, 122, 8, 0, 7); ctx.fill(); }
-    if (!started) { ctx.fillStyle = '#10131c'; ctx.font = '700 24px system-ui'; ctx.fillText('Touche pour sauter', S / 2, 200); }
+    if (!started) { ctx.fillStyle = '#10131c'; ctx.font = '700 24px system-ui'; ctx.fillText(L('Touche pour sauter'), S / 2, 200); }
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
