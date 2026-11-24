@@ -425,3 +425,11 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
 .pays figcaption { background: var(--panel); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
 .pays figcaption b { font: 700 1.2rem/1.1 var(--display); letter-spacing: -.02em; color: var(--cream); }
 .pays figcaption span { color: var(--muted); font-size: .9rem; }
+
+/* Choix de la langue */
+.langs { display: flex; gap: 2px; padding: 3px; border-radius: 999px; border: 1px solid var(--line); }
+.langs button { height: 28px; padding: 0 9px; border-radius: 999px; border: 0; background: none; color: var(--muted); font: 600 .78rem/1 var(--body); cursor: pointer; }
+.langs button[aria-pressed="true"] { background: var(--cream); color: #10131c; }
+@media (max-width: 900px) { .nav .wrap { gap: 8px; } .nav .langs { margin-left: auto; } .nav .btn.demo { margin-left: 0; padding: 0 12px; font-size: .8rem; } .brand { font-size: 1.05rem; gap: 7px; } .brand svg { width: 28px; height: 25px; } .langs button { padding: 0 7px; } }
+.btn { white-space: nowrap; }
+@media (max-width: 480px) { .nav .btn.demo { padding: 0 10px; font-size: .74rem; } .nav .btn.demo::before { display: none; } .brand { font-size: .98rem; } }

@@ -1,4 +1,5 @@
 (() => {
+  const T = window.T || ((s) => s);
   document.documentElement.classList.add('js');
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -25,7 +26,7 @@
   });
   const filmBtn = $('#filmToggle'), film = $('#filmVideo');
   if (filmBtn && film) {
-    const paint = () => { filmBtn.textContent = film.paused ? 'Lire' : 'Pause'; };
+    const paint = () => { filmBtn.textContent = T(film.paused ? 'Lire' : 'Pause'); };
     filmBtn.addEventListener('click', () => {
       if (film.paused) { delete film.dataset.stopped; film.play().catch(() => {}); }
       else { film.dataset.stopped = '1'; film.pause(); }
@@ -101,7 +102,7 @@
   if (book) book.addEventListener('submit', (e) => {
     e.preventDefault();
     const msg = $('#bookMsg'), name = $('#bookName').value.trim(), mail = $('#bookMail').value.trim();
-    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) { msg.textContent = 'Indiquez votre prénom et une adresse e-mail valide.'; return; }
-    msg.textContent = 'Merci ' + name + ' ! Démonstration : les inscriptions seront enregistrées à l’ouverture officielle du site.';
+    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) { msg.textContent = T('Indiquez votre prénom et une adresse e-mail valide.'); return; }
+    msg.textContent = T('Merci') + ' ' + name + ' ! ' + T('Démonstration : les inscriptions seront enregistrées à l’ouverture officielle du site.');
   });
 })();
