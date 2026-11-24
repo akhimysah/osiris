@@ -763,3 +763,51 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
   .diveStage.open .diveB { animation: none; }
 }
 .diveA, .diveB, .diveShine { pointer-events: none; }
+
+/* ================= Version téléphone : comme une application ================= */
+.tabs, .modeCap { display: none; }
+@media (max-width: 900px) {
+  /* Barre du bas : les grandes rubriques à portée de pouce */
+  .tabs { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 24; padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px)); background: rgba(255, 255, 255, .96); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-top: 1px solid #e3e9f6; box-shadow: 0 -8px 30px rgba(8, 28, 80, .08); }
+  .tabs a { display: grid; justify-items: center; gap: 3px; padding: 6px 0 4px; border-radius: 14px; color: #7684a6; font: 700 .68rem/1 var(--body); text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  .tabs svg { width: 24px; height: 24px; }
+  .tabs a.on { color: #1464e6; }
+  .tabs a.go svg { width: 34px; height: 34px; padding: 8px; margin: -5px 0; border-radius: 50%; background: var(--blue); color: #fff; box-shadow: 0 6px 16px rgba(20, 100, 230, .4); }
+  .tabs a.go { color: #1464e6; }
+  body { padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)); }
+  html { scroll-padding-top: 70px; }
+  /* Barre du haut allégée : logo, panier, langues, son */
+  .nav .btn.demo { display: none; }
+  .nav .wrap { padding-right: 62px; }
+  .sonToggle { left: auto; bottom: auto; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; width: 40px; height: 40px; padding: 0; justify-content: center; border-radius: 50%; box-shadow: 0 4px 14px rgba(8, 28, 80, .2); }
+  .sonToggle span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  /* Ouverture : rien ne passe sous la barre du bas */
+  .diveGo { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+  .diveMore { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
+  /* Tester l'œil : l'ourson reste visible, les fonctions défilent en pastilles juste dessous */
+  .try .modes { flex-direction: row; gap: 8px; overflow-x: auto; margin-top: 18px; padding: 4px 2px 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
+  .try .modes::-webkit-scrollbar { display: none; }
+  .try .mode { flex: none; display: block; padding: 11px 18px; border: 1px solid #dbe4f5; border-radius: 999px; background: #fff; scroll-snap-align: center; }
+  .try .mode:last-child { border-bottom: 1px solid #dbe4f5; }
+  .try .mode i, .try .mode span { display: none; }
+  .try .mode b { font-size: 1rem; white-space: nowrap; }
+  .try .mode[aria-selected="true"] { background: var(--blue); border-color: transparent; box-shadow: 0 8px 20px rgba(20, 100, 230, .3); }
+  .try .mode[aria-selected="true"] b { color: #fff; }
+  .modeCap { display: block; min-height: 3.2em; margin: 6px 0 0; text-align: center; color: #55668c; font-size: .98rem; line-height: 1.5; }
+  .try .head .actions { display: none; } .tryGo { display: flex; margin-top: 16px; }
+  /* Confort de lecture et de toucher */
+  .band { padding-block: clamp(52px, 13vw, 76px); }
+  .title { font-size: clamp(1.9rem, 8.2vw, 2.6rem); line-height: 1.06; }
+  .lead { font-size: 1.02rem; }
+  .btn { min-height: 48px; }
+  footer { padding-bottom: 20px; }
+}
+@media (min-width: 901px) { .tryGo { display: none; } }
+@media (max-width: 900px) { .try .mode { width: auto; } }
+/* Barre du haut (ordinateur) : les boutons gardent leur largeur, le menu se resserre si besoin */
+.nav .btn, .nav .cartBtn, .nav .langs, .nav .brand { flex: none; white-space: nowrap; }
+.nav nav { min-width: 0; }
+@media (min-width: 901px) and (max-width: 1500px) { .nav .wrap { gap: 10px; } .nav nav { gap: 15px; margin-right: 4px; } .nav nav a { font-size: .86rem; } }
+@media (min-width: 901px) and (max-width: 1180px) { .nav nav a[href="#usages"], .nav nav a[href="#parents"] { display: none; } }
+@media (min-width: 901px) and (max-width: 1500px) { .nav nav { gap: 12px; flex: none; } .nav nav a { font-size: .84rem; } .nav .btn { padding-inline: 14px; } }
+@media (min-width: 901px) { .nav .wrap { gap: 10px; } .nav nav { gap: 12px; flex: none; margin-right: 4px; } .nav nav a { font-size: .84rem; } .nav .btn { padding-inline: 14px; } }

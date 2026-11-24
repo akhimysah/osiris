@@ -108,12 +108,21 @@
   const HALO = { iris: '#2e8bff', call: '#5c7cff', story: '#8a6bff', talk: '#2e8bff', video: '#ff7a59', meteo: '#6fc3ff', clock: '#ff5a4a', jeu: '#ffb21f', night: '#ffb347' };
   const modes = $$('.mode'), ball = $('.eyeball');
   let current = 0, timer = null, touched = false;
+  // Sur téléphone : la description de la fonction choisie s'affiche sous les pastilles, puis le bouton de la démo.
+  let cap = null;
+  if (modes.length) {
+    cap = document.createElement('p'); cap.className = 'modeCap'; cap.setAttribute('aria-live', 'polite');
+    const grid = modes[0].closest('.eye-grid'); grid.appendChild(cap);
+    const go = $('.try .head .actions a'); if (go) { const g = go.cloneNode(true); g.classList.add('tryGo'); grid.appendChild(g); }
+    document.addEventListener('langue', () => setTimeout(() => { if (cap) cap.textContent = $('span', modes[current]).textContent; }, 0));
+  }
   function show(i) {
     current = (i + modes.length) % modes.length;
     const name = modes[current].dataset.view;
     modes.forEach((m, k) => m.setAttribute('aria-selected', k === current ? 'true' : 'false'));
     $$('.view').forEach((v) => v.classList.toggle('on', v.dataset.view === name));
     ball.style.setProperty('--halo', HALO[name] || HALO.iris);
+    if (cap) { cap.textContent = $('span', modes[current]).textContent; const box = modes[current].parentElement, m = modes[current]; if (box.scrollWidth > box.clientWidth + 4) box.scrollTo({ left: m.offsetLeft - (box.clientWidth - m.offsetWidth) / 2, behavior: 'smooth' }); }
   }
   modes.forEach((m, k) => {
     m.addEventListener('click', () => { touched = true; clearInterval(timer); show(k); });
@@ -325,5 +334,12 @@
     const more = document.querySelector('#diveMore');
     if (more) more.addEventListener('click', () => { const n = dive.nextElementSibling; if (n) scrollTo({ top: n.getBoundingClientRect().top + scrollY - 60, behavior: 'smooth' }); });
     kick();
+  }
+  // Barre du bas (téléphone) : la rubrique où l'on se trouve est allumée
+  const tabs = $$('#tabs a[data-tab]');
+  if (tabs.length) {
+    let tick = 0;
+    const paint = () => { tick = 0; let on = tabs[0]; tabs.forEach((t) => { const e = document.getElementById(t.dataset.tab); if (e && t.dataset.tab !== 'haut' && e.getBoundingClientRect().top < innerHeight * .45) on = t; }); tabs.forEach((t) => t.classList.toggle('on', t === on)); };
+    addEventListener('scroll', () => { if (!tick) tick = requestAnimationFrame(paint); }, { passive: true }); paint();
   }
 })();

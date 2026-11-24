@@ -213,6 +213,9 @@
 "Il touche l'œil ou dit « Beya, réponds ». Il peut aussi demander une histoire, un jeu ou une vidéo.": ["They touch the eye or say “Beya, answer”. They can also ask for a story, a game or a video.", "Toca el ojo o dice «Beya, responde». También puede pedir un cuento, un juego o un vídeo."],
 "Touchez l'œil pour entrer": ["Tap the eye to enter", "Toca el ojo para entrar"], "ou glissez votre doigt vers le haut": ["or swipe up", "o desliza el dedo hacia arriba"],
 "Découvrir": ["Discover", "Descubrir"],
+"Accueil": ["Home", "Inicio"],
+"L'œil": ["The eye", "El ojo"],
+"Démo": ["Demo", "Demo"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
