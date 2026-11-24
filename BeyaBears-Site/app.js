@@ -16,7 +16,7 @@
 
   // Vidéos : toujours muettes, en pause hors écran
   $$('video').forEach((v) => {
-    if (v.closest('.talk')) return;
+    if (v.closest('.talk') || v.closest('.sep.full')) return;
     v.muted = true; v.defaultMuted = true;
     if (calm) { v.removeAttribute('autoplay'); v.pause(); return; }
     if ('IntersectionObserver' in window) {
@@ -25,6 +25,30 @@
       }, { threshold: .2 }).observe(v);
     }
   });
+  // Bandes vidéo avec son : elles tournent en boucle dès qu'on arrive dessus. Le son démarre au premier toucher
+  // (les navigateurs l'interdisent avant), puis reste activé pour les bandes suivantes.
+  let sonOn = false;
+  const sonBands = $$('.sep.full');
+  const sonVideo = (band) => $$('video', band).find((v) => v.offsetParent);
+  const sonPaint = () => $$('[data-son]').forEach((b) => { b.setAttribute('aria-pressed', String(sonOn)); b.textContent = T(sonOn ? 'Couper le son' : 'Activer le son'); });
+  const sonSync = () => sonBands.forEach((band) => {
+    const v = sonVideo(band);
+    $$('video', band).forEach((o) => { if (o !== v) { o.pause(); o.muted = true; } });
+    if (!v) return;
+    const r = band.getBoundingClientRect(), seen = r.bottom > innerHeight * 0.25 && r.top < innerHeight * 0.75;
+    if (!seen) { v.muted = true; return v.pause(); }
+    v.muted = !sonOn; v.volume = 1;
+    if (v.paused) v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
+  });
+  $$('[data-son]').forEach((b) => b.addEventListener('click', () => { sonOn = !sonOn; sonPaint(); sonSync(); }));
+  if (sonBands.length) {
+    sonBands.forEach((band) => $$('video', band).forEach((v) => { v.dataset.band = '1'; }));
+    addEventListener('scroll', sonSync, { passive: true });
+    addEventListener('resize', sonSync);
+    document.addEventListener('langue', () => { sonPaint(); sonSync(); });
+    sonSync();
+  }
+
   // Clips parlants : un par langue. Le son ne peut démarrer qu'après un toucher, d'où le grand bouton.
   const talks = $$('.talk');
   const talkStop = (box) => { const v = $('video', box); v.pause(); box.classList.remove('playing'); const lb = $('[data-listen]', box); lb.textContent = T(lb.dataset.label); };

@@ -514,3 +514,6 @@ html:not([lang="fr"]) .row:not([data-fr]):nth-child(n) .zoom { order: 0; }
 /* Bandes vidéo entières, une version par langue */
 .sep.full video { height: auto; aspect-ratio: 1280 / 704; max-height: 82svh; object-fit: cover; }
 .sep.full::after { background: linear-gradient(180deg, var(--night) 0%, transparent 10%, transparent 90%, var(--night) 100%); }
+
+/* Son des bandes vidéo */
+.snd.band { z-index: 2; left: max(14px, env(safe-area-inset-left, 0px)); bottom: 22px; height: 44px; padding: 0 18px; font-size: .92rem; }
