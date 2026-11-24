@@ -297,7 +297,7 @@
       A.style.opacity = (1 - clamp(p / .16)).toFixed(2); A.style.transform = 'translateY(' + (-p * 160).toFixed(0) + 'px)';
       hint.style.opacity = (1 - clamp(p / .08)).toFixed(2);
       const b = clamp((p - .74) / .16);
-      B.style.opacity = b.toFixed(2); B.style.transform = 'translateY(-50%) scale(' + (.86 + b * .14).toFixed(3) + ')';
+      B.style.opacity = b.toFixed(2); B.style.setProperty('--s', (.86 + b * .14).toFixed(3));
       if (t0 || (p < .999 && stage.getBoundingClientRect().bottom > 0)) raf = requestAnimationFrame(draw);
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(draw); };

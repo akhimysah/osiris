@@ -750,3 +750,16 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 .diveMore::after { content: ""; width: 12px; height: 12px; border-right: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(45deg); animation: moreDown 1.4s ease-in-out infinite; }
 @keyframes moreDown { 50% { transform: translateY(6px) rotate(45deg); } }
 .diveStage.open .diveMore { opacity: 1; pointer-events: auto; } .diveStage.open .diveEye, .diveStage.open .diveGo { pointer-events: none; }
+
+/* Première vidéo : entière sur téléphone (plus de bords coupés), et le titre ne reste plus posé sur l'image */
+.diveB { transform: translateY(-50%) scale(var(--s, 1)); }
+.diveStage.open .diveB { animation: diveBOut 1s 2.4s forwards; }
+@keyframes diveBOut { to { opacity: 0; visibility: hidden; } }
+@media (max-width: 900px) and (orientation: portrait) {
+  .diveStage { background: #0b1020 url(media/avion.jpg) center / cover; }
+  .diveStage::before { content: ""; position: absolute; inset: 0; background: rgba(8, 14, 34, .5); -webkit-backdrop-filter: blur(28px); backdrop-filter: blur(28px); }
+  .diveStage video { object-fit: contain; }
+  .diveB { top: calc(50% + 28.125vw + 26px); transform: scale(var(--s, 1)); transform-origin: 50% 0; font-size: clamp(1.7rem, 7.4vw, 2.4rem); }
+  .diveStage.open .diveB { animation: none; }
+}
+.diveA, .diveB, .diveShine { pointer-events: none; }
