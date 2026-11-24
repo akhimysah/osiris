@@ -14,6 +14,16 @@
 </head>
 <body>
 <!--BODY-->
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div>
+    <svg viewBox="0 0 34 30" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="#ead9b8"/><circle cx="26" cy="8" r="6.5" fill="#ead9b8"/><circle cx="17" cy="17" r="12.5" fill="#ead9b8"/><circle cx="17" cy="16" r="6.6" fill="#06080f"/><circle cx="17" cy="16" r="5" fill="none" stroke="#2e8bff" stroke-width="2.2"/><circle cx="19" cy="14" r="1.3" fill="#fff"/></svg>
+    <h2 id="gateTitle">BeyaBear's</h2>
+    <p>Ce site se regarde avec le son.</p>
+    <button class="btn demo xl" id="gateOn" type="button">Entrer avec le son</button>
+    <button class="btn line" id="gateOff" type="button">Entrer sans le son</button>
+  </div>
+</div>
+<button class="sonToggle" id="sonToggle" type="button" aria-pressed="false" hidden><i></i><span>Son coupé</span></button>
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="#haut" aria-label="BeyaBear's, retour en haut">
@@ -63,7 +73,7 @@
     </div>
   </section>
 
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/regard.jpg"><source src="media/regard.mp4" type="video/mp4"></video><button class="snd band" type="button" data-son aria-pressed="false">Activer le son</button></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/regard.jpg"><source src="media/regard.mp4" type="video/mp4"></video></section>
 
   <section class="band tones try" id="oeil">
     <div class="wrap">
@@ -114,7 +124,7 @@
         <h2 class="title">Dix compagnons, dix caractères.</h2>
         <p class="lead">Blouson teddy, casquette, casque audio : chacun a son style et son prénom. Tous ont le même écran rond au milieu du visage.</p>
       </div>
-      <div class="film rise" data-fr><video autoplay muted loop playsinline preload="metadata" poster="media/dix-fr.jpg" aria-label="Les dix compagnons BeyaBear’s côte à côte, qui clignent de l’œil et bougent, chacun avec son prénom"><source src="media/dix-fr.mp4" type="video/mp4"></video></div>
+      <div class="film rise" data-fr><video data-silent autoplay muted loop playsinline preload="metadata" poster="media/dix-fr.jpg" aria-label="Les dix compagnons BeyaBear’s côte à côte, qui clignent de l’œil et bougent, chacun avec son prénom"><source src="media/dix-fr.mp4" type="video/mp4"></video></div>
       <div class="film talk rise" data-only="en"><video playsinline preload="metadata" poster="media/dix-fr.jpg" aria-label="Les dix compagnons BeyaBear’s présentés un par un"><source src="media/dix-en.mp4" type="video/mp4"></video><button class="listen" type="button" data-listen data-label="Écouter la présentation">Écouter la présentation</button></div>
       <div class="film rise" data-only="es"><video autoplay muted loop playsinline preload="metadata" poster="media/dix-intl.jpg" aria-label="Les dix compagnons BeyaBear’s vus de près, l’un après l’autre"><source src="media/dix-intl.mp4" type="video/mp4"></video></div>
       <ul class="names rise"><li><button type="button" data-fiche="noah" data-nom="Noah" data-role="L’Explorateur" data-texte="Lunettes d’aviateur et blouson de cuir. Toujours partant pour découvrir ce qu’il y a derrière la colline."><img src="media/gz/p-noah.webp" alt="" loading="lazy"><b>Noah</b><span>L’Explorateur</span></button></li><li><button type="button" data-fiche="alya" data-nom="Alya" data-role="La Créative" data-texte="Casquette rose et grand nœud. Elle dessine, invente et transforme tout en projet."><img src="media/gz/p-alya.webp" alt="" loading="lazy"><b>Alya</b><span>La Créative</span></button></li><li><button type="button" data-fiche="aaron" data-nom="Aaron" data-role="Le Geek" data-texte="Casque sur les oreilles, il connaît tous les jeux et adore expliquer comment ça marche."><img src="media/gz/p-aaron.webp" alt="" loading="lazy"><b>Aaron</b><span>Le Geek</span></button></li><li><button type="button" data-fiche="mila" data-nom="Mila" data-role="La Star" data-texte="Bandana rouge à pois. Elle chante, elle danse, et la chambre devient une scène."><img src="media/gz/p-mila.webp" alt="" loading="lazy"><b>Mila</b><span>La Star</span></button></li><li><button type="button" data-fiche="kai" data-nom="Kaï" data-role="Le Sportif" data-texte="Casquette verte et survêtement. Il ne tient pas en place et motive tout le monde."><img src="media/gz/p-kai.webp" alt="" loading="lazy"><b>Kaï</b><span>Le Sportif</span></button></li><li><button type="button" data-fiche="naya" data-nom="Naya" data-role="La Rêveuse" data-texte="Casque violet et papillons. Elle a toujours une histoire en tête."><img src="media/gz/p-naya.webp" alt="" loading="lazy"><b>Naya</b><span>La Rêveuse</span></button></li><li><button type="button" data-fiche="sana" data-nom="Sana" data-role="La Douce" data-texte="Bonnet et écharpe en grosse maille. La spécialiste des câlins et des mots gentils."><img src="media/gz/p-sana.webp" alt="" loading="lazy"><b>Sana</b><span>La Douce</span></button></li><li><button type="button" data-fiche="enzo" data-nom="Enzo" data-role="Le Stratège" data-texte="Bonnet marine. Il réfléchit avant d’agir et gagne souvent aux échecs."><img src="media/gz/p-enzo.webp" alt="" loading="lazy"><b>Enzo</b><span>Le Stratège</span></button></li><li><button type="button" data-fiche="zayn" data-nom="Zayn" data-role="Le Protecteur" data-texte="Capuche rouge et noire. Il veille sur les siens et rassure quand il fait nuit."><img src="media/gz/p-zayn.webp" alt="" loading="lazy"><b>Zayn</b><span>Le Protecteur</span></button></li><li><button type="button" data-fiche="luna" data-nom="Luna" data-role="La Poétique" data-texte="Bob bleu ciel et écharpe. Elle regarde les nuages et y trouve des poèmes."><img src="media/gz/p-luna.webp" alt="" loading="lazy"><b>Luna</b><span>La Poétique</span></button></li></ul>
@@ -148,11 +158,11 @@
       <p class="lead">Le même compagnon, habillé aux couleurs du monde. Une série à collectionner, pays après pays, et une porte d’entrée sur chaque marché.</p>
     </div>
     <div class="rail" id="railMonde" tabindex="0" aria-label="Collection du monde"><figure class="pays"><img src="media/pays/maroc.webp" alt="Ourson BeyaBear’s en tenue Maroc" loading="lazy"><figcaption><b>Maroc</b><span>Tarbouche et djellaba de velours.</span></figcaption></figure><figure class="pays"><img src="media/pays/france.webp" alt="Ourson BeyaBear’s en tenue France" loading="lazy"><figcaption><b>France</b><span>Béret, marinière et foulard rouge.</span></figcaption></figure><figure class="pays"><img src="media/pays/espagne.webp" alt="Ourson BeyaBear’s en tenue Espagne" loading="lazy"><figcaption><b>Espagne</b><span>Habit de lumière brodé d’or.</span></figcaption></figure><figure class="pays"><img src="media/pays/angleterre.webp" alt="Ourson BeyaBear’s en tenue Angleterre" loading="lazy"><figcaption><b>Angleterre</b><span>Garde royal et bonnet à poils.</span></figcaption></figure><figure class="pays"><img src="media/pays/usa.webp" alt="Ourson BeyaBear’s en tenue États-Unis" loading="lazy"><figcaption><b>États-Unis</b><span>Blouson teddy et baskets étoilées.</span></figcaption></figure><figure class="pays"><img src="media/pays/canada.webp" alt="Ourson BeyaBear’s en tenue Canada" loading="lazy"><figcaption><b>Canada</b><span>Chapka à carreaux et parka rouge.</span></figcaption></figure><figure class="pays"><img src="media/pays/bresil.webp" alt="Ourson BeyaBear’s en tenue Brésil" loading="lazy"><figcaption><b>Brésil</b><span>Chapeau de paille et maillot jaune.</span></figcaption></figure><figure class="pays"><img src="media/pays/japon.webp" alt="Ourson BeyaBear’s en tenue Japon" loading="lazy"><figcaption><b>Japon</b><span>Kimono brodé et fleurs de cerisier.</span></figcaption></figure></div>
-    <div class="wrap"><article class="row rise" style="margin-top:clamp(40px,6vw,72px)"><div class="sep full tall"><video muted loop playsinline preload="none" poster="media/stade.jpg"><source src="media/stade.mp4" type="video/mp4"></video><button class="snd band" type="button" data-son aria-pressed="false">Activer le son</button></div><div class="say"><span class="label">Le grand match</span><h3>12 pays, 1 seul trophée</h3><p>Douze oursons aux couleurs de leur pays entrent sur la pelouse. Et vous, quelle équipe choisissez-vous ?</p></div></article></div>
+    <div class="wrap"><article class="row rise" style="margin-top:clamp(40px,6vw,72px)"><div class="sep full tall"><video muted loop playsinline preload="none" poster="media/stade.jpg"><source src="media/stade.mp4" type="video/mp4"></video></div><div class="say"><span class="label">Le grand match</span><h3>12 pays, 1 seul trophée</h3><p>Douze oursons aux couleurs de leur pays entrent sur la pelouse. Et vous, quelle équipe choisissez-vous ?</p></div></article></div>
     <div class="wrap"><p class="note">Concepts de tenues. Les modèles commercialisés seront annoncés au lancement.</p></div>
   </section>
 
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/millions-fr.jpg" data-only="fr"><source src="media/millions-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/millions-en.jpg" data-only="en"><source src="media/millions-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/millions-es.jpg" data-only="es"><source src="media/millions-es.mp4" type="video/mp4"></video><button class="snd band" type="button" data-son aria-pressed="false">Activer le son</button></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/millions-fr.jpg" data-only="fr"><source src="media/millions-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/millions-en.jpg" data-only="en"><source src="media/millions-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/millions-es.jpg" data-only="es"><source src="media/millions-es.mp4" type="video/mp4"></video></section>
 
   <section class="band" id="usages">
     <div class="wrap">
@@ -185,7 +195,7 @@
     </div>
   </section>
 
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/nuages.jpg"><source src="media/nuages.mp4" type="video/mp4"></video><button class="snd band" type="button" data-son aria-pressed="false">Activer le son</button></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/nuages.jpg"><source src="media/nuages.mp4" type="video/mp4"></video></section>
 
   <section class="band tones" id="parents">
     <div class="wrap">
@@ -199,7 +209,7 @@
     </div>
   </section>
 
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/ciel-fr.jpg" data-only="fr"><source src="media/ciel-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/ciel-en.jpg" data-only="en"><source src="media/ciel-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/ciel-es.jpg" data-only="es"><source src="media/ciel-es.mp4" type="video/mp4"></video><button class="snd band" type="button" data-son aria-pressed="false">Activer le son</button></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/ciel-fr.jpg" data-only="fr"><source src="media/ciel-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/ciel-en.jpg" data-only="en"><source src="media/ciel-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/ciel-es.jpg" data-only="es"><source src="media/ciel-es.mp4" type="video/mp4"></video></section>
 
   <section class="band" id="offre">
     <div class="wrap">
@@ -295,7 +305,7 @@
       <p class="note">Caractéristiques du prototype en cours d'assemblage. Elles peuvent évoluer avant la série.</p>
     </div>
   </section>
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/envol-fr.jpg" data-only="fr"><source src="media/envol-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/envol-en.jpg" data-only="en"><source src="media/envol-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/envol-es.jpg" data-only="es"><source src="media/envol-es.mp4" type="video/mp4"></video><button class="snd band" type="button" data-son aria-pressed="false">Activer le son</button></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/envol-fr.jpg" data-only="fr"><source src="media/envol-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/envol-en.jpg" data-only="en"><source src="media/envol-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/envol-es.jpg" data-only="es"><source src="media/envol-es.mp4" type="video/mp4"></video></section>
 
   <section class="band" id="faq" style="padding-top:0">
     <div class="wrap">

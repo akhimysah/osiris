@@ -14,74 +14,77 @@
     blocks.forEach((b) => io.observe(b));
   } else blocks.forEach((b) => b.classList.add('seen'));
 
-  // Vidéos : toujours muettes, en pause hors écran
-  $$('video').forEach((v) => {
-    if (v.closest('.talk') || v.closest('.sep.full')) return;
-    v.muted = true; v.defaultMuted = true;
-    if (calm) { v.removeAttribute('autoplay'); v.pause(); return; }
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(([e]) => {
-        if (e.isIntersecting) { if (!v.dataset.stopped) v.play().catch(() => {}); } else v.pause();
-      }, { threshold: .2 }).observe(v);
-    }
-  });
-  // Bandes vidéo avec son : elles tournent en boucle dès qu'on arrive dessus. Le son démarre au premier toucher
-  // (les navigateurs l'interdisent avant), puis reste activé pour les bandes suivantes.
-  let sonOn = false;
-  const sonBands = $$('.sep.full');
-  const sonVideo = (band) => $$('video', band).find((v) => v.offsetParent);
-  const sonPaint = () => $$('[data-son]').forEach((b) => { b.setAttribute('aria-pressed', String(sonOn)); b.textContent = T(sonOn ? 'Couper le son' : 'Activer le son'); });
-  const sonSync = () => sonBands.forEach((band) => {
-    const v = sonVideo(band);
-    $$('video', band).forEach((o) => { if (o !== v) { o.pause(); o.muted = true; } });
-    if (!v) return;
-    const r = band.getBoundingClientRect(), seen = r.bottom > innerHeight * 0.25 && r.top < innerHeight * 0.75;
-    if (!seen) { v.muted = true; return v.pause(); }
-    v.muted = !sonOn; v.volume = 1;
-    if (v.paused) v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
-  });
-  // iPhone n'autorise le son que sur les vidéos lancées pendant un toucher : au premier toucher, on les « déverrouille » toutes.
-  let sonUnlocked = false;
+  // Son du site. Aucun navigateur ne laisse une page lancer du son sans un toucher : l'écran d'entrée fournit ce toucher.
+  // Ensuite, la vidéo la plus proche du centre de l'écran joue avec le son, les autres tournent en silence.
+  let sonOn = false, sonHold = false;
+  const ambient = $$('video').filter((v) => !v.closest('.talk'));
+  const sonToggle = $('#sonToggle'), gate = $('#gate');
+  ambient.forEach((v) => { v.muted = true; v.defaultMuted = true; v.loop = true; v.removeAttribute('autoplay'); });
+  const inView = (v) => { if (!v.offsetParent) return false; const r = v.getBoundingClientRect(); return r.bottom > innerHeight * 0.15 && r.top < innerHeight * 0.85; };
+  const sonCurrent = () => {
+    let best = null, dist = 1e9;
+    ambient.forEach((v) => { if (!inView(v) || v.dataset.stopped) return; const r = v.getBoundingClientRect(), d = Math.abs((r.top + r.bottom) / 2 - innerHeight / 2); if (d < dist) { dist = d; best = v; } });
+    return best;
+  };
+  const sonPaint = () => {
+    if (!sonToggle) return;
+    sonToggle.setAttribute('aria-pressed', String(sonOn));
+    $('span', sonToggle).textContent = T(sonOn ? 'Son activé' : 'Son coupé');
+  };
+  const sonSync = () => {
+    if (calm) return;
+    const cur = sonCurrent();
+    ambient.forEach((v) => {
+      if (!inView(v) || v.dataset.stopped) { if (!v.paused) v.pause(); v.muted = true; return; }
+      const loud = sonOn && !sonHold && v === cur && !('silent' in v.dataset);
+      v.muted = !loud; v.volume = 1;
+      if (v.paused) v.play().catch(() => {
+        // Son refusé par le navigateur : on continue en silence et le bouton clignote pour le demander.
+        v.muted = true; v.play().catch(() => {});
+        if (loud && sonToggle) sonToggle.classList.add('ask');
+      });
+    });
+  };
+  // iPhone n'autorise le son que sur les vidéos lancées pendant un toucher : on les lance toutes à ce moment-là.
   const sonUnlock = () => {
-    if (sonUnlocked) return;
-    sonUnlocked = true;
-    sonBands.forEach((band) => $$('video', band).forEach((v) => {
-      if (!v.offsetParent) return;
+    const cur = sonCurrent();
+    ambient.forEach((v) => {
+      if (!v.offsetParent || 'silent' in v.dataset) return;
       const wasPaused = v.paused;
       v.muted = false;
       const p = v.play();
-      if (p && p.then) p.then(() => { if (wasPaused && v !== sonCurrent()) { v.pause(); v.muted = true; } }).catch(() => {});
-    }));
+      if (p && p.then) p.then(() => { if (v !== cur) { v.muted = true; if (wasPaused && !inView(v)) v.pause(); } }).catch(() => { v.muted = true; });
+    });
   };
-  const sonCurrent = () => { for (const band of sonBands) { const r = band.getBoundingClientRect(); if (r.bottom > innerHeight * 0.25 && r.top < innerHeight * 0.75) return sonVideo(band); } return null; };
-  $$('[data-son]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); sonOn = !sonOn; if (sonOn) sonUnlock(); sonPaint(); sonSync(); }));
-  // Premier toucher n'importe où sur la page : le son des bandes s'active pour toute la visite.
-  const sonFirst = (e) => {
-    if (e.target.closest && e.target.closest('[data-son],[data-listen],.talk')) return;
-    document.removeEventListener('click', sonFirst, true);
-    document.removeEventListener('touchend', sonFirst, true);
-    if (sonOn) return;
-    sonOn = true; sonUnlock(); sonPaint(); sonSync();
-  };
-  document.addEventListener('click', sonFirst, true);
-  document.addEventListener('touchend', sonFirst, true);
-  if (sonBands.length) {
-    sonBands.forEach((band) => $$('video', band).forEach((v) => { v.dataset.band = '1'; }));
-    addEventListener('scroll', sonSync, { passive: true });
-    addEventListener('resize', sonSync);
-    document.addEventListener('langue', () => { sonPaint(); sonSync(); });
-    sonSync();
+  const sonSet = (on) => { sonOn = on; if (sonToggle) sonToggle.classList.remove('ask'); if (on) sonUnlock(); sonPaint(); sonSync(); };
+  if (sonToggle) sonToggle.addEventListener('click', () => sonSet(!sonOn));
+  const gateClose = (on) => { gate.hidden = true; document.documentElement.style.overflow = ''; if (sonToggle) sonToggle.hidden = false; sonSet(on); };
+  if (gate) {
+    if (calm) { gate.hidden = true; }
+    else {
+      document.documentElement.style.overflow = 'hidden';
+      $('#gateOn').addEventListener('click', () => gateClose(true));
+      $('#gateOff').addEventListener('click', () => gateClose(false));
+    }
   }
+  let sonTick = false;
+  const sonLater = () => { if (sonTick) return; sonTick = true; requestAnimationFrame(() => { sonTick = false; sonSync(); }); };
+  addEventListener('scroll', sonLater, { passive: true });
+  addEventListener('resize', sonLater);
+  document.addEventListener('langue', () => { sonPaint(); sonSync(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) ambient.forEach((v) => v.pause()); else sonSync(); });
+  sonPaint();
+  if (gate && gate.hidden) sonSync();
 
   // Clips parlants : un par langue. Le son ne peut démarrer qu'après un toucher, d'où le grand bouton.
   const talks = $$('.talk');
-  const talkStop = (box) => { const v = $('video', box); v.pause(); box.classList.remove('playing'); const lb = $('[data-listen]', box); lb.textContent = T(lb.dataset.label); };
+  const talkStop = (box) => { const v = $('video', box); v.pause(); box.classList.remove('playing'); if (sonHold) { sonHold = false; sonSync(); } const lb = $('[data-listen]', box); lb.textContent = T(lb.dataset.label); };
   talks.forEach((box) => {
     const v = $('video', box), btn = $('[data-listen]', box);
     v.dataset.talk = '1';
     btn.addEventListener('click', () => {
       if (box.classList.contains('playing')) return talkStop(box);
-      if (typeof sonOn !== 'undefined' && sonOn) { sonOn = false; sonPaint(); sonSync(); }
+      sonHold = true; sonSync();
       v.muted = false; v.volume = 1; v.currentTime = 0;
       v.play().then(() => { box.classList.add('playing'); btn.textContent = T('Arrêter'); }).catch(() => { v.controls = true; });
     });
@@ -92,8 +95,8 @@
   if (filmBtn && film) {
     const paint = () => { filmBtn.textContent = T(film.paused ? 'Lire' : 'Pause'); };
     filmBtn.addEventListener('click', () => {
-      if (film.paused) { delete film.dataset.stopped; film.play().catch(() => {}); }
-      else { film.dataset.stopped = '1'; film.pause(); }
+      if (film.paused) { delete film.dataset.stopped; sonSync(); }
+      else { film.dataset.stopped = '1'; film.pause(); sonSync(); }
     });
     film.addEventListener('play', paint); film.addEventListener('pause', paint); paint();
   }
