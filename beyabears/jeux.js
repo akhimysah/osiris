@@ -4,6 +4,8 @@ let gameRun = 0;
 const GAME_LIST = [
   ['paires', 'Les paires', 'Retrouve les images qui vont ensemble.'],
   ['etoiles', 'Pluie d’étoiles', 'Glisse le doigt pour attraper les étoiles.'],
+  ['calcul', 'Calcul', 'Touche la bonne réponse, dix fois de suite.'],
+  ['dessin', 'Dessin', 'Choisis une couleur et dessine avec le doigt.'],
 ];
 function gameBest(id) { return (store.get('jeux', {}) || {})[id]; }
 function gameSave(id, value, lower) {
@@ -13,7 +15,7 @@ function gameSave(id, value, lower) {
 function openGames(options = {}) {
   gameRun++;
   if (options.game) return startGame(options.game);
-  screen.innerHTML = `<div class="game pick"><small>Jeux</small>${GAME_LIST.map(([id, name]) => `<button type="button" data-jeu="${id}">${name}</button>`).join('')}</div>`;
+  screen.innerHTML = `<div class="game pick four"><small>Jeux</small>${GAME_LIST.map(([id, name]) => `<button type="button" data-jeu="${id}">${name}</button>`).join('')}</div>`;
   renderGames();
   focusEye();
 }
@@ -21,13 +23,13 @@ function renderGames(note = '') {
   panel.innerHTML = `${backButton}<h2>Jeux</h2>
     <p>${note || 'Deux jeux pensés pour l’écran rond : ils se jouent du bout du doigt, directement dans l’œil.'}</p>
     <div class="row">${GAME_LIST.map(([id, name]) => `<button class="btn${state.game === id ? '' : ' light'}" type="button" data-jeu="${id}">${name}</button>`).join('')}</div>
-    <ul class="muted">${GAME_LIST.map(([id, name, how]) => `<li><strong>${name}</strong> : ${how}${gameBest(id) != null ? ` Record : ${gameBest(id)} ${id === 'paires' ? 'coups' : 'étoiles'}.` : ''}</li>`).join('')}</ul>`;
+    <ul class="muted">${GAME_LIST.map(([id, name, how]) => `<li><strong>${name}</strong> : ${how}${gameBest(id) != null ? ` Record : ${gameBest(id)} ${{ paires: 'coups', etoiles: 'étoiles', calcul: 'sur 10' }[id]}.` : ''}</li>`).join('')}</ul>`;
 }
 function startGame(id) {
   gameRun++;
   state.game = id;
   focusEye();
-  (id === 'paires' ? playPairs : playStars)(gameRun);
+  ({ paires: playPairs, etoiles: playStars, calcul: playMaths, dessin: playDraw })[id](gameRun);
   renderGames(GAME_LIST.find((g) => g[0] === id)[2]);
 }
 function gameOver(title, line, id) {
@@ -118,4 +120,53 @@ function playStars(run) {
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
+}
+
+// --- Calcul : dix additions et soustractions, trois réponses au choix ---
+function playMaths(run) {
+  let round = 0, good = 0;
+  const next = () => {
+    if (run !== gameRun) return;
+    if (round === 10) { gameSave('calcul', good); return gameOver('Bravo !', `${good} sur 10`, 'calcul'); }
+    round++;
+    const plus = Math.random() < 0.6;
+    let a = 1 + Math.floor(Math.random() * 9), b = 1 + Math.floor(Math.random() * 9);
+    if (!plus && b > a) [a, b] = [b, a];
+    const answer = plus ? a + b : a - b;
+    const choices = new Set([answer]);
+    while (choices.size < 3) { const c = answer + Math.floor(Math.random() * 7) - 3; if (c >= 0 && c !== answer) choices.add(c); }
+    screen.innerHTML = `<div class="game maths"><small>${round} / 10</small><b>${a} ${plus ? '+' : '−'} ${b} = ?</b><div class="answers">${[...choices].sort(() => Math.random() - 0.5).map((c) => `<button type="button" data-answer="${c}">${c}</button>`).join('')}</div></div>`;
+    screen.querySelector('.answers').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-answer]');
+      if (!button || run !== gameRun || screen.querySelector('.right')) return;
+      const right = Number(button.dataset.answer) === answer;
+      if (right) good++;
+      button.classList.add(right ? 'right' : 'wrong');
+      screen.querySelector(`[data-answer="${answer}"]`).classList.add('right');
+      setTimeout(next, 900);
+    });
+  };
+  next();
+}
+
+// --- Dessin : six couleurs, on dessine avec le doigt ---
+function playDraw(run) {
+  const colors = ['#ffffff', '#ffd24a', '#ff5a6e', '#58b6ff', '#7ddc7a', '#c08bff'];
+  screen.innerHTML = `<div class="game draw"><canvas></canvas><div class="inks">${colors.map((c, i) => `<button type="button" data-ink="${c}" style="background:${c}" aria-label="Couleur ${i + 1}"${i === 1 ? ' class="sel"' : ''}></button>`).join('')}<button type="button" data-ink="" aria-label="Tout effacer">×</button></div></div>`;
+  const canvas = screen.querySelector('canvas'), ctx = canvas.getContext('2d');
+  canvas.width = canvas.height = 480;
+  ctx.lineWidth = 12; ctx.lineCap = ctx.lineJoin = 'round'; ctx.strokeStyle = colors[1];
+  let down = false;
+  const at = (event) => { const box = canvas.getBoundingClientRect(); return [((event.clientX - box.left) / box.width) * 480, ((event.clientY - box.top) / box.height) * 480]; };
+  canvas.addEventListener('pointerdown', (event) => { down = true; ctx.beginPath(); ctx.moveTo(...at(event)); ctx.lineTo(...at(event)); ctx.stroke(); event.preventDefault(); });
+  canvas.addEventListener('pointermove', (event) => { if (!down) return; ctx.lineTo(...at(event)); ctx.stroke(); event.preventDefault(); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach((name) => canvas.addEventListener(name, () => (down = false)));
+  screen.querySelector('.inks').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-ink]');
+    if (!button) return;
+    if (!button.dataset.ink) return ctx.clearRect(0, 0, 480, 480);
+    ctx.strokeStyle = button.dataset.ink;
+    screen.querySelectorAll('.inks .sel').forEach((b) => b.classList.remove('sel'));
+    button.classList.add('sel');
+  });
 }
