@@ -132,11 +132,19 @@
   document.addEventListener('langue', cartDraw);
   cartDraw();
 
-  // Visionneuse : toucher une image l'ouvre en grand.
+  // Visionneuse plein écran : un toucher zoome sur les détails, un autre revient à l'image entière.
   const box = $('#box');
   if (box && box.showModal) {
-    $$('[data-zoom]').forEach((b) => b.addEventListener('click', () => { const i = $('img', b); $('#boxImg').src = i.src; $('#boxImg').alt = i.alt; box.showModal(); }));
-    box.addEventListener('click', () => box.close());
+    const img = $('#boxImg'), tip = $('#boxTip');
+    const zoomSet = (on, e) => {
+      box.classList.toggle('big', on);
+      tip.textContent = T(on ? 'Faites glisser pour explorer · touchez pour revenir' : 'Touchez l’image pour zoomer');
+      if (on && e) { const r = img.getBoundingClientRect(); box.scrollLeft = (e.offsetX / e.target.clientWidth) * r.width - innerWidth / 2; box.scrollTop = (e.offsetY / e.target.clientHeight) * r.height - innerHeight / 2; }
+    };
+    $$('[data-zoom]').forEach((b) => b.addEventListener('click', () => { const i = $('img', b); img.src = i.src; img.alt = i.alt; zoomSet(false); box.showModal(); }));
+    img.addEventListener('click', (e) => { const before = { offsetX: e.offsetX, offsetY: e.offsetY, target: { clientWidth: img.clientWidth, clientHeight: img.clientHeight } }; zoomSet(!box.classList.contains('big'), before); });
+    $('#boxClose').addEventListener('click', () => box.close());
+    box.addEventListener('click', (e) => { if (e.target === box) box.close(); });
   }
 
   // Fiches des compagnons
