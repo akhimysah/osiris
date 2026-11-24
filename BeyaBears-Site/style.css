@@ -517,3 +517,9 @@ html:not([lang="fr"]) .row:not([data-fr]):nth-child(n) .zoom { order: 0; }
 
 /* Son des bandes vidéo */
 .snd.band { z-index: 2; left: max(14px, env(safe-area-inset-left, 0px)); bottom: 22px; height: 44px; padding: 0 18px; font-size: .92rem; }
+
+/* Vidéo verticale avec son, dans une rangée image + texte */
+.sep.full.tall { position: relative; width: min(100%, 400px); margin-inline: auto; border-radius: 26px; overflow: hidden; background: var(--panel); }
+.sep.full.tall video { aspect-ratio: 768 / 1152; max-height: none; }
+.sep.full.tall::after { display: none; }
+.sep.full.tall .snd.band { left: 12px; bottom: 12px; }

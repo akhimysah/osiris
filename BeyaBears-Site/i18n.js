@@ -165,6 +165,9 @@
 "Six teintes pour un même logo": ["Six shades for one logo", "Seis tonos para un mismo logo"],
 "Chocolat, marine, kaki, rose poudré, bleu ciel et violet : le logo et le monogramme se déclinent dans chaque teinte.": ["Chocolate, navy, khaki, powder pink, sky blue and purple: the logo and monogram come in each shade.", "Chocolate, azul marino, caqui, rosa empolvado, azul cielo y violeta: el logo y el monograma se declinan en cada tono."],
 "Écouter la présentation": ["Listen to the introduction", "Escuchar la presentación"],
+"Le grand match": ["The big match", "El gran partido"],
+"12 pays, 1 seul trophée": ["12 countries, 1 trophy", "12 países, 1 solo trofeo"],
+"Douze oursons aux couleurs de leur pays entrent sur la pelouse. Et vous, quelle équipe choisissez-vous ?": ["Twelve bears in their country's colours walk onto the pitch. Which team do you pick?", "Doce ositos con los colores de su país saltan al césped. ¿Y tú, qué equipo eliges?"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
