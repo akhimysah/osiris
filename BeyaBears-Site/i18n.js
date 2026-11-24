@@ -164,6 +164,7 @@
 "Les coloris": ["The colourways", "Los colores"],
 "Six teintes pour un même logo": ["Six shades for one logo", "Seis tonos para un mismo logo"],
 "Chocolat, marine, kaki, rose poudré, bleu ciel et violet : le logo et le monogramme se déclinent dans chaque teinte.": ["Chocolate, navy, khaki, powder pink, sky blue and purple: the logo and monogram come in each shade.", "Chocolate, azul marino, caqui, rosa empolvado, azul cielo y violeta: el logo y el monograma se declinan en cada tono."],
+"Écouter la présentation": ["Listen to the introduction", "Escuchar la presentación"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
@@ -184,6 +185,7 @@
 "Les dix compagnons BeyaBear's vus de près, l'un après l'autre": ["The ten BeyaBear's companions seen up close, one after another", "Los diez compañeros BeyaBear's vistos de cerca, uno tras otro"],
 "Noah l'Explorateur se présente": ["Noah the Explorer introduces himself", "Noah el Explorador se presenta"],
 "Agrandir l'image": ["Enlarge the image", "Ampliar la imagen"], "Image agrandie": ["Enlarged image", "Imagen ampliada"],
+"Les dix compagnons BeyaBear's présentés un par un": ["The ten BeyaBear's companions introduced one by one", "Los diez compañeros BeyaBear's presentados uno a uno"],
 "Iris bleu lumineux": ["Glowing blue iris", "Iris azul luminoso"], "Lumière chaude de veilleuse": ["Warm night light", "Luz cálida de noche"],
   };
   const altFor = (fr) => {

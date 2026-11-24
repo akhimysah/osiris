@@ -27,7 +27,7 @@
   });
   // Clips parlants : un par langue. Le son ne peut démarrer qu'après un toucher, d'où le grand bouton.
   const talks = $$('.talk');
-  const talkStop = (box) => { const v = $('video', box); v.pause(); box.classList.remove('playing'); $('[data-listen]', box).textContent = T('Écouter Noah'); };
+  const talkStop = (box) => { const v = $('video', box); v.pause(); box.classList.remove('playing'); const lb = $('[data-listen]', box); lb.textContent = T(lb.dataset.label); };
   talks.forEach((box) => {
     const v = $('video', box), btn = $('[data-listen]', box);
     v.dataset.talk = '1';
