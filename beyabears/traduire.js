@@ -1,0 +1,197 @@
+// Traduction de l'interface de l'application en anglais et en espagnol.
+// Les écrans sont écrits en français dans app.js ; ici, chaque texte affiché est remplacé à la volée
+// quand la démo est ouverte avec ?lang=en ou ?lang=es. En français, ce fichier ne fait rien.
+(() => {
+  const lang = typeof DEMO_LANG === 'string' ? DEMO_LANG : 'fr';
+  const col = { en: 0, es: 1 }[lang];
+  if (col === undefined) return;
+
+  // texte français : [anglais, espagnol]
+  const D = {
+    // Barre du haut, accueil
+    "Agrandir l’œil": ["Enlarge the eye", "Ampliar el ojo"],
+    "Vue peluche": ["Plush view", "Ver el peluche"],
+    "Parler à BeyaBear’s": ["Talk to BeyaBear’s", "Hablar con BeyaBear’s"],
+    "La peluche dont l’œil est un écran": ["The plush whose eye is a screen", "El peluche cuyo ojo es una pantalla"],
+    "Bonjour, je suis": ["Hello, I am", "Hola, soy"],
+    "Touchez mon œil ou choisissez une application. Vous pouvez aussi me parler.": ["Tap my eye or choose an app. You can also talk to me.", "Toca mi ojo o elige una aplicación. También puedes hablarme."],
+    "Mes": ["My", "Mis"],
+    "applications": ["apps", "aplicaciones"],
+    "Exemples : « Beya, mets YouTube », « Beya, appelle », « Beya, raconte une histoire ».": ["Examples: “Beya, play YouTube”, “Beya, call”, “Beya, tell a story”.", "Ejemplos: «Beya, pon YouTube», «Beya, llama», «Beya, cuenta un cuento»."],
+    "Écouter en continu le mot « Beya »": ["Keep listening for the word “Beya”", "Escuchar siempre la palabra «Beya»"],
+    "Démonstration de l’œil · © 2026": ["Eye demo · © 2026", "Demostración del ojo · © 2026"],
+    "‹ Accueil BeyaBear’s": ["‹ BeyaBear’s home", "‹ Inicio BeyaBear’s"],
+    "‹ Menu": ["‹ Menu", "‹ Menú"],
+    "Accueil BeyaBear’s": ["BeyaBear’s home", "Inicio BeyaBear’s"],
+    "Autres applications": ["More apps", "Más aplicaciones"],
+    "Ouvrir le clavier": ["Open the keyboard", "Abrir el teclado"],
+    "Revenir au menu": ["Back to the menu", "Volver al menú"],
+    "Revenir à l’iris": ["Back to the iris", "Volver al iris"],
+    "Iris de BeyaBear’s": ["BeyaBear’s iris", "Iris de BeyaBear’s"],
+    "Œil de BeyaBear’s : ouvrir le menu": ["BeyaBear’s eye: open the menu", "Ojo de BeyaBear’s: abrir el menú"],
+    "Ourson BeyaBear’s en casquette marine et casque audio, sous le logo, avec son écran rond au milieu du visage": ["BeyaBear’s bear in a navy cap and headphones, under the logo, with its round screen in the middle of its face", "Osito BeyaBear’s con gorra azul marino y auriculares, bajo el logo, con su pantalla redonda en medio de la cara"],
+    // Noms des applications
+    "Appels": ["Calls", "Llamadas"], "Jeux": ["Games", "Juegos"], "Photo": ["Photo", "Foto"], "Histoires": ["Stories", "Cuentos"], "Histoire": ["Story", "Cuento"],
+    "Assistant": ["Assistant", "Asistente"], "Heure": ["Clock", "Hora"], "Météo": ["Weather", "Tiempo"], "Torche": ["Torch", "Linterna"], "Visages": ["Faces", "Caras"],
+    "Téléphone": ["Phone", "Teléfono"], "Iris": ["Iris", "Iris"], "Forfait": ["Plan", "Tarifa"],
+    // Appels
+    "Appel dans l’œil": ["Call in the eye", "Llamada en el ojo"],
+    "Appelez un proche : son visage apparaît dans l’œil de BeyaBear’s.": ["Call a loved one: their face appears in BeyaBear’s eye.", "Llama a un familiar: su cara aparece en el ojo de BeyaBear’s."],
+    "Ajouter ce proche": ["Add this contact", "Añadir este contacto"],
+    "Appeler avec un lien WhatsApp": ["Call with a WhatsApp link", "Llamar con un enlace de WhatsApp"],
+    "BeyaBear’s ouvre l’appel et prépare un message WhatsApp avec un lien. Votre proche le touche, et son visage apparaît dans l’œil.": ["BeyaBear’s opens the call and prepares a WhatsApp message with a link. Your loved one taps it, and their face appears in the eye.", "BeyaBear’s abre la llamada y prepara un mensaje de WhatsApp con un enlace. Tu familiar lo toca y su cara aparece en el ojo."],
+    "Tester ma caméra et mon micro": ["Test my camera and microphone", "Probar mi cámara y mi micrófono"],
+    "Réglages du relais vidéo": ["Video relay settings", "Ajustes del relé de vídeo"],
+    "Quand deux réseaux ne peuvent pas se joindre directement (4G, certaines box), la vidéo passe par un serveur de secours « TURN ». Si vous en avez un, enregistrez-le ici : il reste sur cet appareil.": ["When two networks cannot reach each other directly (4G, some routers), the video goes through a backup “TURN” server. If you have one, save it here: it stays on this device.", "Cuando dos redes no pueden conectarse directamente (4G, algunos routers), el vídeo pasa por un servidor de respaldo «TURN». Si tienes uno, guárdalo aquí: se queda en este dispositivo."],
+    "Enregistrer": ["Save", "Guardar"], "Tout effacer": ["Clear all", "Borrar todo"], "Relais vidéo retiré.": ["Video relay removed.", "Relé de vídeo eliminado."],
+    "Prénom du proche": ["Contact’s first name", "Nombre del contacto"], "Prénom du proche (ex. Mamie)": ["Contact’s first name (e.g. Grandma)", "Nombre del contacto (p. ej. Abuela)"],
+    "Numéro WhatsApp, facultatif": ["WhatsApp number, optional", "Número de WhatsApp, opcional"], "Numéro WhatsApp, facultatif (ex. +33 6 12 34 56 78)": ["WhatsApp number, optional (e.g. +44 7700 900123)", "Número de WhatsApp, opcional (p. ej. +34 612 34 56 78)"],
+    "Adresse du serveur TURN": ["TURN server address", "Dirección del servidor TURN"], "Identifiant TURN": ["TURN username", "Usuario TURN"], "Mot de passe TURN": ["TURN password", "Contraseña TURN"],
+    "Identifiant": ["Username", "Usuario"], "Mot de passe": ["Password", "Contraseña"], "turn:adresse:3478": ["turn:address:3478", "turn:direccion:3478"],
+    // YouTube, TikTok
+    "YouTube dans l’œil": ["YouTube in the eye", "YouTube en el ojo"], "TikTok dans l’œil": ["TikTok in the eye", "TikTok en el ojo"],
+    "Collez le lien d’une vidéo ou d’une playlist YouTube. Donnez-lui un nom pour la retrouver et la lancer à la voix.": ["Paste the link of a YouTube video or playlist. Give it a name to find it again and start it by voice.", "Pega el enlace de un vídeo o una lista de YouTube. Ponle un nombre para encontrarlo y lanzarlo con la voz."],
+    "Collez le lien complet d’une vidéo TikTok (tiktok.com/@compte/video/…). Donnez-lui un nom pour la retrouver et la lancer à la voix.": ["Paste the full link of a TikTok video (tiktok.com/@account/video/…). Give it a name to find it again and start it by voice.", "Pega el enlace completo de un vídeo de TikTok (tiktok.com/@cuenta/video/…). Ponle un nombre para encontrarlo y lanzarlo con la voz."],
+    "Collez le lien d’une vidéo pour la voir ici.": ["Paste a video link to watch it here.", "Pega el enlace de un vídeo para verlo aquí."],
+    "Lire dans l’œil": ["Play in the eye", "Reproducir en el ojo"], "Chercher": ["Search", "Buscar"], "Exemples": ["Examples", "Ejemplos"],
+    "Chercher sur YouTube": ["Search on YouTube", "Buscar en YouTube"], "Chercher une vidéo (ex. comptines)": ["Search for a video (e.g. nursery rhymes)", "Buscar un vídeo (p. ej. canciones infantiles)"],
+    "Lien de la vidéo": ["Video link", "Enlace del vídeo"], "Nom du favori": ["Favourite’s name", "Nombre del favorito"], "Nom du favori (facultatif)": ["Favourite’s name (optional)", "Nombre del favorito (opcional)"],
+    "Le fil d’accueil de YouTube ne peut pas s’afficher dans une page web : YouTube ne l’autorise que dans sa propre application. Sur la peluche, il s’affichera dans l’œil par la recopie du téléphone.": ["The YouTube home feed cannot be shown in a web page: YouTube only allows it in its own app. On the plush, it will appear in the eye through phone screen mirroring.", "La página de inicio de YouTube no puede mostrarse en una página web: YouTube solo lo permite en su propia aplicación. En el peluche, aparecerá en el ojo duplicando la pantalla del teléfono."],
+    "Le fil d’accueil de TikTok ne peut pas s’afficher dans une page web : TikTok ne l’autorise que dans sa propre application. Sur la peluche, il s’affichera dans l’œil par la recopie du téléphone.": ["The TikTok home feed cannot be shown in a web page: TikTok only allows it in its own app. On the plush, it will appear in the eye through phone screen mirroring.", "La página de inicio de TikTok no puede mostrarse en una página web: TikTok solo lo permite en su propia aplicación. En el peluche, aparecerá en el ojo duplicando la pantalla del teléfono."],
+    // Photo, visages
+    "Nouvelle photo": ["New photo", "Nueva foto"], "Les photos restent sur cet appareil.": ["Photos stay on this device.", "Las fotos se quedan en este dispositivo."],
+    "Caméra indisponible sur cet appareil.": ["Camera not available on this device.", "Cámara no disponible en este dispositivo."],
+    "BeyaBear’s reconnaît les personnes qui se sont enregistrées et les salue par leur prénom.": ["BeyaBear’s recognises the people who have registered and greets them by name.", "BeyaBear’s reconoce a las personas registradas y las saluda por su nombre."],
+    "Chaque personne s’enregistre elle-même, avec son accord (celui d’un parent pour un enfant). L’empreinte du visage reste sur cet appareil et peut être effacée à tout moment.": ["Each person registers themselves, with their consent (a parent’s for a child). The face print stays on this device and can be deleted at any time.", "Cada persona se registra ella misma, con su consentimiento (el de un padre para un niño). La huella del rostro se queda en este dispositivo y puede borrarse en cualquier momento."],
+    "Enregistrer ce visage": ["Save this face", "Guardar esta cara"], "Personne n’est encore enregistré.": ["Nobody is registered yet.", "Aún no hay nadie registrado."], "Prénom à enregistrer": ["First name to save", "Nombre que guardar"], "Prénom": ["First name", "Nombre"],
+    // Assistant
+    "Mode démonstration.": ["Demo mode.", "Modo demostración."],
+    "BeyaBear’s répond ici avec quelques réponses et histoires intégrées. La conversation libre, sur n’importe quel sujet, s’active quand l’assistant est branché (voir README).": ["Here BeyaBear’s answers with a few built-in replies and stories. Free conversation, on any topic, switches on once the assistant is connected.", "Aquí BeyaBear’s responde con algunas respuestas y cuentos integrados. La conversación libre, sobre cualquier tema, se activa cuando el asistente está conectado."],
+    "Parler": ["Speak", "Hablar"], "Silence": ["Quiet", "Silencio"], "Envoyer": ["Send", "Enviar"], "Je t’écoute.": ["I am listening.", "Te escucho."],
+    "Message pour BeyaBear’s": ["Message for BeyaBear’s", "Mensaje para BeyaBear’s"], "Ou écrivez ici…": ["Or type here…", "O escribe aquí…"], "Moi": ["Me", "Yo"],
+    // Heure, météo, torche, iris
+    "L’heure s’affiche dans l’œil en grands chiffres rouges. Dites « Beya, quelle heure est-il ? » pour l’afficher.": ["The time shows in the eye in big red digits. Say “Beya, what time is it?” to display it.", "La hora aparece en el ojo con grandes cifras rojas. Di «Beya, ¿qué hora es?» para mostrarla."],
+    "Où habitez-vous ?": ["Where do you live?", "¿Dónde vives?"],
+    "Indiquez la ville où vous habitez : BeyaBear’s affiche le temps qu’il y fait dans son œil.": ["Enter the town where you live: BeyaBear’s shows its weather in the eye.", "Indica la ciudad donde vives: BeyaBear’s muestra el tiempo que hace en su ojo."],
+    "Valider": ["Confirm", "Confirmar"], "Utiliser ma position": ["Use my location", "Usar mi ubicación"], "Votre ville": ["Your town", "Tu ciudad"], "Votre ville (ex. Lyon)": ["Your town (e.g. London)", "Tu ciudad (p. ej. Madrid)"],
+    "La ville est gardée sur cet appareil. Données météo : Open-Meteo. Carte : © contributeurs OpenStreetMap, images RainViewer.": ["The town is kept on this device. Weather data: Open-Meteo. Map: © OpenStreetMap contributors, RainViewer imagery.", "La ciudad se guarda en este dispositivo. Datos del tiempo: Open-Meteo. Mapa: © colaboradores de OpenStreetMap, imágenes de RainViewer."],
+    "L’œil de BeyaBear’s éclaire. Montez la luminosité de l’écran au maximum pour plus de lumière.": ["BeyaBear’s eye lights up. Turn the screen brightness all the way up for more light.", "El ojo de BeyaBear’s ilumina. Sube el brillo de la pantalla al máximo para tener más luz."],
+    "Lumière blanche": ["White light", "Luz blanca"], "Veilleuse": ["Night light", "Luz de noche"], "Éclairer en plein écran": ["Light up full screen", "Iluminar a pantalla completa"], "Éteindre": ["Turn off", "Apagar"], "Voir dans l’œil": ["See in the eye", "Ver en el ojo"],
+    "Sur la peluche, une vraie petite lampe LED pourra être ajoutée à côté de l’écran et commandée de la même façon.": ["On the plush, a real small LED lamp can be added next to the screen and controlled the same way.", "En el peluche, se podrá añadir una pequeña lámpara LED junto a la pantalla y controlarla del mismo modo."],
+    "Couleur de l’iris": ["Iris colour", "Color del iris"], "Choisissez la teinte de l’œil.": ["Choose the colour of the eye.", "Elige el tono del ojo."],
+    "Azur": ["Azure", "Azul"], "Émeraude": ["Emerald", "Esmeralda"], "Ambre": ["Amber", "Ámbar"], "Violet": ["Violet", "Violeta"],
+    // Téléphone
+    "Mon téléphone dans l’œil": ["My phone in the eye", "Mi teléfono en el ojo"],
+    "Affichez l’écran de votre téléphone dans l’œil de BeyaBear’s pour y retrouver toutes vos applications.": ["Show your phone screen in BeyaBear’s eye to find all your apps there.", "Muestra la pantalla de tu teléfono en el ojo de BeyaBear’s para encontrar ahí todas tus aplicaciones."],
+    "Sur le téléphone, lancez la recopie de l’écran vers BeyaBear’s.": ["On the phone, start screen mirroring to BeyaBear’s.", "En el teléfono, inicia la duplicación de pantalla hacia BeyaBear’s."],
+    "Ouvrez le Centre de contrôle, touchez « Recopie de l’écran », puis choisissez « BeyaBear’s ». Pour arrêter, touchez « Arrêter la recopie ».": ["Open Control Centre, tap “Screen Mirroring”, then choose “BeyaBear’s”. To stop, tap “Stop Mirroring”.", "Abre el Centro de control, toca «Duplicar pantalla» y elige «BeyaBear’s». Para parar, toca «Detener duplicación»."],
+    "Reliez le téléphone à la peluche par câble USB, ou en Wi-Fi après l’avoir autorisé une première fois (voir le guide d’installation).": ["Connect the phone to the plush with a USB cable, or over Wi-Fi after allowing it once (see the setup guide).", "Conecta el teléfono al peluche con un cable USB, o por Wi-Fi tras autorizarlo una primera vez (consulta la guía de instalación)."],
+    "La recopie fonctionne uniquement sur la peluche, une fois sa carte installée avec le kit du dossier « peluche ». Le téléphone et la peluche doivent être sur le même Wi-Fi.": ["Mirroring only works on the plush itself, once its board is set up. The phone and the plush must be on the same Wi-Fi.", "La duplicación solo funciona en el peluche, una vez instalada su placa. El teléfono y el peluche deben estar en la misma Wi-Fi."],
+    // Forfait
+    "Forfait BeyaBear’s": ["BeyaBear’s plan", "Tarifa BeyaBear’s"],
+    "Avec un forfait eSIM, BeyaBear’s se connecte tout seul, partout, sans Wi-Fi. C’est un parent qui souscrit, pour son enfant ou pour lui-même.": ["With an eSIM plan, BeyaBear’s connects by itself, anywhere, without Wi-Fi. A parent subscribes, for their child or for themselves.", "Con una tarifa eSIM, BeyaBear’s se conecta solo, en cualquier lugar, sin Wi-Fi. Es un padre quien la contrata, para su hijo o para sí mismo."],
+    "Aperçu.": ["Preview.", "Vista previa."],
+    "La souscription n’est pas encore ouverte : rien n’est vendu ni facturé ici. Les offres ci-dessous sont des exemples, leurs prix restent à définir.": ["Subscription is not open yet: nothing is sold or charged here. The offers below are examples, their prices are still to be set.", "La contratación aún no está abierta: aquí no se vende ni se cobra nada. Las ofertas de abajo son ejemplos, sus precios están por definir."],
+    "Pas encore de forfait.": ["No plan yet.", "Aún sin tarifa."], "Pour qui ?": ["Who is it for?", "¿Para quién?"], "Mon enfant": ["My child", "Mi hijo"],
+    "Pour un enfant, le forfait est au nom du parent, qui garde la main sur les proches autorisés et sur les applications.": ["For a child, the plan is in the parent’s name, who stays in control of approved contacts and apps.", "Para un niño, la tarifa está a nombre del padre, que mantiene el control de los contactos autorizados y de las aplicaciones."],
+    "Offres (exemples)": ["Offers (examples)", "Ofertas (ejemplos)"], "Découverte": ["Starter", "Descubrimiento"], "Famille": ["Family", "Familia"], "Voyage": ["Travel", "Viaje"],
+    "Appels vidéo et assistant, usage occasionnel · prix à définir": ["Video calls and assistant, occasional use · price to be set", "Videollamadas y asistente, uso ocasional · precio por definir"],
+    "Appels, vidéos et musique au quotidien · prix à définir": ["Calls, videos and music every day · price to be set", "Llamadas, vídeos y música a diario · precio por definir"],
+    "Pour emmener BeyaBear’s en vacances, sans Wi-Fi · prix à définir": ["To take BeyaBear’s on holiday, without Wi-Fi · price to be set", "Para llevar a BeyaBear’s de vacaciones, sin Wi-Fi · precio por definir"],
+    "Adresse e-mail du parent": ["Parent’s e-mail address", "Correo electrónico del padre"], "Adresse e-mail": ["E-mail address", "Correo electrónico"], "prenom@exemple.fr": ["name@example.com", "nombre@ejemplo.es"],
+    "Pour recevoir la confirmation du forfait.": ["To receive the plan confirmation.", "Para recibir la confirmación de la tarifa."], "Votre choix est noté.": ["Your choice is saved.", "Tu elección queda guardada."],
+    // Messages
+    "Autorisez le micro dans le navigateur.": ["Allow the microphone in the browser.", "Permite el micrófono en el navegador."],
+    "Autorisez le micro pour l’écoute continue.": ["Allow the microphone for continuous listening.", "Permite el micrófono para la escucha continua."],
+    "Dites « raccroche » pour terminer l’appel.": ["Say “hang up” to end the call.", "Di «cuelga» para terminar la llamada."],
+    "La caméra n’est pas encore prête.": ["The camera is not ready yet.", "La cámara aún no está lista."],
+    "La position n’est pas disponible sur cet appareil.": ["Location is not available on this device.", "La ubicación no está disponible en este dispositivo."],
+    "Lien copié.": ["Link copied.", "Enlace copiado."], "L’appel est terminé.": ["The call has ended.", "La llamada ha terminado."],
+    "Placez votre visage bien en face de l’œil, puis réessayez.": ["Place your face right in front of the eye, then try again.", "Coloca tu cara justo delante del ojo y vuelve a intentarlo."],
+    "Reconnaissance vocale indisponible dans ce navigateur.": ["Voice recognition is not available in this browser.", "El reconocimiento de voz no está disponible en este navegador."],
+    "Touchez l’écran pour entendre la sonnerie.": ["Tap the screen to hear the ringtone.", "Toca la pantalla para oír el tono."],
+    "Touchez l’œil pour activer le son.": ["Tap the eye to turn on the sound.", "Toca el ojo para activar el sonido."],
+    "Écoute interrompue.": ["Listening stopped.", "Escucha interrumpida."],
+    "Adresse e-mail incomplète.": ["Incomplete e-mail address.", "Correo electrónico incompleto."], "Adresse enregistrée sur cet appareil.": ["Address saved on this device.", "Dirección guardada en este dispositivo."],
+    // Appels (suite), météo, favoris
+    "Arrêter le test": ["Stop the test", "Parar la prueba"],
+    "Autre envoi": ["Send another", "Otro envío"],
+    "Carte météo": ["Weather map", "Mapa del tiempo"],
+    "Dernières photos": ["Latest photos", "Últimas fotos"],
+    "Envoyer le lien": ["Send the link", "Enviar el enlace"],
+    "Inventer une nouvelle histoire": ["Make up a new story", "Inventar un cuento nuevo"],
+    "Je charge la carte…": ["Loading the map…", "Cargando el mapa…"],
+    "Je me prépare…": ["Getting ready…", "Me preparo…"],
+    "La carte n’est pas disponible pour l’instant.": ["The map is not available right now.", "El mapa no está disponible por ahora."],
+    "La recherche YouTube n’est pas encore branchée.": ["YouTube search is not connected yet.", "La búsqueda en YouTube aún no está conectada."],
+    "La reconnaissance vocale n’est pas disponible dans ce navigateur. Utilisez Chrome ou Safari, ou écrivez à l’assistant.": ["Voice recognition is not available in this browser. Use Chrome or Safari, or type to the assistant.", "El reconocimiento de voz no está disponible en este navegador. Usa Chrome o Safari, o escribe al asistente."],
+    "Les nuages ou les pluies des dernières heures défilent dans l’œil, autour de votre ville.": ["The clouds or rain of the last few hours move across the eye, around your town.", "Las nubes o las lluvias de las últimas horas pasan por el ojo, alrededor de tu ciudad."],
+    "Lien WhatsApp": ["WhatsApp link", "Enlace de WhatsApp"],
+    "Mes favoris": ["My favourites", "Mis favoritos"],
+    "Ouverture de la caméra et du micro…": ["Opening the camera and microphone…", "Abriendo la cámara y el micrófono…"],
+    "Ouvrir la recherche sur YouTube": ["Open the search on YouTube", "Abrir la búsqueda en YouTube"],
+    "Personnes enregistrées": ["Registered people", "Personas registradas"],
+    "Si la liaison vidéo reste impossible, les deux réseaux ne peuvent pas se joindre directement : essayez avec les deux téléphones en Wi-Fi, ou ajoutez un serveur de secours dans Appels, « Réglages du relais vidéo ».": ["If the video link still fails, the two networks cannot reach each other directly: try with both phones on Wi-Fi, or add a backup server in Calls, “Video relay settings”.", "Si el enlace de vídeo sigue sin funcionar, las dos redes no pueden conectarse directamente: prueba con los dos teléfonos en Wi-Fi, o añade un servidor de respaldo en Llamadas, «Ajustes del relé de vídeo»."],
+    "Si l’appel ne se connecte pas": ["If the call does not connect", "Si la llamada no conecta"],
+    "Test de la caméra": ["Camera test", "Prueba de cámara"],
+    "Touchez pour ouvrir": ["Tap to open", "Toca para abrir"],
+    "Votre caméra et votre micro seront partagés avec votre proche pendant l’appel.": ["Your camera and microphone will be shared with your loved one during the call.", "Tu cámara y tu micrófono se compartirán con tu familiar durante la llamada."],
+    "Vérifiez que les deux appareils ont autorisé la caméra et le micro. Sur certains réseaux (4G, Wi-Fi d’entreprise), un serveur relais doit être ajouté au projet.": ["Check that both devices have allowed the camera and microphone. On some networks (4G, company Wi-Fi), a relay server must be added.", "Comprueba que los dos dispositivos han permitido la cámara y el micrófono. En algunas redes (4G, Wi-Fi de empresa), hay que añadir un servidor relé."],
+    "État de la connexion": ["Connection status", "Estado de la conexión"],
+    "⏳ Caméra : en attente de l’image…": ["⏳ Camera: waiting for the picture…", "⏳ Cámara: esperando la imagen…"],
+    "⏳ Micro : dites quelques mots…": ["⏳ Microphone: say a few words…", "⏳ Micrófono: di unas palabras…"],
+    "✅ Micro : votre voix est captée.": ["✅ Microphone: your voice is picked up.", "✅ Micrófono: se oye tu voz."],
+    "✅ Caméra : l’image arrive.": ["✅ Camera: the picture is coming through.", "✅ Cámara: llega la imagen."],
+    ": c’est ici que l’appel arrive. Dès que votre proche touche le lien, son visage apparaît dans l’œil. Il peut aussi scanner ce code.": [": this is where the call arrives. As soon as your loved one taps the link, their face appears in the eye. They can also scan this code.", ": aquí es donde llega la llamada. En cuanto tu familiar toca el enlace, su cara aparece en el ojo. También puede escanear este código."],
+    "Après l’envoi, revenez sur cette page": ["After sending, come back to this page", "Después de enviarlo, vuelve a esta página"],
+    "Gardez cette page ouverte pour recevoir les appels de BeyaBear’s, et touchez-la une fois pour activer la sonnerie. Ajoutez-la à l’écran d’accueil de votre téléphone pour la retrouver.": ["Keep this page open to receive BeyaBear’s calls, and tap it once to turn on the ringtone. Add it to your phone’s home screen to find it again.", "Mantén esta página abierta para recibir las llamadas de BeyaBear’s y tócala una vez para activar el tono. Añádela a la pantalla de inicio de tu teléfono para encontrarla."],
+  };
+
+  // Textes qui contiennent une valeur variable
+  const days = { en: 'en-GB', es: 'es-ES' }[lang];
+  const RULES = [
+    [/^Il est (\d{1,2}):(\d{2}), .+\.$/, (m) => { const d = new Date(), date = d.toLocaleDateString(days, { weekday: 'long', day: 'numeric', month: 'long' }); return [`It is ${m[1]}:${m[2]}, ${date}.`, `Son las ${m[1]}:${m[2]}, ${date}.`][col]; }],
+    [/^Il est (\d{1,2}) heures?(?: (\d{1,2}))?$/, (m) => [`It is ${m[1]}:${String(m[2] || 0).padStart(2, '0')}`, `Son las ${m[1]}:${String(m[2] || 0).padStart(2, '0')}`][col]],
+    [/^Choix noté sur cet appareil : offre « (.+) » pour (vous|votre enfant)\. Vous pourrez souscrire dès l’ouverture du service\.$/, (m) => { const o = (D[m[1]] || [m[1], m[1]])[col], kid = m[2] !== 'vous'; return [`Choice saved on this device: “${o}” offer for ${kid ? 'your child' : 'you'}. You can subscribe as soon as the service opens.`, `Elección guardada en este dispositivo: oferta «${o}» para ${kid ? 'tu hijo' : 'ti'}. Podrás contratarla en cuanto abra el servicio.`][col]; }],
+    [/^Visage de (.+) enregistré sur cet appareil\.$/, (m) => [`${m[1]}’s face saved on this device.`, `Cara de ${m[1]} guardada en este dispositivo.`][col]],
+    [/^Compris · (.*)$/, (m) => [`Got it · ${m[1]}`, `Entendido · ${m[1]}`][col]],
+    [/^✅ Caméra : image reçue \((.+)\)\. Vous devez vous voir dans l’œil\.$/, (m) => [`✅ Camera: picture received (${m[1]}). You should see yourself in the eye.`, `✅ Cámara: imagen recibida (${m[1]}). Deberías verte en el ojo.`][col]],
+    [/^Carte (\d+)$/, (m) => [`Card ${m[1]}`, `Carta ${m[1]}`][col]],
+    [/^Couleur (\d+)$/, (m) => [`Colour ${m[1]}`, `Color ${m[1]}`][col]],
+  ];
+  const norm = (s) => s.replace(/\s+/g, ' ').trim();
+  const tr = (text) => {
+    const key = norm(text);
+    if (!key) return null;
+    if (D[key]) return D[key][col];
+    for (const [re, fn] of RULES) { const m = re.exec(key); if (m) return fn(m); }
+    return null;
+  };
+
+  const ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
+  const visit = (root) => {
+    if (root.nodeType === 3) return text(root);
+    if (root.nodeType !== 1 || root.closest('script,style,canvas')) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; const nodes = [];
+    while ((n = w.nextNode())) nodes.push(n);
+    nodes.forEach(text);
+    [root, ...root.querySelectorAll('[placeholder],[aria-label],[title],[alt]')].forEach((e) => ATTRS.forEach((a) => { const v = e.getAttribute && e.getAttribute(a); if (v) { const t = tr(v); if (t && t !== v) e.setAttribute(a, t); } }));
+  };
+  function text(node) {
+    const v = node.nodeValue; if (!v || !/[A-Za-zÀ-ÿ]{2}/.test(v)) return;
+    const t = tr(v); if (!t) return;
+    const lead = /^\s*/.exec(v)[0], tail = /\s*$/.exec(v)[0], next = lead + t + tail;
+    if (next !== v) node.nodeValue = next;
+  }
+  const zones = () => ['.top', 'main', '#toast', '.foot', '.kb', '.flood'].map((s) => document.querySelector(s)).filter(Boolean);
+  const start = () => {
+    zones().forEach(visit);
+    const obs = new MutationObserver((list) => list.forEach((m) => {
+      if (m.type === 'characterData') return text(m.target);
+      if (m.type === 'attributes') { const v = m.target.getAttribute(m.attributeName), t = v && tr(v); if (t && t !== v) m.target.setAttribute(m.attributeName, t); return; }
+      m.addedNodes.forEach(visit);
+    }));
+    obs.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
