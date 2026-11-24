@@ -225,4 +225,43 @@
     if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) { msg.textContent = T('Indiquez votre prénom et une adresse e-mail valide.'); return; }
     msg.textContent = T('Merci') + ' ' + name + ' ! ' + T('Démonstration : les inscriptions seront enregistrées à l’ouverture officielle du site.');
   });
+
+  // ---------- Effets ----------
+  // Barre de progression et halo qui suit la souris
+  const bar = $('#progress'), halo = $('#glow');
+  const onScroll = () => { const max = document.documentElement.scrollHeight - innerHeight; bar.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')'; };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  // Entrée du titre au moment où l'écran d'entrée se ferme
+  const enter = () => document.body.classList.add('entered');
+  const g = $('#gate');
+  if (!g || g.hidden) enter(); else ['#gateOn', '#gateOff'].forEach((id) => $(id).addEventListener('click', enter));
+  // L'œil qui suit le regard : il vise la souris ou le doigt, cligne, et change de couleur au toucher
+  const gaze = $('#gaze');
+  if (gaze) {
+    const IRIS = [['#1464e6', '#2aa7ff'], ['#b8650a', '#ffb347'], ['#0f8a4a', '#5fe08a'], ['#c0267a', '#ff7ac0'], ['#6a35d6', '#b48bff']];
+    let tone = 0, lastMove = 0;
+    const aim = (cx, cy) => {
+      const r = gaze.getBoundingClientRect(), dx = cx - (r.left + r.width / 2), dy = cy - (r.top + r.height / 2), d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 320);
+      gaze.style.setProperty('--x', ((dx / d) * k).toFixed(3)); gaze.style.setProperty('--y', ((dy / d) * k).toFixed(3));
+      lastMove = performance.now();
+    };
+    addEventListener('pointermove', (e) => { aim(e.clientX, e.clientY); if (halo && e.pointerType === 'mouse') { halo.style.opacity = 1; halo.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)'; } }, { passive: true });
+    addEventListener('touchmove', (e) => { const t = e.touches[0]; if (t) aim(t.clientX, t.clientY); }, { passive: true });
+    gaze.addEventListener('click', () => { tone = (tone + 1) % IRIS.length; gaze.style.setProperty('--iris', IRIS[tone][0]); gaze.style.setProperty('--iris2', IRIS[tone][1]); blink(); });
+    const blink = () => { gaze.classList.add('blink'); setTimeout(() => gaze.classList.remove('blink'), 150); };
+    if (!calm) {
+      setInterval(() => { if (Math.random() < .55) blink(); }, 2600);
+      // Sans souris ni doigt, il regarde autour de lui
+      const wander = (t) => { if (t - lastMove > 2500) { gaze.style.setProperty('--x', (Math.sin(t / 1300) * .7).toFixed(3)); gaze.style.setProperty('--y', (Math.cos(t / 1900) * .45).toFixed(3)); } requestAnimationFrame(wander); };
+      requestAnimationFrame(wander);
+    }
+  }
+  // Relief des cartes sous la souris
+  if (!calm && matchMedia('(hover: hover)').matches) {
+    $$('.names button, .pays, .facts div, .care article, .pillars li').forEach((el) => {
+      el.classList.add('tilt');
+      el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; el.style.transform = 'perspective(700px) rotateX(' + (-y * 9).toFixed(2) + 'deg) rotateY(' + (x * 9).toFixed(2) + 'deg) translateY(-4px)'; });
+      el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+    });
+  }
 })();

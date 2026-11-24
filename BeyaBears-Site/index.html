@@ -24,6 +24,7 @@
   </div>
 </div>
 <button class="sonToggle" id="sonToggle" type="button" aria-pressed="false" hidden><i></i><span>Son coupé</span></button>
+<div class="progress" id="progress"></div><div class="glow" id="glow"></div>
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="#haut" aria-label="BeyaBear's, retour en haut">
@@ -64,7 +65,10 @@
 
   <section class="band manifest">
     <div class="wrap rise">
-      <p>Plus qu’une peluche, <em>un vrai compagnon de vie.</em></p>
+      <div class="gazeRow">
+        <button class="gaze" id="gaze" type="button" aria-label="Changer la couleur de l’œil"><span class="ball"><span class="iris"><span class="pupil"></span><i></i></span><span class="lid"></span></span></button>
+        <div><p>Plus qu’une peluche, <em>un vrai compagnon de vie.</em></p><span class="gazeHint">Il vous suit du regard. Touchez-le, il change de couleur.</span></div>
+      </div>
       <div class="facts">
         <div><b>1 œil</b><span>Un écran rond tactile au centre du visage, à la place des yeux cousus.</span></div>
         <div><b>10 compagnons</b><span>Dix personnages, chacun avec son prénom, sa tenue et son caractère.</span></div>
@@ -72,6 +76,8 @@
       </div>
     </div>
   </section>
+
+  <div class="marquee" aria-hidden="true"><div><span>Noah</span><i></i><span>Alya</span><i></i><span>Aaron</span><i></i><span>Mila</span><i></i><span>Kaï</span><i></i><span>Naya</span><i></i><span>Sana</span><i></i><span>Enzo</span><i></i><span>Zayn</span><i></i><span>Luna</span><i></i><span>Noah</span><i></i><span>Alya</span><i></i><span>Aaron</span><i></i><span>Mila</span><i></i><span>Kaï</span><i></i><span>Naya</span><i></i><span>Sana</span><i></i><span>Enzo</span><i></i><span>Zayn</span><i></i><span>Luna</span><i></i></div></div>
 
   <section class="sep full"><video muted loop playsinline preload="none" poster="media/regard.jpg"><source src="media/regard.mp4" type="video/mp4"></video></section>
 

@@ -193,6 +193,7 @@
 "Chine": ["China", "China"],
 "Veste rouge aux dragons dorés et raviolis vapeur.": ["Red jacket with golden dragons and steamed dumplings.", "Chaqueta roja con dragones dorados y empanadillas al vapor."],
 "Cinq jeux au doigt, dont la Course au miel : l'ourson court, saute et attrape les pots.": ["Five touch games, including Honey run: the bear runs, jumps and catches the pots.", "Cinco juegos táctiles, entre ellos Carrera de miel: el osito corre, salta y atrapa los tarros."], "Course au miel": ["Honey run", "Carrera de miel"], "pots de miel": ["honey pots", "tarros de miel"],
+"Il vous suit du regard. Touchez-le, il change de couleur.": ["It follows you with its eye. Tap it and it changes colour.", "Te sigue con la mirada. Tócalo y cambia de color."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
@@ -214,6 +215,7 @@
 "Noah l'Explorateur se présente": ["Noah the Explorer introduces himself", "Noah el Explorador se presenta"],
 "Agrandir l'image": ["Enlarge the image", "Ampliar la imagen"], "Image agrandie": ["Enlarged image", "Imagen ampliada"],
 "Les dix compagnons BeyaBear's présentés un par un": ["The ten BeyaBear's companions introduced one by one", "Los diez compañeros BeyaBear's presentados uno a uno"],
+"Changer la couleur de l'œil": ["Change the eye colour", "Cambiar el color del ojo"],
 "Iris bleu lumineux": ["Glowing blue iris", "Iris azul luminoso"], "Lumière chaude de veilleuse": ["Warm night light", "Luz cálida de noche"],
   };
   const altFor = (fr) => {
