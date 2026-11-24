@@ -45,11 +45,11 @@ const ICON = {
 const APPS = [
   ['call', 'Appels', 'c-call'],
   ['youtube', 'YouTube', 'c-yt'],
-  ['tiktok', 'TikTok', 'c-tiktok'],
+  ['games', 'Jeux', 'c-games'],
   ['photo', 'Photo', 'c-photo'],
   ['story', 'Histoires', 'c-story'],
   ['chat', 'Assistant', 'c-chat'],
-  ['games', 'Jeux', 'c-games'],
+  ['tiktok', 'TikTok', 'c-tiktok'],
   ['clock', 'Heure', 'c-clock'],
   ['weather', 'Météo', 'c-weather'],
   ['torch', 'Torche', 'c-torch'],
