@@ -472,3 +472,21 @@ html[lang="fr"] [data-only="fr"], html[lang="en"] [data-only="en"], html[lang="e
 .listen::before { content: ""; border-left: 14px solid #fff; border-block: 9px solid transparent; }
 .talk.playing .listen { inset: auto auto 14px 14px; margin: 0; height: 40px; padding: 0 16px; font-size: .85rem; background: rgba(6, 8, 15, .7); box-shadow: none; border: 1px solid rgba(255, 255, 255, .4); }
 .talk.playing .listen::before { border: 0; width: 10px; height: 12px; border-inline: 3px solid #fff; }
+
+/* Une image, un texte : rangées alternées, image cliquable */
+.rows { display: flex; flex-direction: column; gap: clamp(36px, 6vw, 84px); margin-top: clamp(36px, 5vw, 60px); }
+.row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(22px, 5vw, 70px); align-items: center; }
+.row:nth-child(even) .zoom { order: 2; }
+.zoom { position: relative; display: block; padding: 0; border: 0; background: var(--panel); border-radius: 26px; overflow: hidden; cursor: zoom-in; }
+.zoom img { width: 100%; height: auto; transition: transform .8s cubic-bezier(.2, .7, .2, 1); }
+.zoom:hover img { transform: scale(1.03); }
+.zoom::after { content: "+"; position: absolute; right: 12px; bottom: 12px; width: 36px; height: 36px; border-radius: 50%; background: rgba(6, 8, 15, .7); color: #fff; font: 400 1.4rem/36px var(--body); border: 1px solid rgba(255, 255, 255, .35); }
+.say { display: flex; flex-direction: column; gap: 12px; }
+.say h3 { font-size: clamp(1.7rem, 3.4vw, 2.8rem); font-weight: 700; color: var(--cream); }
+.say p { color: var(--muted); font-size: clamp(1.02rem, 1.4vw, 1.18rem); max-width: 40ch; }
+.box { border: 0; padding: 0; background: none; max-width: 96vw; max-height: 94svh; overflow: visible; }
+.box::backdrop { background: rgba(3, 4, 8, .92); }
+.box img { display: block; max-width: 96vw; max-height: 90svh; border-radius: 18px; }
+.box .round { position: absolute; top: 10px; right: 10px; background: rgba(6, 8, 15, .8); }
+@media (max-width: 900px) { .row { grid-template-columns: minmax(0, 1fr); gap: 16px; } .row:nth-child(even) .zoom { order: 0; } .zoom { border-radius: 20px; } }
+html:not([lang="fr"]) .row:not([data-fr]):nth-child(n) .zoom { order: 0; }

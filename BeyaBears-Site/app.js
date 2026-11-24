@@ -132,6 +132,13 @@
   document.addEventListener('langue', cartDraw);
   cartDraw();
 
+  // Visionneuse : toucher une image l'ouvre en grand.
+  const box = $('#box');
+  if (box && box.showModal) {
+    $$('[data-zoom]').forEach((b) => b.addEventListener('click', () => { const i = $('img', b); $('#boxImg').src = i.src; $('#boxImg').alt = i.alt; box.showModal(); }));
+    box.addEventListener('click', () => box.close());
+  }
+
   // Fiches des compagnons
   const fiche = $('#fiche');
   if (fiche && fiche.showModal) {

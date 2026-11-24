@@ -119,6 +119,23 @@
 "Au repos, l'écran devient un grand œil qui cligne, suit du regard et sourit. C'est lui qui donne son caractère à chaque compagnon.": ["At rest, the screen becomes a big eye that blinks, follows you and smiles. It gives each companion its personality.", "En reposo, la pantalla se convierte en un gran ojo que parpadea, sigue con la mirada y sonríe. Es lo que da carácter a cada compañero."],
 "Activer le son": ["Turn sound on", "Activar el sonido"], "Couper le son": ["Turn sound off", "Quitar el sonido"],
 "Écouter Noah": ["Listen to Noah", "Escuchar a Noah"], "Arrêter": ["Stop", "Parar"], "Noah se présente, dans votre langue. Touchez la vidéo pour l'écouter.": ["Noah introduces himself, in your language. Tap the video to listen.", "Noah se presenta, en tu idioma. Toca el vídeo para escucharlo."],
+"Modèle à venir": ["Upcoming model", "Próximo modelo"],
+"Casquette rose, nœud et cœurs. Elle aime la musique, les histoires et prendre des photos.": ["Pink cap, bow and hearts. She loves music, stories and taking photos.", "Gorra rosa, lazo y corazones. Le gustan la música, los cuentos y hacer fotos."],
+"Casquette rouge, casque sur les oreilles et skate jamais loin. Il aime jouer et apprendre.": ["Red cap, headphones on and a skateboard never far away. He loves playing and learning.", "Gorra roja, auriculares puestos y el monopatín siempre cerca. Le gusta jugar y aprender."],
+"Blouson marine et orange, style cinéma. Il aime les vidéos et les appels avec ses proches.": ["Navy and orange jacket, movie style. He loves videos and calls with his loved ones.", "Chaqueta azul marino y naranja, estilo cine. Le gustan los vídeos y las llamadas con los suyos."],
+"L'écran": ["The screen", "La pantalla"],
+"Six applications sous le doigt": ["Six apps at your fingertip", "Seis aplicaciones bajo el dedo"],
+"Vidéos, musique, histoires, apprendre, appel vidéo et caméra : de grandes icônes, faciles à viser.": ["Videos, music, stories, learning, video call and camera: big icons, easy to tap.", "Vídeos, música, cuentos, aprender, videollamada y cámara: iconos grandes, fáciles de tocar."],
+"Le toucher": ["Touch", "El tacto"],
+"Un geste suffit": ["One tap is enough", "Basta un gesto"],
+"L'enfant touche l'icône, l'application s'ouvre. Pas de menu compliqué, pas de mot de passe.": ["The child taps the icon and the app opens. No complicated menu, no password.", "El niño toca el icono y la aplicación se abre. Sin menús complicados, sin contraseña."],
+"Apprendre devient un jeu": ["Learning becomes a game", "Aprender se vuelve un juego"],
+"Lecture, écriture, calcul et sciences, avec des exercices courts adaptés à son âge.": ["Reading, writing, maths and science, with short exercises suited to their age.", "Lectura, escritura, cálculo y ciencias, con ejercicios cortos adaptados a su edad."],
+"Ses dessins animés dans l'œil": ["Their cartoons in the eye", "Sus dibujos animados en el ojo"],
+"Les vidéos se regardent directement dans l'écran rond, avec le son dans la peluche.": ["Videos play right in the round screen, with the sound inside the plush.", "Los vídeos se ven directamente en la pantalla redonda, con el sonido en el peluche."],
+"Sa peluche": ["Their plush", "Su peluche"],
+"À son image": ["Just like them", "A su imagen"],
+"Chaque enfant choisit le compagnon qui lui ressemble, avec son prénom et sa tenue.": ["Each child picks the companion that looks like them, with its name and outfit.", "Cada niño elige el compañero que se le parece, con su nombre y su ropa."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
@@ -138,6 +155,7 @@
 "Noah l'Explorateur fait coucou de la patte": ["Noah the Explorer waves a paw", "Noah el Explorador saluda con la pata"], "Noah tourne la tête et regarde autour de lui": ["Noah turns his head and looks around", "Noah gira la cabeza y mira a su alrededor"], "Noah cligne de l'œil et sourit": ["Noah winks and smiles", "Noah guiña el ojo y sonríe"],
 "Les dix compagnons BeyaBear's vus de près, l'un après l'autre": ["The ten BeyaBear's companions seen up close, one after another", "Los diez compañeros BeyaBear's vistos de cerca, uno tras otro"],
 "Noah l'Explorateur se présente": ["Noah the Explorer introduces himself", "Noah el Explorador se presenta"],
+"Agrandir l'image": ["Enlarge the image", "Ampliar la imagen"], "Image agrandie": ["Enlarged image", "Imagen ampliada"],
 "Iris bleu lumineux": ["Glowing blue iris", "Iris azul luminoso"], "Lumière chaude de veilleuse": ["Warm night light", "Luz cálida de noche"],
   };
   const altFor = (fr) => {
