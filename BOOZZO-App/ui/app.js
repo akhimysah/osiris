@@ -1038,7 +1038,7 @@ function command(spoken) {
   if (/\b(meteo|quel temps|temps qu.il fait|il fait beau|pleut|nuages)\b/.test(text)) return go('weather', { map: /\b(carte|nuages|radar)\b/.test(text) }), true;
   if (order && /\bassistant\b/.test(text)) return go('chat'), true;
   if (order && /\b(forfait|abonnement|esim)\b/.test(text)) return go('esim'), true;
-  if (/\b(jeux?|jouer|joue|on joue|calculs?|dessin|dessiner|coloriage)\b/.test(text) && !/you ?tube|musique|video/.test(text)) return go('games', /paire|memo/.test(text) ? { game: 'paires' } : /etoile/.test(text) ? { game: 'etoiles' } : /calcul|math|compt/.test(text) ? { game: 'calcul' } : /dessin|colori/.test(text) ? { game: 'dessin' } : {}), true;
+  if (/\b(jeux?|jouer|joue|on joue|miel|calculs?|dessin|dessiner|coloriage)\b/.test(text) && !/you ?tube|musique|video/.test(text)) return go('games', /miel|course|courir/.test(text) ? { game: 'miel' } : /paire|memo/.test(text) ? { game: 'paires' } : /etoile/.test(text) ? { game: 'etoiles' } : /calcul|math|compt/.test(text) ? { game: 'calcul' } : /dessin|colori/.test(text) ? { game: 'dessin' } : {}), true;
   if (/\b(reconnais|qui suis.je|visages?)\b/.test(text)) return go('face'), true;
   if (color && (/\b(iris|œil|oeil|yeux|couleur)\b/.test(text) || /\ben\s/.test(text))) return go('home'), setColor(color[1]), true;
   if (order && /\b(iris|œil|oeil)\b/.test(text)) return go('home'), true;
