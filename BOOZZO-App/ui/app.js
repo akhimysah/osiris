@@ -157,6 +157,8 @@ const backButton = '<button class="back" data-go="menu" type="button">‹ Accuei
 function setScreen(name) {
   state.screen = name;
   document.body.dataset.screen = name;
+  // Sur téléphone, l'œil dans la peluche est trop petit pour lire : dès qu'une application s'ouvre, l'œil passe en grand.
+  if (!kiosk && window.innerWidth <= 700) setView(name !== 'home' && name !== 'menu');
 }
 function stopCamera() {
   state.camera?.getTracks().forEach((track) => track.stop());

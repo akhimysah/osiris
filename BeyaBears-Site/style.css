@@ -811,3 +811,9 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 @media (min-width: 901px) and (max-width: 1180px) { .nav nav a[href="#usages"], .nav nav a[href="#parents"] { display: none; } }
 @media (min-width: 901px) and (max-width: 1500px) { .nav nav { gap: 12px; flex: none; } .nav nav a { font-size: .84rem; } .nav .btn { padding-inline: 14px; } }
 @media (min-width: 901px) { .nav .wrap { gap: 10px; } .nav nav { gap: 12px; flex: none; margin-right: 4px; } .nav nav a { font-size: .84rem; } .nav .btn { padding-inline: 14px; } }
+/* Fond flou de la première vidéo : une vraie image floutée (le flou d'arrière-plan ne marche pas sur Safari ici) */
+@media (max-width: 900px) and (orientation: portrait) {
+  .diveStage { background: #0b1020; }
+  .diveStage::before { inset: -40px; background: url(media/avion.jpg) center / cover; -webkit-backdrop-filter: none; backdrop-filter: none; filter: blur(26px) brightness(.5); }
+}
+.book .note { color: #55668c; opacity: 1; }
