@@ -84,17 +84,12 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -.
 .btn.line:hover { border-color: rgba(255, 255, 255, .6); }
 .nav .btn { height: 38px; padding: 0 18px; font-size: .9rem; }
 
-/* Ouverture : le film du ciel */
-.hero { position: relative; isolation: isolate; min-height: min(86svh, 860px); display: flex; align-items: flex-end; }
-.hero video, .hero .shade { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero video { object-fit: cover; z-index: -2; }
-.hero .shade {
-  z-index: -1;
-  background:
-    linear-gradient(180deg, rgba(6, 8, 15, .25) 0%, rgba(6, 8, 15, 0) 28%, rgba(6, 8, 15, .55) 62%, var(--night) 100%);
-}
-.hero .wrap { width: 100%; padding-block: 0 clamp(40px, 7vw, 84px); }
-.hero h1 { font-size: clamp(3rem, 10.5vw, 9rem); font-weight: 800; letter-spacing: -.03em; line-height: .92; color: #fff; }
+/* Ouverture : le film en entier, le titre juste dessous */
+.hero { position: relative; }
+.hero video { width: 100%; aspect-ratio: 1248 / 704; max-height: 74svh; object-fit: cover; }
+.hero .shade { position: absolute; inset: auto 0 0 0; height: 0; }
+.hero .wrap { width: 100%; padding-block: clamp(26px, 4vw, 56px) clamp(40px, 6vw, 80px); }
+.hero h1 { font-size: clamp(3rem, 8.4vw, 7.4rem); font-weight: 800; letter-spacing: -.03em; line-height: .92; color: #fff; }
 .hero h1 span { display: block; }
 .hero h1 .glow { color: var(--cream); }
 .hero p { margin-top: 26px; max-width: 46ch; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: #dfe6f5; }
@@ -342,10 +337,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
 
 @media (max-width: 900px) {
   .nav nav { display: none; }
-  .hero { display: block; min-height: 0; }
-  .hero video { position: relative; inset: auto; height: auto; aspect-ratio: 1248 / 704; object-fit: contain; z-index: 0; }
-  .hero .shade { display: none; }
-  .hero .wrap { padding-block: 26px 44px; }
+  .hero video { max-height: none; object-fit: contain; }
   .nav .btn { margin-left: auto; }
   .eye-grid, .tone-grid, .split { grid-template-columns: minmax(0, 1fr); }
   .eye-grid .stage { order: -1; }
