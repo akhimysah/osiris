@@ -24,7 +24,7 @@
   </div>
 </div>
 <button class="sonToggle" id="sonToggle" type="button" aria-pressed="false" hidden><i></i><span>Son coupé</span></button>
-<div class="progress" id="progress"></div><div class="glow" id="glow"></div>
+<div class="progress" id="progress"></div><div class="halo" id="glow"></div>
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="#haut" aria-label="BeyaBear's, retour en haut">
@@ -47,11 +47,20 @@
 </header>
 
 <main id="haut">
-  <section class="hero">
-    <video autoplay muted loop playsinline preload="auto" poster="media/avion.jpg" aria-label="Un avion BeyaBear’s ouvre sa soute au-dessus des nuages et des centaines d’oursons sautent en parachute, l’œil allumé">
+  <section class="dive" id="dive">
+    <div class="diveStage">
+      <video autoplay muted loop playsinline preload="auto" poster="media/avion.jpg" aria-label="Un avion BeyaBear’s ouvre sa soute au-dessus des nuages et des centaines d’oursons sautent en parachute, l’œil allumé">
       <source src="media/avion.mp4" type="video/mp4">
     </video>
-    <div class="shade"></div>
+      <div class="diveEye" id="diveEye"></div>
+      <i class="diveShine" id="diveShine"></i>
+      <p class="diveA" id="diveA">Regardez-le dans les yeux.</p>
+      <p class="diveHint" id="diveHint"><span>Faites défiler</span></p>
+      <p class="diveB" id="diveB">Entrez dans son monde.</p>
+    </div>
+  </section>
+
+  <section class="hero">
     <div class="wrap">
       <h1><span>Un regard.</span><span class="glow">Mille émotions.</span></h1>
       <p class="verbs">Jouer. Apprendre. Communiquer. Rêver.</p>

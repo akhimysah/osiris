@@ -194,6 +194,7 @@
 "Veste rouge aux dragons dorés et raviolis vapeur.": ["Red jacket with golden dragons and steamed dumplings.", "Chaqueta roja con dragones dorados y empanadillas al vapor."],
 "Cinq jeux au doigt, dont la Course au miel : l'ourson court, saute et attrape les pots.": ["Five touch games, including Honey run: the bear runs, jumps and catches the pots.", "Cinco juegos táctiles, entre ellos Carrera de miel: el osito corre, salta y atrapa los tarros."], "Course au miel": ["Honey run", "Carrera de miel"], "pots de miel": ["honey pots", "tarros de miel"],
 "Il vous suit du regard. Touchez-le, il change de couleur.": ["It follows you with its eye. Tap it and it changes colour.", "Te sigue con la mirada. Tócalo y cambia de color."],
+"Regardez-le dans les yeux.": ["Look it in the eye.", "Míralo a los ojos."], "Faites défiler": ["Scroll", "Desliza"], "Entrez dans son monde.": ["Step into its world.", "Entra en su mundo."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();

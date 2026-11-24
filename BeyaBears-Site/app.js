@@ -264,4 +264,42 @@
       el.addEventListener('pointerleave', () => { el.style.transform = ''; });
     });
   }
+
+  // ---------- La plongée dans l'œil ----------
+  // Un œil géant dont la pupille est une fenêtre sur la vidéo. En défilant, la pupille grandit jusqu'à remplir l'écran.
+  const dive = $('#dive'), dEye = $('#diveEye');
+  if (dive && dEye && !calm) {
+    const A = $('#diveA'), B = $('#diveB'), hint = $('#diveHint'), shine = $('#diveShine');
+    let px = 0, py = 0, tx = 0, ty = 0, raf = 0, last = 0;
+    const clamp = (v) => Math.max(0, Math.min(1, v));
+    const draw = (now) => {
+      raf = 0;
+      const r = dive.getBoundingClientRect(), vw = innerWidth, vh = innerHeight;
+      if (r.bottom < 0 || r.top > vh) return;
+      const p = clamp(-r.top / (r.height - vh));
+      // Sans souris, l'œil regarde doucement autour de lui
+      if (now - last > 2200) { tx = Math.sin(now / 1500) * .6; ty = Math.cos(now / 2100) * .35; }
+      px += (tx - px) * .12; py += (ty - py) * .12;
+      const calmDown = 1 - clamp(p / .35);
+      const R0 = Math.min(vw, vh) * .1, Rmax = Math.hypot(vw, vh) * .62;
+      const e = clamp(p / .78), R = R0 * Math.pow(Rmax / R0, e * e * (3 - 2 * e));
+      const cx = vw / 2 + px * R0 * 1.5 * calmDown, cy = vh / 2 + py * R0 * 1.1 * calmDown + (1 - clamp(p / .5)) * vh * .04;
+      const f = (k) => (R * k).toFixed(1) + 'px';
+      dEye.style.background =
+        'radial-gradient(circle at ' + cx.toFixed(1) + 'px ' + cy.toFixed(1) + 'px,' +
+        'rgba(3,6,15,0) 0,rgba(3,6,15,0) ' + f(.97) + ',#03060f ' + f(1) + ',#03060f ' + f(1.05) + ',#7fd2ff ' + f(1.16) + ',#2aa7ff ' + f(1.4) + ',#1464e6 ' + f(1.85) + ',#0b3fb0 ' + f(2.12) + ',#061a44 ' + f(2.24) + ',#f4f7fd ' + f(2.3) + ',#ffffff ' + f(2.9) + ',#eef3fc ' + f(3.7) + ',#cfdcf5 ' + f(4.15) + ',#dbe6fb ' + f(4.22) + ',#f3f7ff ' + f(4.6) + ',#ffffff ' + f(5.2) + ')';
+      const sz = R * .5; shine.style.width = shine.style.height = sz.toFixed(1) + 'px'; shine.style.transform = 'translate(' + (cx + R * 1.2 - sz / 2).toFixed(1) + 'px,' + (cy - R * 1.3 - sz / 2).toFixed(1) + 'px)';
+      shine.style.opacity = (1 - clamp((p - .3) / .25)).toFixed(2);
+      A.style.opacity = (1 - clamp(p / .16)).toFixed(2); A.style.transform = 'translateY(' + (-p * 160).toFixed(0) + 'px)';
+      hint.style.opacity = (1 - clamp(p / .08)).toFixed(2);
+      const b = clamp((p - .74) / .16);
+      B.style.opacity = b.toFixed(2); B.style.transform = 'translateY(-50%) scale(' + (.86 + b * .14).toFixed(3) + ')';
+      if (p < .999) raf = requestAnimationFrame(draw);
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(draw); };
+    addEventListener('scroll', kick, { passive: true });
+    addEventListener('resize', kick);
+    addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; last = performance.now(); kick(); }, { passive: true });
+    kick();
+  }
 })();
