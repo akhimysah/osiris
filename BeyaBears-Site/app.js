@@ -102,7 +102,7 @@
   }
 
   // L'œil : un mode à la fois
-  const HALO = { iris: '#2e8bff', call: '#5c7cff', story: '#8a6bff', talk: '#2e8bff', video: '#ff7a59', meteo: '#6fc3ff', clock: '#ff5a4a', night: '#ffb347' };
+  const HALO = { iris: '#2e8bff', call: '#5c7cff', story: '#8a6bff', talk: '#2e8bff', video: '#ff7a59', meteo: '#6fc3ff', clock: '#ff5a4a', jeu: '#ffb21f', night: '#ffb347' };
   const modes = $$('.mode'), ball = $('.eyeball');
   let current = 0, timer = null, touched = false;
   function show(i) {

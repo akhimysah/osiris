@@ -545,3 +545,11 @@ html:not([lang="fr"]) .row:not([data-fr]):nth-child(n) .zoom { order: 0; }
 /* Noah en gros plan, sans le panneau de droite */
 .film.noah { aspect-ratio: 770 / 704; width: min(100%, 560px); margin-inline: auto; }
 html[lang="es"] [data-not="es"] { display: none !important; }
+
+.v-jeu { background: linear-gradient(180deg, #7cc8ff 0%, #ffe2a8 62%, #4f9a4a 63%); color: #10131c; }
+.v-jeu .stack { display: grid; justify-items: center; gap: 3cqw; }
+.v-jeu b { font: 800 22cqw/.9 var(--display); }
+.v-jeu small { color: #10131c; }
+.v-jeu .pots { display: flex; gap: 4cqw; }
+.v-jeu .pots u { width: 10cqw; height: 10cqw; border-radius: 3cqw; background: #ffb21f; box-shadow: inset 0 3cqw 0 -1cqw #7a4a12; animation: wave 1.2s ease-in-out infinite; }
+.v-jeu .pots u:nth-child(2) { animation-delay: -.4s; } .v-jeu .pots u:nth-child(3) { animation-delay: -.8s; }
