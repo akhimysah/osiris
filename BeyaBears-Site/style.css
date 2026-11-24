@@ -326,10 +326,15 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -.
 .book label { display: flex; flex-direction: column; gap: 6px; font-size: .88rem; color: var(--muted); }
 .book input, .book select { height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-2); color: var(--text); font: inherit; }
 .book .note { margin: 0; text-align: center; }
-.fiche { border: 1px solid var(--line); border-radius: 26px; padding: 0; background: var(--panel); color: var(--text); width: min(92vw, 720px); overflow: hidden; }
-.fiche[open] { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+.fiche { border: 1px solid var(--line); border-radius: 30px; padding: 0; background: var(--panel); color: var(--text); width: min(94vw, 1040px); max-height: 92svh; overflow: auto; }
+.fiche[open] { animation: grow .35s cubic-bezier(.2, .8, .2, 1); }
+.fiche[open] img { animation: pop .5s cubic-bezier(.2, .8, .2, 1); }
+@keyframes grow { from { opacity: 0; transform: scale(.86); } }
+@keyframes pop { from { transform: scale(.8); } }
+@media (prefers-reduced-motion: reduce) { .fiche[open], .fiche[open] img { animation: none; } }
+.fiche[open] { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 .fiche::backdrop { background: rgba(3, 4, 8, .78); }
-.fiche img { width: 100%; height: 100%; object-fit: cover; }
+.fiche img { width: 100%; height: 100%; min-height: min(70svh, 620px); object-fit: cover; object-position: top; }
 .fiche > div { padding: 28px; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
 .fiche h3 { font-size: 2.2rem; font-weight: 800; color: var(--cream); }
 .fiche p { color: var(--muted); }
@@ -363,7 +368,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
   .offer { grid-template-columns: minmax(0, 1fr); }
   .brandrow { grid-template-columns: minmax(0, 1fr); }
   .fiche[open] { grid-template-columns: minmax(0, 1fr); }
-  .fiche img { aspect-ratio: 4 / 3; object-position: top; }
+  .fiche img { aspect-ratio: 1; min-height: 0; object-position: top; }
   .ads, .ads.trio { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .ads figure, .roster { border-radius: 20px; }
   .life figure { border-radius: 20px; }
