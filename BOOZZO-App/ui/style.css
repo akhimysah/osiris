@@ -229,3 +229,18 @@ body.kiosk .stage.eyeView .eye { box-shadow: none; }
 .draw .inks .sel { box-shadow: 0 0 0 .8cqw #fff; } .draw .inks [data-ink=""] { background: #fff3; }
 .game.pick.four button:first-of-type { background: #ffb21f; color: #10131c; border-color: #ffb21f; }
 .honey canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+
+/* Clavier de l'œil : les rangées suivent la largeur du cercle. */
+.kbOpen { position: absolute; left: 50%; bottom: 3cqw; transform: translateX(-50%); z-index: 3; width: 12cqw; height: 9cqw; border-radius: 3cqw; background: #000b; color: #fff; border: .4cqw solid #fff8; display: grid; place-items: center; }
+.kbOpen svg { width: 70%; height: 80%; }
+.kb { position: absolute; inset: 0; z-index: 4; background: radial-gradient(circle at 50% 20%, #17264d, #070b18 75%); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1.1cqw; padding-top: 13cqw; }
+.kb small { font-size: 3.4cqw; letter-spacing: .08em; text-transform: uppercase; opacity: .8; max-width: 52cqw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kb output { width: 66cqw; min-height: 11cqw; margin-bottom: 1.4cqw; padding: 2cqw 3cqw; border-radius: 3cqw; background: #fff; color: #10131c; font-size: 5cqw; font-weight: 600; text-align: left; white-space: nowrap; overflow: hidden; }
+.kb output i { display: inline-block; width: .6cqw; height: 5.4cqw; margin-left: .6cqw; vertical-align: -1cqw; background: #2e8bff; animation: blink 1s steps(1) infinite; }
+.kb div { display: flex; gap: 1cqw; justify-content: center; }
+.kb button { width: 8.2cqw; height: 10.4cqw; border-radius: 2cqw; background: #ffffff24; color: #fff; font-size: 5cqw; font-weight: 600; display: grid; place-items: center; padding: 0; }
+.kb button:active { background: #2e8bff; }
+.kb .w { width: 11cqw; } .kb .on { background: #2e8bff; }
+.kb .s { width: 8cqw; background: #ffffff12; } .kb .m { width: 11cqw; font-size: 3.8cqw; } .kb .sp { width: 20cqw; font-size: 3.4cqw; }
+.kb .ok { width: 14cqw; background: #f4e8d2; color: #10131c; font-size: 4.4cqw; }
+body.kiosk .kbOpen { bottom: 2cqw; }
