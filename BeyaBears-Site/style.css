@@ -418,3 +418,10 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
 @keyframes beat { 50% { transform: scale(1.18); } }
 @media (prefers-reduced-motion: reduce) { .float i { animation: none; } }
 @media (max-width: 900px) { .nav .res { display: none; } .nav .btn.demo { margin-left: auto; } }
+
+/* Collection du monde */
+.pays { flex: none; width: min(66vw, 320px); margin: 0; border-radius: 24px; overflow: hidden; scroll-snap-align: start; background: #fff; display: flex; flex-direction: column; }
+.pays img { width: 100%; aspect-ratio: 3 / 4; height: auto; object-fit: cover; object-position: center; }
+.pays figcaption { background: var(--panel); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.pays figcaption b { font: 700 1.2rem/1.1 var(--display); letter-spacing: -.02em; color: var(--cream); }
+.pays figcaption span { color: var(--muted); font-size: .9rem; }
