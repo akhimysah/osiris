@@ -6,6 +6,8 @@
   const lang = typeof DEMO_LANG === 'string' ? DEMO_LANG : 'fr';
   const T = {
     en: {
+      "« Pourquoi le ciel est bleu ? »": "“Why is the sky blue?”",
+      "Je t’écoute": "I’m listening",
       "Dans l’œil": "In the eye",
       "Questions": "Questions",
       "Rien à installer pour les proches": "Nothing to install for loved ones",
@@ -87,6 +89,8 @@
       'Démonstration · © 2026': 'Demo · © 2026',
     },
     es: {
+      "« Pourquoi le ciel est bleu ? »": "«¿Por qué el cielo es azul?»",
+      "Je t’écoute": "Te escucho",
       "Dans l’œil": "En el ojo",
       "Questions": "Preguntas",
       "Rien à installer pour les proches": "Nada que instalar para los tuyos",
@@ -187,4 +191,38 @@
     try { localStorage.setItem('boozzo.inscription', JSON.stringify({ name, mail })); } catch {}
     msg.textContent = tr('Merci') + ' ' + name + ' ! ' + tr('Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.');
   }, true);
+
+  // ---------- L'œil vivant : l'écran de l'ourson et le grand œil changent de fonction ----------
+  const VIEWS = [
+    ['iris', ''],
+    ['call', '<div class="face">M</div><b>' + tr('Mamie') + '</b><small>' + tr('Appel en cours') + '</small><div class="keys"><u></u><u class="end"></u><u></u></div>'],
+    ['story', '<div class="moon"></div><b>' + tr('Le bateau de la lune') + '</b><small>' + tr('Histoire du soir') + '</small>'],
+    ['game', '<div class="pots"><u></u><u></u><u></u></div><b>12</b><small>' + tr('Course au miel') + '</small>'],
+    ['talk', '<div class="wave"><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><b>' + tr('« Pourquoi le ciel est bleu ? »') + '</b><small>' + tr('Je t’écoute') + '</small>'],
+    ['video', '<div class="play"></div>'],
+    ['night', ''],
+  ];
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const build = (el) => { el.innerHTML = VIEWS.map(([k, html]) => '<div class="v v-' + k + '">' + html + '</div>').join(''); return [...el.children]; };
+  const show = (list, n) => list.forEach((v, i) => v.classList.toggle('on', i === n));
+  const hero = document.getElementById('lLive'), big = document.getElementById('lEye');
+  if (hero) { const vs = build(hero); let n = 0; show(vs, 0); if (!calm) setInterval(() => { n = (n + 1) % vs.length; show(vs, n); }, 2400); }
+  if (big) {
+    const vs = build(big), feats = [...land.querySelectorAll('.l-feats li')], MAP = [1, 2, 3, 4, 5, 6];
+    let n = 0, auto = null;
+    const pick = (i) => { n = i; show(vs, MAP[i]); feats.forEach((f, k) => f.classList.toggle('on', k === i)); };
+    feats.forEach((f, i) => { f.tabIndex = 0; const go = () => { clearInterval(auto); pick(i); }; f.addEventListener('click', go); f.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && go()); f.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && go()); });
+    pick(0);
+    if (!calm) auto = setInterval(() => pick((n + 1) % feats.length), 2800);
+  }
+  // L'iris suit la souris ou le doigt ; l'ourson et les cartes réagissent au pointeur
+  const bear = land.querySelector('.l-bear'), bar = document.getElementById('lProgress');
+  const look = (x, y) => { const ix = (x / innerWidth - .5) * 2, iy = (y / innerHeight - .5) * 2; land.style.setProperty('--ix', ix.toFixed(3)); land.style.setProperty('--iy', iy.toFixed(3)); if (bear && !calm && matchMedia('(hover: hover)').matches) bear.style.transform = 'perspective(900px) rotateY(' + (ix * 6).toFixed(2) + 'deg) rotateX(' + (-iy * 6).toFixed(2) + 'deg)'; };
+  addEventListener('pointermove', (e) => look(e.clientX, e.clientY), { passive: true });
+  addEventListener('touchmove', (e) => { const t = e.touches[0]; if (t) look(t.clientX, t.clientY); }, { passive: true });
+  addEventListener('scroll', () => { const max = document.documentElement.scrollHeight - innerHeight; if (bar) bar.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')'; }, { passive: true });
+  if (!calm && matchMedia('(hover: hover)').matches) land.querySelectorAll('.l-steps li, .l-card, .l-form').forEach((el) => {
+    el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; el.style.transform = 'perspective(800px) rotateX(' + (-y * 7).toFixed(2) + 'deg) rotateY(' + (x * 7).toFixed(2) + 'deg) translateY(-5px)'; });
+    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+  });
 })();
