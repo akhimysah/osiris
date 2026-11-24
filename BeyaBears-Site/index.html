@@ -21,12 +21,12 @@
       BeyaBear's
     </a>
     <nav aria-label="Sections">
+      <a href="#oeil">Tester l’œil</a>
       <a href="#compagnons">Collection</a>
-      <a href="#oeil">L’œil</a>
+      <a href="#usages">Usages</a>
       <a href="#parents">Parents</a>
       <a href="#offre">Prix</a>
       <a href="#collection">Boutique</a>
-      <a href="#faq">Questions</a>
     </nav>
     <a class="btn solid" href="#reserver">Réserver · 249 €</a>
   </div>
@@ -44,7 +44,7 @@
       <p>BeyaBear’s est la peluche dont l’œil est un écran. Elle appelle les proches, raconte des histoires, répond aux questions et veille la nuit.</p>
       <div class="actions">
         <a class="btn solid" href="#reserver">Réserver le mien · 249 €</a>
-        <a class="btn line" href="#oeil">Découvrir l’œil</a>
+        <a class="btn line" href="#oeil">Tester l’œil</a>
       </div>
     </div>
   </section>
@@ -60,11 +60,49 @@
     </div>
   </section>
 
+  <section class="band tones try" id="oeil">
+    <div class="wrap">
+      <div class="head rise">
+        <span class="label">À vous de jouer</span>
+        <h2 class="title big">Testez l’œil.</h2>
+        <p class="lead">Touchez une fonction : l’écran change dans le visage de l’ourson. Puis ouvrez la démo complète, elle fonctionne dès maintenant sur votre téléphone, avec la voix, la caméra et les appels.</p>
+        <div class="actions"><a class="btn solid xl" href="https://akhimysah.github.io/osiris/beyabears/?v=2">Ouvrir la démo complète</a></div>
+      </div>
+      <div class="eye-grid">
+        <div class="modes rise" role="tablist" aria-label="Ce que l'œil sait faire">
+          <button class="mode" role="tab" data-view="iris" type="button"><i>01</i><b>Le regard</b><span>Au repos, un iris lumineux à la couleur du compagnon.</span></button>
+          <button class="mode" role="tab" data-view="call" type="button"><i>02</i><b>Appels vidéo</b><span>Le visage de mamie apparaît dans l'œil. Les proches rejoignent l'appel depuis un simple lien.</span></button>
+          <button class="mode" role="tab" data-view="story" type="button"><i>03</i><b>Histoires du soir</b><span>Une voix douce raconte, l'œil s'habille de nuit et d'étoiles.</span></button>
+          <button class="mode" role="tab" data-view="talk" type="button"><i>04</i><b>Assistant vocal</b><span>L'enfant pose sa question à voix haute, la peluche répond avec des mots simples.</span></button>
+          <button class="mode" role="tab" data-view="video" type="button"><i>05</i><b>Vidéos</b><span>Dessins animés et clips se regardent directement dans l'œil.</span></button>
+          <button class="mode" role="tab" data-view="meteo" type="button"><i>06</i><b>Météo</b><span>Le temps qu'il fait dehors et la carte des nuages de sa ville.</span></button>
+          <button class="mode" role="tab" data-view="clock" type="button"><i>07</i><b>Horloge</b><span>L'heure en grands chiffres lumineux, lisible de l'autre bout de la chambre.</span></button>
+          <button class="mode" role="tab" data-view="night" type="button"><i>08</i><b>Veilleuse</b><span>Une lumière chaude qui rassure jusqu'au sommeil.</span></button>
+        </div>
+        <div class="stage rise">
+          <div class="bearstage"><img src="media/gz/ourson.webp" alt="Ourson BeyaBear’s à casquette marine, dont l’écran rond affiche la fonction choisie">
+          <div class="eyeball">
+            <div class="rim"><div class="glass" aria-live="polite">
+              <div class="view v-iris" data-view="iris" role="img" aria-label="Iris bleu lumineux"></div>
+              <div class="view v-call" data-view="call"><div class="stack"><div class="who">M</div><b>Mamie</b><small>Appel en cours</small><div class="keys"><u></u><u class="end"></u><u></u></div></div></div>
+              <div class="view v-story" data-view="story"><div class="stack"><div class="moon"></div><b>Le petit nuage qui voulait voyager</b><div class="bar"></div><small>Histoire du soir</small></div></div>
+              <div class="view v-talk" data-view="talk"><div class="stack"><div class="wave"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><b>« Pourquoi le ciel est bleu ? »</b><small>Je t'écoute</small></div></div>
+              <div class="view v-video" data-view="video"><img src="media/envol.webp" alt="" loading="lazy"><div class="play"></div></div>
+              <div class="view v-meteo" data-view="meteo"><div class="stack"><div class="sun"></div><b>18°</b><small>Grand soleil</small></div></div>
+              <div class="view v-clock" data-view="clock"><div class="stack"><b id="clockNow">20:30</b><small>Bonne soirée</small></div></div>
+              <div class="view v-night" data-view="night" role="img" aria-label="Lumière chaude de veilleuse"></div>
+            </div></div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="sep" aria-hidden="true">
     <video autoplay muted loop playsinline preload="metadata" poster="media/parachutes.jpg"><source src="media/parachutes.mp4" type="video/mp4"></video>
   </section>
 
-  <section class="band" id="compagnons">
+  <section class="band" id="compagnons" style="padding-top:clamp(40px,6vw,80px)">
     <div class="wrap">
       <div class="head rise">
         <span class="label">La collection</span>
@@ -88,43 +126,7 @@
     </div>
   </section>
 
-  <section class="band" id="oeil">
-    <div class="wrap">
-      <div class="head rise">
-        <span class="label">L'œil</span>
-        <h2 class="title">Tout se passe dans son regard.</h2>
-        <p class="lead">La peluche ne bouge pas. C'est son œil qui change : un iris vivant au repos, puis l'écran de ce que l'enfant demande.</p>
-      </div>
-      <div class="eye-grid">
-        <div class="modes rise" role="tablist" aria-label="Ce que l'œil sait faire">
-          <button class="mode" role="tab" data-view="iris" type="button"><i>01</i><b>Le regard</b><span>Au repos, un iris lumineux à la couleur du compagnon.</span></button>
-          <button class="mode" role="tab" data-view="call" type="button"><i>02</i><b>Appels vidéo</b><span>Le visage de mamie apparaît dans l'œil. Les proches rejoignent l'appel depuis un simple lien.</span></button>
-          <button class="mode" role="tab" data-view="story" type="button"><i>03</i><b>Histoires du soir</b><span>Une voix douce raconte, l'œil s'habille de nuit et d'étoiles.</span></button>
-          <button class="mode" role="tab" data-view="talk" type="button"><i>04</i><b>Assistant vocal</b><span>L'enfant pose sa question à voix haute, la peluche répond avec des mots simples.</span></button>
-          <button class="mode" role="tab" data-view="video" type="button"><i>05</i><b>Vidéos</b><span>Dessins animés et clips se regardent directement dans l'œil.</span></button>
-          <button class="mode" role="tab" data-view="meteo" type="button"><i>06</i><b>Météo</b><span>Le temps qu'il fait dehors et la carte des nuages de sa ville.</span></button>
-          <button class="mode" role="tab" data-view="clock" type="button"><i>07</i><b>Horloge</b><span>L'heure en grands chiffres lumineux, lisible de l'autre bout de la chambre.</span></button>
-          <button class="mode" role="tab" data-view="night" type="button"><i>08</i><b>Veilleuse</b><span>Une lumière chaude qui rassure jusqu'au sommeil.</span></button>
-        </div>
-        <div class="stage rise">
-          <div class="eyeball">
-            <div class="rim"><div class="glass" aria-live="polite">
-              <div class="view v-iris" data-view="iris" role="img" aria-label="Iris bleu lumineux"></div>
-              <div class="view v-call" data-view="call"><div class="stack"><div class="who">M</div><b>Mamie</b><small>Appel en cours</small><div class="keys"><u></u><u class="end"></u><u></u></div></div></div>
-              <div class="view v-story" data-view="story"><div class="stack"><div class="moon"></div><b>Le petit nuage qui voulait voyager</b><div class="bar"></div><small>Histoire du soir</small></div></div>
-              <div class="view v-talk" data-view="talk"><div class="stack"><div class="wave"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><b>« Pourquoi le ciel est bleu ? »</b><small>Je t'écoute</small></div></div>
-              <div class="view v-video" data-view="video"><img src="media/envol.webp" alt="" loading="lazy"><div class="play"></div></div>
-              <div class="view v-meteo" data-view="meteo"><div class="stack"><div class="sun"></div><b>18°</b><small>Grand soleil</small></div></div>
-              <div class="view v-clock" data-view="clock"><div class="stack"><b id="clockNow">20:30</b><small>Bonne soirée</small></div></div>
-              <div class="view v-night" data-view="night" role="img" aria-label="Lumière chaude de veilleuse"></div>
-            </div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band" id="usages" style="padding-top:0">
+  <section class="band" id="usages">
     <div class="wrap">
       <div class="head rise">
         <span class="label">Dans l’œil</span>
@@ -168,7 +170,7 @@
           <span class="label">Prix de lancement</span>
           <p class="price">249 €</p>
           <h2 class="title" style="font-size:clamp(1.6rem,3vw,2.4rem)">Votre BeyaBear’s, prêt à faire briller son regard.</h2>
-          <div class="actions"><a class="btn solid" href="#reserver">Réserver le mien</a><a class="btn line" href="https://akhimysah.github.io/osiris/beyabears/">Essayer la démo</a></div>
+          <div class="actions"><a class="btn solid" href="#reserver">Réserver le mien</a><a class="btn line" href="https://akhimysah.github.io/osiris/beyabears/?v=2">Essayer la démo</a></div>
           <p class="note">Réservation gratuite et sans engagement. La date de livraison sera annoncée aux inscrits.</p>
         </div>
         <ul class="incl">
@@ -182,22 +184,6 @@
         <article class="rise"><h3>La peluche</h3><p>249 €, une seule fois. Elle fonctionne en Wi-Fi à la maison, sans abonnement.</p></article>
         <article class="rise"><h3>Le forfait familial</h3><p>En option, pour rester connecté partout sans Wi-Fi. Tarif mensuel annoncé au lancement.</p></article>
         <article class="rise"><h3>La boutique</h3><p>Tenues, accessoires et nouveaux compagnons pour agrandir la collection.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="band" id="film" style="padding-top:0">
-    <div class="wrap">
-      <div class="head rise">
-        <span class="label">Le film</span>
-        <h2 class="title">Toute la bande prend la route.</h2>
-        <p class="lead">Coucher de soleil, cabriolet et musique à fond : les compagnons partent en balade, et on a envie de monter avec eux.</p>
-      </div>
-      <div class="film rise">
-        <video id="filmVideo" autoplay muted loop playsinline preload="metadata" poster="media/cabriolet.jpg" aria-label="Film BeyaBear’s : les compagnons roulent en cabriolet au bord de la mer">
-          <source src="media/cabriolet.mp4" type="video/mp4">
-        </video>
-        <button id="filmToggle" type="button">Pause</button>
       </div>
     </div>
   </section>
@@ -287,6 +273,7 @@
       </form>
     </div>
   </section>
+
 
 </main>
 
