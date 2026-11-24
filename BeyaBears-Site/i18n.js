@@ -211,6 +211,7 @@
 "Mamie touche le lien sur son téléphone. La peluche sonne, et son visage apparaît dans l'œil.": ["Grandma taps the link on her phone. The plush rings, and her face appears in the eye.", "La abuela toca el enlace en su teléfono. El peluche suena y su cara aparece en el ojo."],
 "L'enfant répond": ["The child answers", "El niño responde"],
 "Il touche l'œil ou dit « Beya, réponds ». Il peut aussi demander une histoire, un jeu ou une vidéo.": ["They touch the eye or say “Beya, answer”. They can also ask for a story, a game or a video.", "Toca el ojo o dice «Beya, responde». También puede pedir un cuento, un juego o un vídeo."],
+"Touchez l'œil pour entrer": ["Tap the eye to enter", "Toca el ojo para entrar"], "ou glissez votre doigt vers le haut": ["or swipe up", "o desliza el dedo hacia arriba"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();

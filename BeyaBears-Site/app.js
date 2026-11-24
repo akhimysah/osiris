@@ -269,7 +269,7 @@
   // Un œil géant dont la pupille est une fenêtre sur la vidéo. En défilant, la pupille grandit jusqu'à remplir l'écran.
   const dive = $('#dive'), dEye = $('#diveEye');
   if (dive && dEye && !calm) {
-    const A = $('#diveA'), B = $('#diveB'), hint = $('#diveHint'), shine = $('#diveShine');
+    const A = $('#diveA'), B = $('#diveB'), hint = $('#diveGo'), shine = $('#diveShine');
     let px = 0, py = 0, tx = 0, ty = 0, raf = 0, last = 0;
     const clamp = (v) => Math.max(0, Math.min(1, v));
     const draw = (now) => {
@@ -300,6 +300,20 @@
     addEventListener('scroll', kick, { passive: true });
     addEventListener('resize', kick);
     addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; last = performance.now(); kick(); }, { passive: true });
+    // Un toucher sur l'œil (ou sur le bouton) fait la plongée tout seul, sans avoir à faire défiler.
+    let auto = 0;
+    const diveIn = () => {
+      if (auto) return;
+      const from = scrollY, to = dive.offsetTop + dive.offsetHeight - innerHeight, t0 = performance.now(), dur = 4200;
+      if (to - from < 40) return;
+      document.documentElement.style.scrollBehavior = 'auto';
+      const stop = () => { cancelAnimationFrame(auto); auto = 0; document.documentElement.style.scrollBehavior = ''; removeEventListener('wheel', stop); removeEventListener('touchstart', stop); };
+      const step = (now) => { const k = Math.min(1, (now - t0) / dur), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; scrollTo(0, from + (to - from) * e); if (k < 1) auto = requestAnimationFrame(step); else stop(); };
+      auto = requestAnimationFrame(step);
+      setTimeout(() => { addEventListener('wheel', stop, { passive: true }); addEventListener('touchstart', stop, { passive: true }); }, 300);
+    };
+    hint.addEventListener('click', diveIn);
+    dEye.addEventListener('click', () => { const r = dive.getBoundingClientRect(); if (-r.top / (r.height - innerHeight) < .6) diveIn(); });
     kick();
   }
 })();

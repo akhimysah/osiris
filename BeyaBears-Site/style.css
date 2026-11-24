@@ -731,3 +731,13 @@ body.entered .hero h1 span, body.entered .hero .verbs, body.entered .hero .verbs
 }
 .nav nav { gap: 20px; } .nav nav a { white-space: nowrap; font-size: .88rem; }
 @media (max-width: 1180px) { .nav nav { display: none; } .nav .langs { margin-left: auto; } }
+
+/* Bouton d'entrée dans l'œil : on comprend quoi faire, au doigt comme à la souris */
+.diveEye { cursor: pointer; }
+.diveGo { position: absolute; left: 50%; bottom: clamp(74px, 11svh, 110px); transform: translateX(-50%); display: grid; justify-items: center; gap: 6px; padding: 14px 26px 16px; border: 0; border-radius: 26px; background: var(--blue); color: #fff; cursor: pointer; font-family: var(--body); box-shadow: 0 16px 40px rgba(20, 100, 230, .4); width: max-content; max-width: calc(100% - 32px); }
+.diveGo b { font-size: 1.08rem; font-weight: 800; } .diveGo span { font-size: .84rem; font-weight: 600; opacity: .9; }
+.diveGo i { width: 22px; height: 34px; border: 2px solid #fff; border-radius: 12px; position: relative; margin-bottom: 2px; }
+.diveGo i::after { content: ""; position: absolute; left: 50%; bottom: 6px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #fff; animation: swipeUp 1.5s ease-in-out infinite; }
+@keyframes swipeUp { 0% { transform: translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-16px); opacity: 0; } }
+@media (max-width: 900px) { .diveA { top: 84px; } .diveA p { font-size: clamp(1.7rem, 7.6vw, 2.4rem); } .diveA span { font-size: .92rem; margin-top: 10px; } }
+@media (prefers-reduced-motion: reduce) { .diveGo { display: none; } }
