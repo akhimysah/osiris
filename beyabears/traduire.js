@@ -239,6 +239,7 @@
     "Simuler la recharge": ["Simulate charging", "Simular la carga"],
     "Arrêter": ["Stop", "Parar"],
     "Lumière": ["Mood", "Luz"],
+    "Pluie d’oursons": ["Raining bears", "Lluvia de ositos"], "Montgolfière": ["Hot-air balloon", "Globo"],
     "Regarde": ["Look", "Mira"], "dans mon œil": ["into my eye", "en mi ojo"], "Messages": ["Messages", "Mensajes"], "Internet": ["Internet", "Internet"],
     "Choisissez une vidéo : elle joue dans l’œil de la peluche, comme sur la vraie. Touchez l’œil pour la voir en grand.": ["Pick a video: it plays in the plush’s eye, just like on the real one. Tap the eye to see it full size.", "Elige un vídeo: se reproduce en el ojo del peluche, como en el de verdad. Toca el ojo para verlo en grande."],
     "applis": ["apps", "apps"], "min d’écran": ["min of screen", "min de pantalla"], "du soir": ["for bedtime", "para dormir"], "L’humeur": ["The mood", "El humor"], "de BeyaBear’s": ["of BeyaBear’s", "de BeyaBear’s"], "applications à découvrir": ["apps to discover", "aplicaciones por descubrir"],

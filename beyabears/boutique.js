@@ -226,7 +226,7 @@ function renderApps() {
 }
 // Accueil : chiffres du jour, histoires, humeurs et porte du Store.
 // Vidéos des mascottes, recadrées pour l'œil rond : on les teste directement dans la peluche.
-const HOME_CLIPS = [['messages', 'Messages'], ['souvenirs', 'Souvenirs'], ['photo', 'Photo'], ['internet', 'Internet'], ['localisation', 'Localisation']];
+const HOME_CLIPS = [['ciel', 'Pluie d’oursons'], ['ballon', 'Montgolfière'], ['messages', 'Messages'], ['souvenirs', 'Souvenirs'], ['photo', 'Photo'], ['internet', 'Internet'], ['localisation', 'Localisation']];
 function homeExtras() {
   const rest = storeApps().filter(([id]) => !appOn(id)).length, mine = [...APPS, ...EXTERNAL].filter(([id]) => appOn(id) && id !== 'store').length;
   const mins = typeof secUsed === 'function' ? Math.round(secUsed() / 60) : 0, stars = typeof eduStars === 'function' ? eduStars() : 0;
