@@ -72,6 +72,8 @@ const EDITIONS = [
 ];
 const QUANTUM_COLORS = [['#ff2d55', 'Rouge rubis'], ['#2d7bff', 'Bleu électrique']];
 // Zones de la peluche : là où seront les futurs capteurs.
+// Points à toucher sur la photo de Noah : identifiant, position, côté de l'étiquette (l, r ou c = dessous).
+const TOUCH_PINS = [['tete', 275, 92, 'c'], ['poitrine', 292, 470, 'l'], ['ventre', 300, 566, 'r'], ['patteG', 150, 650, 'c'], ['patteD', 440, 650, 'c']];
 const ZONES = [
   ['tete', 'Tête', 'joie', 'Caresse reçue'],
   ['patteG', 'Patte gauche', 'ecoute', 'Je suis à ton écoute'],
@@ -182,13 +184,15 @@ function emoPanel() {
     <label class="check"><input type="checkbox" id="emoSolo" ${stage.classList.contains('eyeView') ? 'checked' : ''}> Œil seul</label>
     <label class="check"><input type="checkbox" id="emoNoBlink" ${lab.blink ? '' : 'checked'}> Sans clignement</label>
     <h3 class="sub">Toucher <em>la peluche</em></h3>
-    <p class="muted">Touche une zone : chaque contact déclenche une réaction dans l’œil.</p>
+    <p class="muted">Touche un point bleu sur Noah : chaque contact déclenche une réaction dans l’œil.</p>
     <div class="touchBox">
-      <svg class="touchBear photo" viewBox="0 0 550 760" role="img" aria-label="Noah, la peluche, avec ses zones à toucher">
+      <div class="touchWrap"><span class="tryMe">Teste-moi !</span>
+      <svg class="touchBear photo pins" viewBox="0 0 550 760" role="img" aria-label="Noah, la peluche, avec ses zones à toucher">
         <image href="emo/noah-toucher.webp" width="550" height="760" preserveAspectRatio="xMidYMid slice"/>
         <circle cx="277" cy="262" r="101" fill="none" stroke="${color}" stroke-width="9" opacity=".85" pointer-events="none"/>
         <ellipse class="${lab.zone === 'tete' ? 'on' : ''}" data-lab="zone" data-v="tete" cx="275" cy="230" rx="205" ry="195"/><ellipse class="${lab.zone === 'patteG' ? 'on' : ''}" data-lab="zone" data-v="patteG" cx="165" cy="650" rx="100" ry="92"/><ellipse class="${lab.zone === 'patteD' ? 'on' : ''}" data-lab="zone" data-v="patteD" cx="445" cy="650" rx="100" ry="92"/><ellipse class="${lab.zone === 'poitrine' ? 'on' : ''}" data-lab="zone" data-v="poitrine" cx="292" cy="478" rx="112" ry="48"/><ellipse class="${lab.zone === 'ventre' ? 'on' : ''}" data-lab="zone" data-v="ventre" cx="300" cy="566" rx="58" ry="40"/>
-      </svg>
+        ${TOUCH_PINS.map(([id, x, y, side]) => { const label = (ZONES.find((z) => z[0] === id) || [])[1] || '', w = label.length * 12.5 + 30, lx = side === 'l' ? x - 30 - w : side === 'r' ? x + 30 : x - w / 2, ly = side === 'c' ? y + 34 : y - 19; return `<g class="pin${lab.zone === id ? ' on' : ''}" pointer-events="none"><circle class="halo" cx="${x}" cy="${y}" r="22"/><circle class="dot" cx="${x}" cy="${y}" r="15"/><path d="M${x - 6} ${y}h12M${x} ${y - 6}v12" class="plus"/><rect x="${lx}" y="${ly}" width="${w}" height="38" rx="19"/><text x="${lx + w / 2}" y="${ly + 26}" text-anchor="middle">${label}</text></g>`; }).join('')}
+      </svg></div>
       <div class="touchKeys">${ZONES.map(([id, label]) => `<button type="button" data-lab="zone" data-v="${id}" class="${id === lab.zone ? 'sel' : ''}">${label}</button>`).join('')}</div>
     </div>
     ${labNote(ed === 'living' ? 'Simulation visuelle, sans audio ni capteurs : sur la peluche, ces réactions viendront de capteurs de toucher. Les battements sont simulés, ce n’est pas un appareil médical.' : 'Prototype visuel autonome : le portail est simulé, aucune caméra ni application n’est connectée. Les battements sont simulés, ce n’est pas un appareil médical.')}`;

@@ -1060,3 +1060,18 @@ a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-h
 .l-tap::before { content: "👆"; margin-right: 6px; } @keyframes lTap { 50% { transform: translateY(-6px); box-shadow: 0 16px 28px rgba(8, 28, 80, .3); } }
 @media (prefers-reduced-motion: reduce) { .l-tap { animation: none; } }
 .l-visual .chip { pointer-events: none; }
+
+/* Émotions : des points clairs à toucher sur Noah, avec leur nom, à la place des pointillés */
+.touchWrap { position: relative; justify-self: center; width: 100%; max-width: 300px; }
+.tryMe { position: absolute; left: 50%; top: -14px; transform: translateX(-50%); z-index: 2; padding: 8px 16px 8px 14px; border-radius: 999px; background: #2e63e0; color: #fff; font: 800 .95rem/1 Lato, system-ui, sans-serif; white-space: nowrap; box-shadow: 0 8px 18px #2e63e055; animation: tryMe 1.6s ease-in-out infinite; pointer-events: none; }
+.tryMe::before { content: "👆"; margin-right: 6px; } @keyframes tryMe { 50% { transform: translateX(-50%) translateY(-5px) scale(1.05); } }
+.touchBear.photo.pins [data-lab] { stroke: none; fill: rgba(255, 255, 255, 0); } .touchBear.photo.pins [data-lab]:hover { fill: rgba(255, 255, 255, .12); }
+.touchBear.photo.pins [data-lab].on { fill: rgba(255, 160, 80, .3); stroke: none; }
+.pin .halo { fill: #2e63e0; opacity: .35; transform-box: fill-box; transform-origin: center; animation: pinHalo 1.8s ease-out infinite; }
+.pin .dot { fill: #2e63e0; stroke: #fff; stroke-width: 4; } .pin .plus { stroke: #fff; stroke-width: 3.5; stroke-linecap: round; fill: none; }
+.pin rect { fill: #fff; filter: drop-shadow(0 3px 5px rgba(8, 28, 80, .3)); } .pin text { font: 800 21px Lato, system-ui, sans-serif; fill: #14224f; }
+.pin.on .dot, .pin.on .halo { fill: #ff8a4c; } .pin.on rect { fill: #ff8a4c; } .pin.on text { fill: #fff; }
+@keyframes pinHalo { 0% { transform: scale(.7); opacity: .6; } 100% { transform: scale(2.1); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .tryMe, .pin .halo { animation: none; } }
+.touchBear.photo.pins .pin.on { animation: none; stroke: none; fill: none; } .pin text, .pin rect { stroke: none; }
+.touchWrap { margin-top: 22px; }
