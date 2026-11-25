@@ -35,6 +35,7 @@ function labClear() { labTimers.forEach((id) => clearInterval(id)); labTimers.cl
 function labAfter(app, ms, fn) { clearTimeout(labClear.after); labClear.after = setTimeout(() => { if (state.screen === app) fn(); }, ms); }
 
 // ---------- Émotions : l'œil vivant ----------
+// Trois éditions, une par personnage : Living Eye (Mila), Cosmic Eye (Aaron), Quantum Eye (Zayn).
 
 const GLYPH = {
   heart: '<path d="M50 86C8 58 22 22 50 42c28-20 42 16 0 44z"/>',
@@ -42,21 +43,30 @@ const GLYPH = {
   star: '<path d="M50 8l11 27 29 3-22 20 7 29-25-15-25 15 7-29L10 38l29-3z"/>',
   ask: '<path d="M33 34a17 17 0 1 1 26 14c-6 4-9 7-9 15h-9c0-11 4-16 11-21a8 8 0 1 0-12-8zm8 36h10v10H41z"/>',
 };
-// couleur, battements par minute, message, motif dans la pupille, particules
+// identifiant, nom, émoji, couleur, battements par minute, message, motif dans la pupille, particules
 const EMOTIONS = [
   ['normal', 'Normal', '👁️', '#29baff', 65, 'Présence naturelle', '', ''],
-  ['joie', 'Joie', '😄', '#ffca55', 105, 'Moment de joie', '', '✦✧'],
-  ['amour', 'Amour', '❤️', '#ff478c', 85, 'Je t’aime fort', 'heart', '♥'],
+  ['joie', 'Joie', '😁', '#ffca55', 105, 'Moment de joie', '', '✦✧'],
+  ['amour', 'Affection', '❤️', '#ff478c', 85, 'Je t’aime fort', 'heart', '♥'],
   ['musique', 'Musique', '🎵', '#fbbf24', 90, 'En rythme', 'note', '♪♫'],
   ['rire', 'Rire', '😂', '#f59e0b', 100, 'Trop drôle !', '', '✦'],
   ['surprise', 'Surprise', '😮', '#7dd3fc', 110, 'Oh !', '', '!'],
   ['tristesse', 'Tristesse', '😢', '#6f9bd8', 55, 'Un petit chagrin', '', '💧'],
   ['sommeil', 'Sommeil', '😴', '#827aff', 48, 'Repos paisible', '', 'z'],
   ['reflexion', 'Réflexion', '🤔', '#24e6c5', 70, 'Je réfléchis…', 'ask', '?'],
-  ['fete', 'Fête', '🎉', '#ff7ad9', 115, 'C’est la fête !', 'star', '■●▲'],
+  ['fete', 'Célébration', '🎉', '#ff7ad9', 115, 'C’est la fête !', 'star', '■●▲'],
   ['ecoute', 'Écoute', '👂', '#22d3ee', 75, 'Je suis à ton écoute', '', ''],
-  ['clin', 'Clin d’œil', '😉', '#29baff', 70, 'Clin d’œil', '', ''],
+  ['clin', 'Complicité', '😉', '#29baff', 70, 'Clin d’œil complice', '', ''],
+  ['alerte', 'Alerte', '🚨', '#ff4d4d', 120, 'Attention !', '', '!'],
+  ['portail', 'Portail', '🌀', '#b06bff', 80, 'Portail ouvert', '', '✦'],
 ];
+// édition, nom de l'œil, personnage, signature, couleur de base, modes proposés
+const EDITIONS = [
+  ['living', 'Living Eye', 'Mila', 'Superstar', '#ff7ad9', ['normal', 'joie', 'amour', 'musique', 'rire', 'surprise', 'tristesse', 'sommeil', 'reflexion', 'fete', 'ecoute', 'clin']],
+  ['cosmic', 'Cosmic Eye', 'Aaron', 'Le Geek', '#5b8cff', ['normal', 'ecoute', 'reflexion', 'joie', 'sommeil', 'alerte', 'portail']],
+  ['quantum', 'Quantum Eye', 'Zayn', 'Protector Edition', '#ff2d55', ['normal', 'reflexion', 'joie', 'sommeil', 'alerte', 'portail']],
+];
+const QUANTUM_COLORS = [['#ff2d55', 'Rouge rubis'], ['#2d7bff', 'Bleu électrique']];
 // Zones de la peluche : là où seront les futurs capteurs.
 const ZONES = [
   ['tete', 'Tête', 'joie', 'Caresse reçue'],
@@ -66,29 +76,49 @@ const ZONES = [
   ['ventre', 'Ventre', 'rire', 'Chatouilles !'],
   ['dos', 'Dos', 'sommeil', 'Mode détente'],
 ];
-const lab = { emo: 'normal', msg: '', zone: '' };
-
+const lab = { emo: 'normal', msg: '', zone: '', edition: 'living', blink: true };
+// Anneau segmenté qui tourne, comme une pièce de machine (Quantum Eye et Cœur).
+const labRing = (r, w, dash, dur, dir, op) => `<circle cx="100" cy="100" r="${r}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-dasharray="${dash}" opacity="${op}" style="animation:emoSpin ${dur}s linear infinite ${dir ? 'reverse' : ''};transform-origin:100px 100px"/>`;
+const emoEdition = () => EDITIONS.find((e) => e[0] === lab.edition) || EDITIONS[0];
+function emoColor(id) {
+  const [ed, , , , base] = emoEdition(), own = (EMOTIONS.find((e) => e[0] === id) || EMOTIONS[0])[3];
+  if (id === 'alerte') return '#ff4d4d';
+  if (ed === 'quantum') return lab.qcolor || QUANTUM_COLORS[0][0];
+  if (ed === 'cosmic') return id === 'portail' ? '#b06bff' : base;
+  return id === 'normal' || id === 'clin' ? base : own;
+}
 function emoDraw() {
-  const [id, , , color, bpm, , glyph, fx] = EMOTIONS.find((e) => e[0] === lab.emo) || EMOTIONS[0];
+  const [id, , , , bpm, , glyph, fx] = EMOTIONS.find((e) => e[0] === lab.emo) || EMOTIONS[0];
+  const ed = lab.edition, color = emoColor(id);
   const bits = fx ? Array.from({ length: id === 'fete' ? 16 : 9 }, (_, i) => {
     const chars = [...fx], hue = id === 'fete' ? `color:hsl(${(i * 47) % 360} 90% 62%);` : '';
     return `<u style="left:${8 + ((i * 37) % 84)}%;animation-delay:${(-i * 0.43).toFixed(2)}s;animation-duration:${(2.4 + (i % 4) * 0.5).toFixed(1)}s;${hue}">${chars[i % chars.length]}</u>`;
   }).join('') : '';
-  screen.innerHTML = `<div class="emo e-${id}" style="--c:${color};--t:${(60 / bpm).toFixed(3)}s">
-    <div class="emoIris"></div><div class="emoRing"></div>
+  // Les paupières servent déjà à certaines émotions : on ne cligne que quand elles sont libres.
+  const canBlink = lab.blink && !['joie', 'rire', 'tristesse', 'sommeil', 'reflexion', 'clin'].includes(id);
+  screen.innerHTML = `<div class="emo e-${id} ed-${ed}${canBlink ? ' blink' : ''}" style="--c:${color};--t:${(60 / bpm).toFixed(3)}s">
+    ${ed === 'cosmic' ? '<div class="emoNebula"></div><div class="emoStars"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div>' : ''}
+    <div class="emoIris"></div>
+    ${ed === 'quantum' ? `<svg class="emoTech" viewBox="0 0 200 200" aria-hidden="true">${labRing(92, 3, '26 7 4 7', 26, 1, 0.9)}${labRing(82, 1.2, '60 9', 40, 0, 0.6)}${labRing(73, 5, '48 6 10 6', 18, 0, 1)}${labRing(62, 1.6, '3 4', 30, 1, 0.75)}<g stroke="currentColor" stroke-width="5" stroke-linecap="round"><path d="M6 100h10M184 100h10M100 6v10M100 184v10"/></g></svg>` : ''}
+    <div class="emoRing"></div>
     ${id === 'ecoute' ? '<i class="emoWave"></i><i class="emoWave"></i><i class="emoWave"></i>' : ''}
-    <div class="emoPupil">${glyph ? `<svg viewBox="0 0 100 100" aria-hidden="true">${GLYPH[glyph]}</svg>` : '<s></s>'}</div>
+    <div class="emoPupil">${id === 'portail' ? '<div class="emoPortal"><i></i><i></i></div>' : glyph ? `<svg viewBox="0 0 100 100" aria-hidden="true">${GLYPH[glyph]}</svg>` : '<s></s>'}</div>
     <div class="emoLid top"></div><div class="emoLid bot"></div>
     <div class="emoFx" aria-hidden="true">${bits}</div>
     <div class="emoTag"><b>${bpm}</b> BPM</div>
   </div>`;
 }
 function emoPanel() {
-  const cur = EMOTIONS.find((e) => e[0] === lab.emo) || EMOTIONS[0];
-  panel.innerHTML = `${backButton}<span class="pill">Living Eye</span><h2>Émotions</h2>
-    <p>Choisis une émotion : l’œil change de couleur, de forme et de rythme. Reviens à Normal pour retrouver la pupille.</p>
-    <div class="emoGrid">${EMOTIONS.map(([id, label, emoji]) => `<button type="button" data-lab="emo" data-v="${id}" class="${id === lab.emo ? 'sel' : ''}" aria-pressed="${id === lab.emo}"><span aria-hidden="true">${emoji}</span>${label}</button>`).join('')}</div>
-    <div class="heartLine" style="--c:${cur[3]};--t:${(60 / cur[4]).toFixed(3)}s"><i aria-hidden="true">♥</i><div><b>${cur[4]}</b> BPM<small>${lab.msg || cur[5]}</small></div></div>
+  const [ed, eye, hero, sign, , modes] = emoEdition();
+  const cur = EMOTIONS.find((e) => e[0] === lab.emo) || EMOTIONS[0], color = emoColor(cur[0]);
+  panel.innerHTML = `${backButton}<span class="pill">${eye}</span><h2>Émotions</h2>
+    <p>Chaque compagnon a son regard. Choisis une édition, puis une émotion : l’œil change de couleur, de forme et de rythme.</p>
+    <div class="edGrid">${EDITIONS.map(([id, name, who, tag, c]) => `<button type="button" data-lab="edition" data-v="${id}" class="${id === ed ? 'sel' : ''}" aria-pressed="${id === ed}" style="--c:${id === 'quantum' ? lab.qcolor || c : c}"><i></i><b>${who}</b><span>${name}</span><small>${tag}</small></button>`).join('')}</div>
+    ${ed === 'quantum' ? `<div class="row wrap">${QUANTUM_COLORS.map(([c, label]) => `<button class="btn${(lab.qcolor || QUANTUM_COLORS[0][0]) === c ? '' : ' light'}" type="button" data-lab="qcolor" data-v="${c}"><i class="dot" style="background:${c}"></i>${label}</button>`).join('')}</div>` : ''}
+    <div class="emoGrid">${modes.map((id) => EMOTIONS.find((e) => e[0] === id)).map(([id, label, emoji]) => `<button type="button" data-lab="emo" data-v="${id}" class="${id === lab.emo ? 'sel' : ''}" aria-pressed="${id === lab.emo}"><span aria-hidden="true">${emoji}</span>${label}</button>`).join('')}</div>
+    <div class="heartLine" style="--c:${color};--t:${(60 / cur[4]).toFixed(3)}s"><i aria-hidden="true">♥</i><div><em>${hero}</em><b>${cur[4]}</b> BPM<small>${lab.msg || cur[5]}</small></div></div>
+    <label class="check"><input type="checkbox" id="emoSolo" ${stage.classList.contains('eyeView') ? 'checked' : ''}> Œil seul</label>
+    <label class="check"><input type="checkbox" id="emoNoBlink" ${lab.blink ? '' : 'checked'}> Sans clignement</label>
     <h3 class="sub">Toucher <em>la peluche</em></h3>
     <p class="muted">Touche une zone : chaque contact déclenche une réaction dans l’œil.</p>
     <div class="touchBox">
@@ -103,11 +133,12 @@ function emoPanel() {
           <ellipse class="${lab.zone === 'poitrine' ? 'on' : ''}" data-lab="zone" data-v="poitrine" cx="150" cy="182" rx="38" ry="26" fill="#f3e6cb"/>
           <ellipse class="${lab.zone === 'ventre' ? 'on' : ''}" data-lab="zone" data-v="ventre" cx="150" cy="238" rx="42" ry="30" fill="#f3e6cb"/>
         </g>
-        <g pointer-events="none"><circle cx="150" cy="92" r="34" fill="#06080f"/><circle cx="150" cy="92" r="24" fill="none" stroke="${cur[3]}" stroke-width="7"/><circle cx="150" cy="92" r="11" fill="#020309"/></g>
+        <g pointer-events="none"><circle cx="150" cy="92" r="34" fill="#06080f"/><circle cx="150" cy="92" r="24" fill="none" stroke="${color}" stroke-width="7"/><circle cx="150" cy="92" r="11" fill="#020309"/></g>
       </svg>
       <div class="touchKeys">${ZONES.map(([id, label]) => `<button type="button" data-lab="zone" data-v="${id}" class="${id === lab.zone ? 'sel' : ''}">${label}</button>`).join('')}</div>
     </div>
-    ${labNote('Simulation visuelle, sans audio ni capteurs : sur la peluche, ces réactions viendront de capteurs de toucher. Les battements sont simulés, ce n’est pas un appareil médical.')}`;  // Sur iPhone, un dessin ne reçoit le toucher que si l'écouteur est posé directement dessus.
+    ${labNote(ed === 'living' ? 'Simulation visuelle, sans audio ni capteurs : sur la peluche, ces réactions viendront de capteurs de toucher. Les battements sont simulés, ce n’est pas un appareil médical.' : 'Prototype visuel autonome : le portail est simulé, aucune caméra ni application n’est connectée. Les battements sont simulés, ce n’est pas un appareil médical.')}`;
+  // Sur iPhone, un dessin ne reçoit le toucher que si l'écouteur est posé directement dessus.
   panel.querySelectorAll('.touchBear [data-lab="zone"]').forEach((el) => {
     el.addEventListener('click', (event) => { event.stopPropagation(); const z = ZONES.find((x) => x[0] === el.dataset.v); if (z) emoSet(z[2], z[3], z[0]); });
   });
@@ -117,6 +148,11 @@ function emoSet(id, msg = '', zone = '') {
   emoDraw(); emoPanel();
   // Le clin d'œil ne dure qu'un instant.
   if (id === 'clin') labAfter('emo', 1700, () => emoSet('normal'));
+}
+function emoEditionSet(id) {
+  lab.edition = id;
+  // Une émotion absente de l'édition choisie revient à Normal.
+  emoSet(emoEdition()[5].includes(lab.emo) ? lab.emo : 'normal');
 }
 function openEmo() {
   labClear();
@@ -138,7 +174,7 @@ const coreBpm = () => Math.round(45 + (lab.energy ?? 70) * 0.22);
 function coreDraw() {
   const [, , color] = ELEMENTS.find((e) => e[0] === (lab.element || 'cosmique')), e = (lab.energy ?? 70) / 100;
   // Anneaux segmentés, comme une pièce de machine : chacun tourne à sa vitesse.
-  const ring = (r, w, dash, dur, dir, op) => `<circle cx="100" cy="100" r="${r}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-dasharray="${dash}" opacity="${op}" style="animation:emoSpin ${dur}s linear infinite ${dir ? 'reverse' : ''};transform-origin:100px 100px"/>`;
+  const ring = labRing;
   screen.innerHTML = `<div class="core" style="--c:${color};--e:${e.toFixed(2)};--t:${(60 / coreBpm()).toFixed(3)}s">
     <div class="coreGlow"></div>
     <div class="coreRays"></div>
@@ -325,6 +361,8 @@ document.addEventListener('click', (event) => {
   const v = el.dataset.v;
   switch (el.dataset.lab) {
     case 'emo': return emoSet(v);
+    case 'edition': return emoEditionSet(v);
+    case 'qcolor': return (lab.qcolor = v), emoDraw(), emoPanel();
     case 'zone': { const z = ZONES.find((x) => x[0] === v); return z && emoSet(z[2], z[3], z[0]); }
     case 'link': return linkSend(v);
     case 'memoAdd': {
@@ -355,5 +393,7 @@ document.addEventListener('input', (event) => {
   if (el.id === 'dreamLight') { lab.light = Number(el.value); $('.dream')?.style.setProperty('--l', lab.light / 100); }
 });
 document.addEventListener('change', (event) => {
+  if (event.target.id === 'emoSolo') return setView(event.target.checked);
+  if (event.target.id === 'emoNoBlink') { lab.blink = !event.target.checked; return emoDraw(); }
   if (event.target.id === 'linkFriend') { store.set('lien', event.target.value); openLink(); }
 });

@@ -254,6 +254,21 @@
     "Mystique": ["Mystic", "Místico"],
     "Solaire": ["Solar", "Solar"],
     "Prototype expérimental : le rythme et l’énergie sont simulés. Sur la peluche, un petit moteur de vibration fera sentir ce battement sous la main. Ce n’est pas un appareil médical.": ["Experimental prototype: the rhythm and energy are simulated. On the plush, a small vibration motor will let you feel this beat under your hand. This is not a medical device.", "Prototipo experimental: el ritmo y la energía son simulados. En el peluche, un pequeño motor de vibración hará sentir este latido bajo la mano. No es un dispositivo médico."],
+    "Chaque compagnon a son regard. Choisis une édition, puis une émotion : l’œil change de couleur, de forme et de rythme.": ["Each companion has its own look. Choose an edition, then an emotion: the eye changes colour, shape and rhythm.", "Cada compañero tiene su mirada. Elige una edición y luego una emoción: el ojo cambia de color, de forma y de ritmo."],
+    "Affection": ["Affection", "Cariño"],
+    "Célébration": ["Celebration", "Celebración"],
+    "Complicité": ["Complicity", "Complicidad"],
+    "Alerte": ["Alert", "Alerta"],
+    "Portail": ["Portal", "Portal"],
+    "Clin d’œil complice": ["A knowing wink", "Guiño cómplice"],
+    "Attention !": ["Watch out!", "¡Atención!"],
+    "Portail ouvert": ["Portal open", "Portal abierto"],
+    "Œil seul": ["Eye only", "Solo el ojo"],
+    "Sans clignement": ["No blinking", "Sin parpadeo"],
+    "Rouge rubis": ["Ruby red", "Rojo rubí"],
+    "Bleu électrique": ["Electric blue", "Azul eléctrico"],
+    "Le Geek": ["The Geek", "El Geek"],
+    "Prototype visuel autonome : le portail est simulé, aucune caméra ni application n’est connectée. Les battements sont simulés, ce n’est pas un appareil médical.": ["Stand-alone visual prototype: the portal is simulated, no camera or app is connected. The heartbeat is simulated; this is not a medical device.", "Prototipo visual autónomo: el portal es simulado, no hay ninguna cámara ni aplicación conectada. Los latidos son simulados; no es un dispositivo médico."],
   };
 
   // Textes qui contiennent une valeur variable
