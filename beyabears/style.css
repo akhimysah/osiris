@@ -684,3 +684,8 @@ html { scroll-behavior: smooth; }
 .emoNeon.ruby { filter: hue-rotate(128deg) saturate(1.5); animation: emoSpin 46s linear infinite, neonPulseRuby 2.4s ease-in-out infinite; }
 @keyframes neonPulse { 50% { filter: brightness(1.35) saturate(1.2); } } @keyframes neonPulseRuby { 0%, 100% { filter: hue-rotate(128deg) saturate(1.5); } 50% { filter: hue-rotate(128deg) saturate(1.7) brightness(1.35); } }
 .ed-quantum .emoPupil { width: 27%; } .ed-quantum.e-alerte .emoNeon { animation: emoSpin 8s linear infinite, emoAlert .5s steps(2, jump-none) infinite; } .ed-quantum.e-portail .emoPupil { width: 46%; }
+
+/* L'émoji de l'émotion au centre de la pupille, comme sur la grille des douze regards */
+.emoMoji { font-size: 15cqw; line-height: 1; filter: drop-shadow(0 0 2cqw rgba(0, 0, 0, .6)); }
+.e-amour .emoPupil { background: #020309; box-shadow: 0 0 7cqw #000; width: 38%; } .e-surprise .emoPupil { width: 30%; } .e-alerte .emoPupil { width: 30%; }
+.e-surprise .emoMoji, .e-alerte .emoMoji { font-size: 13cqw; } .ed-quantum .emoMoji { font-size: 12cqw; }
