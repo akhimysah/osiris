@@ -10,7 +10,7 @@ const APP_NOTES = {
   memory: 'Les souvenirs gardés par la peluche.', dream: 'Veilleuses et ambiance pour la nuit.', holo: 'Le socle : recharge, lumière et enceinte.',
   locate: 'Savoir où est la peluche.', music: 'Écouter sa musique.', weather: 'La météo du jour dans l’œil.', torch: 'L’œil éclaire comme une lampe.',
   face: 'Reconnaître les proches et les saluer.', phone: 'Afficher l’écran du téléphone dans l’œil.', iris: 'Changer la couleur de l’iris.', esim: 'Le forfait pour rester connecté partout.',
-  whatsapp: 'Ouvrir WhatsApp pour appeler ou écrire.',
+  whatsapp: 'Ouvrir WhatsApp pour appeler ou écrire.', edu: 'Calcul et couleurs : apprendre en s’amusant, une étoile par bonne réponse.',
 };
 const appsOn = () => { const list = store.get('apps'); return Array.isArray(list) ? [...new Set([...list, 'store'])] : PREINSTALLED; };
 const appOn = (id) => appsOn().includes(id);
@@ -18,9 +18,10 @@ const account = () => store.get('account', null);
 const storeIcon = (id) => { const a = APPS.find(([x]) => x === id), e = EXTERNAL.find(([x]) => x === id); return a ? `<i class="${a[2]}">${ICON[id]}</i>` : e ? `<i class="${e[2]}">${ICON[e[3]]}</i>` : `<i class="c-store">${ICON.store}</i>`; };
 
 function storeEye(html) { screen.innerHTML = `<div class="storeEye">${html}</div>`; }
-const STORE_CATS = [['tous', 'Tout'], ['jouer', 'Jouer'], ['voir', 'Regarder'], ['lien', 'Partager'], ['nuit', 'Nuit'], ['outil', 'Outils']];
-const APP_CAT = { games: 'jouer', emo: 'jouer', core: 'jouer', youtube: 'voir', tiktok: 'voir', phone: 'voir', music: 'voir', link: 'lien', whatsapp: 'lien', face: 'lien', memory: 'lien', dream: 'nuit', holo: 'nuit', torch: 'nuit', weather: 'outil', iris: 'outil', esim: 'outil', locate: 'outil' };
-const STORE_STARS = [['games', 'Cinq jeux, zéro ennui', '#ff8a3d', '#ff4d6d'], ['dream', 'Des nuits toutes douces', '#5b62c9', '#14224f'], ['youtube', 'Tes dessins animés préférés', '#ff5d5d', '#b3123a'], ['emo', 'Un œil plein d’émotions', '#ffb62e', '#ff6b8b']];
+const APP_SHOTS = { edu: 3, music: 2, youtube: 1 }; // aperçus illustrés (dossier shots/)
+const STORE_CATS = [['tous', 'Tout'], ['apprendre', 'Apprendre'], ['jouer', 'Jouer'], ['voir', 'Regarder'], ['lien', 'Partager'], ['nuit', 'Nuit'], ['outil', 'Outils']];
+const APP_CAT = { edu: 'apprendre', games: 'jouer', emo: 'jouer', core: 'jouer', youtube: 'voir', tiktok: 'voir', phone: 'voir', music: 'voir', link: 'lien', whatsapp: 'lien', face: 'lien', memory: 'lien', dream: 'nuit', holo: 'nuit', torch: 'nuit', weather: 'outil', iris: 'outil', esim: 'outil', locate: 'outil' };
+const STORE_STARS = [['edu', 'Apprendre en s’amusant', '#ff9d3d', '#e0631a'], ['games', 'Cinq jeux, zéro ennui', '#ff8a3d', '#ff4d6d'], ['dream', 'Des nuits toutes douces', '#5b62c9', '#14224f'], ['youtube', 'Tes dessins animés préférés', '#ff5d5d', '#b3123a'], ['emo', 'Un œil plein d’émotions', '#ffb62e', '#ff6b8b']];
 const storeApps = () => [...APPS, ...EXTERNAL].map(([id, label]) => [id, label]).filter(([id]) => !PREINSTALLED.includes(id));
 
 // Petit « pop » joué au toucher (le navigateur l'autorise après un geste).
@@ -69,11 +70,12 @@ function storeDetail(id) {
   const on = appsOn().includes(id), ext = EXTERNAL.some(([x]) => x === id), near = storeApps().filter(([x]) => x !== id && (APP_CAT[x] || 'outil') === (APP_CAT[id] || 'outil')).slice(0, 3);
   storeEye(`${storeIcon(id)}<b>${app[1]}</b><small>${on ? 'Installée' : catLabel(id)}</small>`);
   panel.innerHTML = `<button class="back" data-go="store" type="button">‹ Beya Store</button>
-    <div class="appSheet" data-app="${id}"><div class="appIcon"><img src="m/${id === 'music' ? 'spotify' : id}.webp" alt="" width="220" height="220" onerror="this.remove()"></div>
+    <div class="appSheet" data-app="${id}"><div class="appIcon"><img src="${APP_SHOTS[id] ? `shots/${id}-icone` : `m/${id === 'music' ? 'spotify' : id}`}.webp" alt="" width="220" height="220" onerror="this.remove()"></div>
       <h2>${app[1]}</h2><p class="by">BeyaBear’s</p>
       <div class="tags"><span>${catLabel(id)}</span><span>Gratuit dans la démo</span></div>
       <div class="act">${on ? (ext ? '<em>Installée ✓</em>' : `<button type="button" class="open big" data-go="${id}">Ouvrir</button>`) : `<button type="button" class="get big" data-get="${id}">Installer</button>`}${on ? `<button type="button" class="linkBtn" data-drop="${id}">Retirer</button>` : ''}</div>
       ${ext ? '' : `<button type="button" class="try" data-go="${id}">Essayer dans l’œil</button>`}
+      ${APP_SHOTS[id] ? `<h3 class="sub">Aperçu</h3><div class="shots">${Array.from({ length: APP_SHOTS[id] }, (_, i) => `<img src="shots/${id}-${i + 1}.webp" alt="" width="190" height="222" loading="lazy" style="--i:${i}">`).join('')}</div>` : ''}
       <h3 class="sub">Description</h3><p>${APP_NOTES[id] || ''}</p>
       ${near.length ? `<h3 class="sub">Applications <em>similaires</em></h3><ul class="storeGrid">${near.map((a, i) => storeCard(a, i, appsOn())).join('')}</ul>` : ''}</div>`;
 }

@@ -988,3 +988,20 @@ body.landing .tabbar, body.kiosk .tabbar, body.guest .tabbar { display: none; }
 body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: 104px; }
 .screen img.mascImg { position: static; inset: auto; width: 100%; height: 100%; }
 .storeHead > div { min-width: 0; }
+
+/* ---------- Éducation Beya ---------- */
+.edu { position: absolute; inset: 0; display: grid; justify-items: center; align-content: center; gap: 3cqw; background: radial-gradient(circle at 50% 20%, #ffb45c, #e0631a 60%, #8a3206); color: #fff; text-align: center; overflow: hidden; }
+.edu.e-couleurs { background: radial-gradient(circle at 50% 20%, #3f5fd6, #17226b 70%); }
+.eduStars { position: absolute; top: 9cqw; left: 50%; transform: translateX(-50%); padding: 1cqw 4cqw; border-radius: 99px; background: #0003; font-size: 4.6cqw; font-weight: 800; color: #ffe14a; }
+.edu small { font-size: 4.6cqw; font-weight: 700; opacity: .9; margin-top: 6cqw; }
+.eduAsk { font-size: 20cqw; line-height: 1; font-weight: 900; text-shadow: 0 1cqw 0 #0003; animation: bubblePop .4s cubic-bezier(.3, 1.6, .5, 1); margin-top: 6cqw; } .eduAsk.word { font-size: 13cqw; margin-top: 0; text-transform: uppercase; }
+.eduChoices { display: flex; gap: 3.4cqw; margin-top: 3cqw; }
+.eduChoices button { width: 20cqw; height: 20cqw; border-radius: 50%; border: .9cqw solid #fff; background: #fff; color: #14224f; font-size: 9cqw; font-weight: 900; box-shadow: 0 1.4cqw 0 #0004; display: grid; place-items: center; padding: 0; animation: tileIn .4s cubic-bezier(.3, 1.5, .5, 1) backwards; }
+.eduChoices button:nth-child(2) { animation-delay: .07s; } .eduChoices button:nth-child(3) { animation-delay: .14s; } .eduChoices button:nth-child(4) { animation-delay: .21s; } .e-couleurs .eduChoices button { width: 17cqw; height: 17cqw; }
+.eduChoices button:active { transform: translateY(1cqw); box-shadow: 0 .4cqw 0 #0004; }
+.eduChoices .yes { background: #22c55e !important; color: #fff; animation: heroBoing .6s cubic-bezier(.3, 1.7, .5, 1); box-shadow: 0 0 6cqw #22c55e; } .eduChoices .no { animation: eduNo .4s; } @keyframes eduNo { 25% { transform: translateX(-2cqw); } 75% { transform: translateX(2cqw); } }
+.edu .confetti u { width: 2.4cqw; height: 2.4cqw; }
+.eduBoard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; } .eduBoard div { display: grid; justify-items: center; padding: 12px 6px; border-radius: 18px; background: linear-gradient(#fff7e8, #ffe9c4); border: 2px solid #ffd58a; } .eduBoard b { font-size: 1.5rem; color: #b45309; } .eduBoard span { font-size: .8rem; color: #7c4a03; font-weight: 700; }
+.shots { display: flex; gap: 10px; overflow-x: auto; justify-self: stretch; padding: 4px 2px 10px; scroll-snap-type: x mandatory; scrollbar-width: none; } .shots::-webkit-scrollbar { display: none; }
+.shots img { flex: 0 0 46%; width: 46%; max-width: 46%; min-width: 0; height: auto; border-radius: 18px; scroll-snap-align: start; box-shadow: 0 8px 18px #1b2f6a26; animation: tileIn .5s cubic-bezier(.3, 1.4, .5, 1) backwards; animation-delay: calc(var(--i) * 90ms); }
+.appIcon img[src^="shots/"] { transform: scale(1.02); }

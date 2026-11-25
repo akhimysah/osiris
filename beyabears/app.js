@@ -61,6 +61,7 @@ const APPS = [
   ['iris', 'Iris', 'c-iris'],
   ...LAB_APPS.slice(1), // Lien, Souvenirs, Nuit, Socle (labo.js)
   ['esim', 'Forfait', 'c-esim'],
+  ['edu', 'Éducation', 'c-masc'], // ecole.js : calcul et couleurs
   ['store', 'Beya Store', 'c-store'], // boutique.js : compte et téléchargement des applications
 ];
 // Applications officielles : BeyaBear’s ne les intègre pas, il les ouvre. Sur un appareil Android,
@@ -75,6 +76,7 @@ const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face'
 MASCOTS.forEach((id, n) => { ICON['m_' + id] = `<span class="masc" style="background-position:${(n % 5) * 25}% ${Math.floor(n / 5) * 25}%"></span>`; });
 ICON.mic = ICON.m_mic; // le bouton « Parler » porte la mascotte au micro
 APPS.forEach((app) => { if (MASCOTS.includes(app[0])) { ICON[app[0]] = ICON['m_' + app[0]]; app[2] = 'c-masc'; } });
+ICON.edu = '<img class="mascImg" src="m/edu.webp" alt="">';
 ICON.store = '<img class="mascImg" src="store-icone.webp" alt="">'; APPS.find(([id]) => id === 'store')[2] = 'c-masc'; // la mascotte vendeuse
 EXTERNAL.forEach((app) => { if (MASCOTS.includes(app[0])) { app[3] = 'm_' + app[0]; app[2] = 'c-masc'; } });
 const externalTile = ([, label, color, icon, url], cls = '') =>
@@ -191,7 +193,7 @@ function go(name, options = {}) {
   if (name !== 'music' && typeof musicStop === 'function') musicStop();
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, store: openStore, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, music: openMusic, locate: openLocate, core: openCore, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, store: openStore, edu: openEdu, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, music: openMusic, locate: openLocate, core: openCore, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
 }
 
 function openHome() {
