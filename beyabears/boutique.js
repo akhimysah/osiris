@@ -12,7 +12,8 @@ const APP_NOTES = {
   face: 'Reconnaître les proches et les saluer.', phone: 'Afficher l’écran du téléphone dans l’œil.', iris: 'Changer la couleur de l’iris.', esim: 'Le forfait pour rester connecté partout.',
   whatsapp: 'Ouvrir WhatsApp pour appeler ou écrire.', edu: 'Calcul et couleurs : apprendre en s’amusant, une étoile par bonne réponse.',
 };
-const appsOn = () => { const list = store.get('apps'); return Array.isArray(list) ? [...new Set([...list, 'secure', 'store'])] : PREINSTALLED; };
+// Toutes les applications sont là dès le départ, comme dans la démo d'origine. Le Store sert à en retirer ou à en remettre.
+const appsOn = () => { const off = store.get('appsOff', []); return [...APPS, ...EXTERNAL].map(([id]) => id).filter((id) => PREINSTALLED.includes(id) || !off.includes(id)); };
 const appOn = (id) => appsOn().includes(id);
 // Le compte vient du Beya Store ou de l'inscription faite sur la page de présentation : c'est le même.
 const account = () => { const me = store.get('account', null); if (me) return me; const sign = store.get('inscription', null); return sign && sign.mail ? { email: sign.mail, child: '', parent: sign.name || '' } : null; };
@@ -119,7 +120,7 @@ function openStore() {
     <div class="storeBar"><span>Ma collection</span><b></b><i></i></div>
     <div class="chips">${STORE_CATS.map(([id, label], i) => `<button type="button" data-cat="${id}" class="${i ? '' : 'on'}">${label}</button>`).join('')}</div>
     <ul class="storeGrid">${all.map((app, i) => storeCard(app, i, on)).join('')}</ul>
-    <p class="muted">Déjà sur la peluche : Appels, Assistant, Heure, Histoires, Photo et Sécurité.</p>
+    <p class="muted">Toutes les applications sont déjà installées. Ouvrez une fiche pour en retirer une, puis la remettre.</p>
     <p class="notice">Démonstration : toutes les applications sont gratuites ici et rien n’est réellement téléchargé.</p>`;
   storeStar(0); storeCount();
   // La une change toute seule tant que l'écran est ouvert.
@@ -141,7 +142,7 @@ function storeGet(id) {
   panel.querySelectorAll(`[data-get="${id}"]`).forEach((b) => { b.disabled = true; b.classList.add('fill'); b.textContent = 'Téléchargement…'; });
   storeEye(`<div class="dl"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44"/><circle class="run" cx="50" cy="50" r="44" pathLength="100" transform="rotate(-90 50 50)"/></svg>${storeIcon(id)}</div><b>${app[1]}</b><small>Téléchargement…</small>`);
   setTimeout(() => {
-    store.set('apps', [...new Set([...appsOn(), id])]);
+    store.set('appsOff', store.get('appsOff', []).filter((x) => x !== id));
     if (state.screen !== 'store') return;
     if (panel.querySelector(`.appSheet[data-app="${id}"]`)) { storeDetail(id); confetti(panel.querySelector('.appIcon'), 20); }
     const now = panel.querySelector(`.storeGrid [data-app="${id}"]`);
@@ -174,7 +175,7 @@ document.addEventListener('click', (event) => {
   const data = event.target.closest && event.target.closest('button')?.dataset;
   if (!data) return;
   if (data.get) return storeGet(data.get);
-  if (data.drop) return store.set('apps', appsOn().filter((id) => id !== data.drop)), panel.querySelector('.appSheet') ? storeDetail(data.drop) : openStore();
+  if (data.drop) return store.set('appsOff', [...new Set([...store.get('appsOff', []), data.drop])]), panel.querySelector('.appSheet') ? storeDetail(data.drop) : openStore();
   if (data.detail) return pop(620, 70), storeDetail(data.detail);
   if (data.discover) return pop(620, 70), go('store'), storeDetail(data.discover), window.scrollTo({ top: 0, behavior: 'smooth' });
   if (data.nav === 'profile') return go('store'), openProfile();
