@@ -228,11 +228,34 @@ const ELEMENTS = [
   ['solaire', 'Solaire', '#f5b83d'],
 ];
 const coreBpm = () => Math.round(45 + (lab.energy ?? 70) * 0.22);
+// Les étincelles de chaque élément, lancées quand on touche l'œil.
+const CORE_FX = { cosmique: '✦★', energie: '⚡', amour: '♥', mystique: '✧☾', solaire: '☀✺' };
+// Met à jour l'œil et le panneau sans tout redessiner, pour ne pas couper les animations.
+function coreSync() {
+  const core = $('.core'); if (!core) return;
+  core.style.setProperty('--e', ((lab.energy ?? 70) / 100).toFixed(2)); core.style.setProperty('--t', (60 / coreBpm()).toFixed(3) + 's');
+  core.classList.toggle('full', (lab.energy ?? 70) >= 100);
+  const tag = core.querySelector('.emoTag b'); if (tag) tag.textContent = coreBpm();
+  if ($('#coreBpm')) { $('#coreBpm').textContent = coreBpm(); $('#coreE').textContent = lab.energy ?? 70; $('#coreFill').style.width = (lab.energy ?? 70) + '%'; $('#coreEnergy').value = lab.energy ?? 70; }
+}
+// Un toucher sur l'œil donne de l'énergie au cœur ; à 100 %, c'est la fête.
+function coreTap() {
+  const core = $('.core'); if (!core) return;
+  const was = lab.energy ?? 70; lab.energy = Math.min(100, was + 6); coreSync();
+  const cheer = lab.energy >= 100 && was < 100, chars = [...CORE_FX[lab.element || 'cosmique']], fx = core.querySelector('.coreFx');
+  for (let i = 0; i < (cheer ? 24 : 7); i++) {
+    const u = document.createElement('u'), a = Math.random() * 6.283, d = 24 + Math.random() * 22;
+    u.textContent = chars[i % chars.length]; u.style.setProperty('--x', (Math.cos(a) * d).toFixed(1) + 'cqw'); u.style.setProperty('--y', (Math.sin(a) * d).toFixed(1) + 'cqw'); u.style.fontSize = (5 + Math.random() * 5).toFixed(1) + 'cqw';
+    fx.appendChild(u); setTimeout(() => u.remove(), 950);
+  }
+  const wave = document.createElement('i'); wave.className = 'coreWave'; core.appendChild(wave); setTimeout(() => wave.remove(), 700);
+  if (cheer) { const m = document.createElement('div'); m.className = 'coreCheer'; m.textContent = 'Pleine énergie !'; core.appendChild(m); setTimeout(() => m.remove(), 1900); }
+}
 function coreDraw() {
-  const [, , color] = ELEMENTS.find((e) => e[0] === (lab.element || 'cosmique')), e = (lab.energy ?? 70) / 100;
+  const [elId, , color] = ELEMENTS.find((e) => e[0] === (lab.element || 'cosmique')), e = (lab.energy ?? 70) / 100;
   // Anneaux segmentés, comme une pièce de machine : chacun tourne à sa vitesse.
   const ring = labRing;
-  screen.innerHTML = `<div class="core" style="--c:${color};--e:${e.toFixed(2)};--t:${(60 / coreBpm()).toFixed(3)}s">
+  screen.innerHTML = `<div class="core${e >= 1 ? ' full' : ''}" style="--c:${color};--e:${e.toFixed(2)};--t:${(60 / coreBpm()).toFixed(3)}s">
     <div class="coreGlow"></div>
     <div class="coreRays"></div>
     <svg class="coreRings" viewBox="0 0 200 200" aria-hidden="true">
@@ -240,14 +263,17 @@ function coreDraw() {
       ${ring(72, 5, '48 6 10 6', 18, 0, 1)}${ring(63, 1.4, '3 4', 30, 1, 0.7)}${ring(56, 2.6, '70 12', 14, 1, 0.95)}
       <g stroke="currentColor" stroke-width="5" stroke-linecap="round" opacity=".95"><path d="M8 100h10M182 100h10M100 8v10M100 182v10"/></g>
     </svg>
-    <div class="corePupil"><s></s></div>
+    <div class="corePupil"><img src="e-${elId}.webp" alt="" width="360" height="360"></div>
+    <div class="coreFx" aria-hidden="true"></div>
     <div class="emoTag"><b>${coreBpm()}</b> BPM</div>
   </div>`;
+  screen.querySelector('.core').addEventListener('click', coreTap);
 }
 function corePanel() {
   const el = lab.element || 'cosmique', energy = lab.energy ?? 70, color = ELEMENTS.find((x) => x[0] === el)[2];
   panel.innerHTML = `${backButton}<span class="pill">BeyaBear’s Core</span><h2>Cœur</h2>
     <p>Le cœur énergétique de la peluche : monte l’énergie et change d’élément pour voir l’iris et la pupille réagir.</p>
+    <p class="coreHint">Touche l’œil : chaque toucher donne de l’énergie au cœur. À 100 %, c’est la fête !</p>
     <div class="coreStats" style="--c:${color}">
       <div><small>Rythme cardiaque simulé</small><b id="coreBpm">${coreBpm()}</b><i>BPM</i></div>
       <div><small>Énergie du cœur</small><b><span id="coreE">${energy}</span>%</b></div>
@@ -530,8 +556,7 @@ document.addEventListener('input', (event) => {
   if (el.id === 'memoQ') $('#memoItems').innerHTML = memoryList(el.value);
   if (el.id === 'coreEnergy') {
     lab.energy = Number(el.value);
-    const c = $('.core'); if (c) { c.style.setProperty('--e', (lab.energy / 100).toFixed(2)); c.style.setProperty('--t', (60 / coreBpm()).toFixed(3) + 's'); $('.core .emoTag b').textContent = coreBpm(); }
-    $('#coreBpm').textContent = coreBpm(); $('#coreE').textContent = lab.energy; $('#coreFill').style.width = lab.energy + '%';
+    coreSync();
   }
   if (el.id === 'dreamLight') { lab.light = Number(el.value); $('.dream')?.style.setProperty('--l', lab.light / 100); }
 });
