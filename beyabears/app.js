@@ -42,10 +42,12 @@ const ICON = {
   esim: svg('<path d="M7 3h7l4 4v14H7z"/><rect x="10" y="11" width="5" height="6" rx="1"/>'),
   mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
 };
+Object.entries(LAB_ICONS).forEach(([id, body]) => (ICON[id] = svg(body)));
 const APPS = [
   ['call', 'Appels', 'c-call'],
   ['youtube', 'YouTube', 'c-yt'],
   ['games', 'Jeux', 'c-games'],
+  LAB_APPS[0], // Émotions : l'œil vivant, en première page du menu
   ['photo', 'Photo', 'c-photo'],
   ['story', 'Histoires', 'c-story'],
   ['chat', 'Assistant', 'c-chat'],
@@ -56,6 +58,7 @@ const APPS = [
   ['face', 'Visages', 'c-face'],
   ['phone', 'Téléphone', 'c-phone'],
   ['iris', 'Iris', 'c-iris'],
+  ...LAB_APPS.slice(1), // Lien, Souvenirs, Nuit, Socle (labo.js)
   ['esim', 'Forfait', 'c-esim'],
 ];
 // Applications officielles : BeyaBear’s ne les intègre pas, il les ouvre. Sur un appareil Android,
@@ -176,7 +179,7 @@ function go(name, options = {}) {
   stopSpeaking();
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
 }
 
 function openHome() {
