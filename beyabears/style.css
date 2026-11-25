@@ -1082,3 +1082,9 @@ a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-h
 .pin.on .dot, .pin.on .halo, .pin.on rect { fill: #ff8a4c; } .pin.on text { fill: #fff; } .pin.on .plus { stroke: #fff; } .pin.on .dot, .pin.on .plus { animation: none; }
 .tryMe { background: #5cc8ff; color: #06224a; box-shadow: 0 8px 18px #5cc8ff66; }
 @media (prefers-reduced-motion: reduce) { .pin .dot, .pin .plus { animation: none; } }
+/* Aperçu de l'émotion dans l'œil de Noah + cœur qui bat sur la poitrine */
+.eyeLive { animation: eyeLive .35s ease-out; transform-box: fill-box; transform-origin: center; } @keyframes eyeLive { from { opacity: 0; transform: scale(.8); } }
+.eyeSay text { font: 800 20px Lato, system-ui, sans-serif; fill: #06224a; } .eyeSay rect { filter: drop-shadow(0 3px 5px rgba(8, 28, 80, .3)); }
+.pin.heart .beat { fill: #ff3d6e; stroke: #fff; stroke-width: 4; stroke-linejoin: round; transform-box: fill-box; transform-origin: center; animation: heartBeat var(--t, 1s) ease-in-out infinite; filter: drop-shadow(0 3px 6px rgba(255, 61, 110, .55)); }
+.pin.heart .halo { fill: #ff3d6e; } @keyframes heartBeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.28); } 30% { transform: scale(1); } 45% { transform: scale(1.18); } }
+@media (prefers-reduced-motion: reduce) { .pin.heart .beat, .eyeLive { animation: none; } }

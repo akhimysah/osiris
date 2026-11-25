@@ -78,7 +78,7 @@ const ZONES = [
   ['tete', 'Tête', 'joie', 'Caresse reçue'],
   ['patteG', 'Patte gauche', 'ecoute', 'Je suis à ton écoute'],
   ['patteD', 'Patte droite', 'musique', 'Raccourci musique'],
-  ['poitrine', 'Poitrine', 'amour', 'Câlin reçu'],
+  ['poitrine', 'Cœur', 'amour', 'Câlin reçu'],
   ['ventre', 'Ventre', 'rire', 'Chatouilles !'],
   ['dos', 'Dos', 'sommeil', 'Mode détente'],
 ];
@@ -191,7 +191,8 @@ function emoPanel() {
         <image href="emo/noah-toucher.webp" width="550" height="760" preserveAspectRatio="xMidYMid slice"/>
         <circle cx="277" cy="262" r="101" fill="none" stroke="${color}" stroke-width="9" opacity=".85" pointer-events="none"/>
         <ellipse class="${lab.zone === 'tete' ? 'on' : ''}" data-lab="zone" data-v="tete" cx="275" cy="230" rx="205" ry="195"/><ellipse class="${lab.zone === 'patteG' ? 'on' : ''}" data-lab="zone" data-v="patteG" cx="165" cy="650" rx="100" ry="92"/><ellipse class="${lab.zone === 'patteD' ? 'on' : ''}" data-lab="zone" data-v="patteD" cx="445" cy="650" rx="100" ry="92"/><ellipse class="${lab.zone === 'poitrine' ? 'on' : ''}" data-lab="zone" data-v="poitrine" cx="292" cy="478" rx="112" ry="48"/><ellipse class="${lab.zone === 'ventre' ? 'on' : ''}" data-lab="zone" data-v="ventre" cx="300" cy="566" rx="58" ry="40"/>
-        ${TOUCH_PINS.map(([id, x, y, side]) => { const label = (ZONES.find((z) => z[0] === id) || [])[1] || '', w = label.length * 12.5 + 30, lx = side === 'l' ? x - 30 - w : side === 'r' ? x + 30 : x - w / 2, ly = side === 'c' ? y + 34 : y - 19; return `<g class="pin${lab.zone === id ? ' on' : ''}" pointer-events="none"><circle class="halo" cx="${x}" cy="${y}" r="22"/><circle class="dot" cx="${x}" cy="${y}" r="15"/><path d="M${x - 6} ${y}h12M${x} ${y - 6}v12" class="plus"/><rect x="${lx}" y="${ly}" width="${w}" height="38" rx="19"/><text x="${lx + w / 2}" y="${ly + 26}" text-anchor="middle">${label}</text></g>`; }).join('')}
+        ${EMO_FACES.includes(cur[0]) && cur[0] !== 'normal' ? `<g class="eyeLive" pointer-events="none"><clipPath id="noahEye"><circle cx="277" cy="262" r="97"/></clipPath><circle cx="277" cy="262" r="101" fill="#0b1020"/><image href="emo/${cur[0]}.webp" x="180" y="165" width="194" height="194" clip-path="url(#noahEye)" preserveAspectRatio="xMidYMid slice"/><circle cx="277" cy="262" r="99" fill="none" stroke="${color}" stroke-width="8"/></g>${lab.msg ? `<g class="eyeSay" pointer-events="none"><rect x="${277 - (lab.msg.length * 11.5 + 36) / 2}" y="372" width="${lab.msg.length * 11.5 + 36}" height="40" rx="20" fill="${color}"/><text x="277" y="399" text-anchor="middle">${lab.msg}</text></g>` : ''}` : ''}
+        ${TOUCH_PINS.map(([id, x, y, side]) => { const label = (ZONES.find((z) => z[0] === id) || [])[1] || '', w = label.length * 12.5 + 30, lx = side === 'l' ? x - 30 - w : side === 'r' ? x + 30 : x - w / 2, ly = side === 'c' ? y + 34 : y - 19; const mark = id === 'poitrine' ? `<g transform="translate(${x} ${y})"><path class="beat" style="--t:${(60 / cur[4]).toFixed(3)}s" d="M0 20C-30 -2-22 -26 0 -12C22 -26 30 -2 0 20Z"/></g>` : `<circle class="dot" cx="${x}" cy="${y}" r="15"/><path d="M${x - 6} ${y}h12M${x} ${y - 6}v12" class="plus"/>`; return `<g class="pin${id === 'poitrine' ? ' heart' : ''}${lab.zone === id ? ' on' : ''}" pointer-events="none"><circle class="halo" cx="${x}" cy="${y}" r="22"/>${mark}<rect x="${lx}" y="${ly}" width="${w}" height="38" rx="19"/><text x="${lx + w / 2}" y="${ly + 26}" text-anchor="middle">${label}</text></g>`; }).join('')}
       </svg></div>
       <div class="touchKeys">${ZONES.map(([id, label]) => `<button type="button" data-lab="zone" data-v="${id}" class="${id === lab.zone ? 'sel' : ''}">${label}</button>`).join('')}</div>
     </div>
