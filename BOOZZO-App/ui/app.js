@@ -69,8 +69,9 @@ const EXTERNAL = [
 ];
 // Les mascottes remplacent les pictogrammes : une image ronde par application.
 // Toutes les mascottes tiennent dans une seule image : un seul chargement, donc jamais d'icône vide isolée.
-const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'locate', 'memory', 'music', 'phone', 'photo', 'story', 'tiktok', 'torch', 'whatsapp', 'youtube'];
+const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'holo', 'iris', 'link', 'locate', 'memory', 'mic', 'music', 'phone', 'photo', 'story', 'tiktok', 'torch', 'weather', 'whatsapp', 'youtube'];
 MASCOTS.forEach((id, n) => { ICON['m_' + id] = `<span class="masc" style="background-position:${(n % 5) * 25}% ${Math.floor(n / 5) * 25}%"></span>`; });
+ICON.mic = ICON.m_mic; // le bouton « Parler » porte la mascotte au micro
 APPS.forEach((app) => { if (MASCOTS.includes(app[0])) { ICON[app[0]] = ICON['m_' + app[0]]; app[2] = 'c-masc'; } });
 EXTERNAL.forEach((app) => { if (MASCOTS.includes(app[0])) { app[3] = 'm_' + app[0]; app[2] = 'c-masc'; } });
 const externalTile = ([, label, color, icon, url], cls = '') =>
