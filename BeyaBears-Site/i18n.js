@@ -306,6 +306,14 @@
 "Zoé, la rêveuse : ourson BeyaBear's avec son écran rond": ["Zoé: BeyaBear's bear with its round screen", "Zoé: osito BeyaBear's con su pantalla redonda"],
 "Jade, l'artiste : ourson BeyaBear's avec son écran rond": ["Jade: BeyaBear's bear with its round screen", "Jade: osito BeyaBear's con su pantalla redonda"],
 "Mamie Rose, pour les grands-parents : ourson BeyaBear's avec son écran rond": ["Mamie Rose: BeyaBear's bear with its round screen", "Mamie Rose: osito BeyaBear's con su pantalla redonda"],
+"Lignes": ["Lines", "Líneas"],
+"Fini !": ["Game over!", "¡Fin!"],
+"Briques de miel": ["Honey bricks", "Ladrillos de miel"],
+"Poser": ["Drop", "Soltar"],
+"Rejouer": ["Play again", "Otra vez"],
+"Touchez l'écran pour tourner, glissez pour déplacer.": ["Tap the screen to rotate, swipe to move.", "Toca la pantalla para girar, desliza para mover."],
+"Jouer aux Briques de miel dans l'écran rond": ["Play Honey bricks in the round screen", "Jugar a Ladrillos de miel en la pantalla redonda"],
+"Gros plan sur l'écran rond de la peluche, où se joue une partie de briques": ["Close-up of the plush's round screen, with a game of bricks being played", "Primer plano de la pantalla redonda del peluche, donde se juega una partida de ladrillos"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
