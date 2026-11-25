@@ -365,6 +365,7 @@
 "La cornemuse et les jeux des Highlands. Chaque clan a son tartan.": ["Bagpipes and the Highland games. Each clan has its own tartan.", "La gaita y los juegos de las Highlands. Cada clan tiene su tartán."],
 "Le canard laqué de Pékin et les raviolis vapeur.": ["Peking duck and steamed dumplings.", "El pato laqueado de Pekín y los raviolis al vapor."],
 "Le Nouvel An chinois : lanternes rouges, danse du dragon et grand repas de famille.": ["Chinese New Year: red lanterns, the dragon dance and a big family meal.", "El Año Nuevo chino: farolillos rojos, danza del dragón y gran comida familiar."],
+"Faites tourner la Terre et touchez un ourson : il vous présente son pays.": ["Spin the Earth and tap a bear: it introduces its country.", "Haz girar la Tierra y toca un osito: te presenta su país."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
