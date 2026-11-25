@@ -163,7 +163,7 @@ function emoDraw() {
     ${ed === 'quantum' ? `<div class="emoNeon${(lab.qcolor || QUANTUM_COLORS[0][0]) === '#2d7bff' ? '' : ' ruby'}"></div>` : ''}
     <div class="emoRing"></div>
     ${id === 'ecoute' ? '<i class="emoWave"></i><i class="emoWave"></i><i class="emoWave"></i>' : ''}
-    <div class="emoPupil">${id === 'portail' ? '<div class="emoPortal"><i></i><i></i></div>' : id === 'normal' ? '<s></s>' : `<span class="emoMoji${EMO_FACES.includes(id) ? ' face' : ''}">${emoFace(id, emoji)}</span>`}</div>
+    <div class="emoPupil">${id === 'portail' ? '<div class="emoPortal"><i></i><i></i></div>' : `<span class="emoMoji${EMO_FACES.includes(id) ? ' face' : ''}">${emoFace(id, emoji)}</span>`}</div>
     <div class="emoLid top"></div><div class="emoLid bot"></div>
     <div class="emoFx" aria-hidden="true">${bits}</div>
     <div class="emoTag"><b>${bpm}</b> BPM</div>
