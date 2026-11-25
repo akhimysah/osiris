@@ -1011,3 +1011,16 @@ body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: 104px; }
 .apps.discover i { opacity: .92; }
 .apps.discover u { position: absolute; right: 10px; top: 10px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #2e63e0; color: #fff; font: 800 1rem/1 Lato, system-ui, sans-serif; text-decoration: none; box-shadow: 0 0 0 3px #fff, 0 4px 10px #2e63e055; }
 .apps.discover i:not(.c-masc) { width: 78px; height: 78px; border-radius: 22px; }
+
+/* ---------- Sécurité : contrôle parental ---------- */
+.secEye { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 2.4cqw; padding: 12cqw; text-align: center; background: radial-gradient(circle at 50% 30%, #1c3a8a, #060b1e 76%); }
+.secEye i { width: 34cqw; height: 34cqw; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 1cqw #2e8bff, 0 0 8cqw #2e8bff88; animation: heroFloat 3s ease-in-out infinite alternate; } .secEye b { font-size: 8cqw; line-height: 1.1; } .secEye small { font-size: 4.4cqw; opacity: .85; }
+.pin { display: flex; gap: 10px; margin: 14px 0; } .pin input { flex: 1; min-width: 0; padding: 14px 16px; border-radius: 16px; border: 2px solid #d9e3fb; background: #fff; font: 800 1.5rem Lato, system-ui, sans-serif; letter-spacing: .5em; text-align: center; color: #14224f; -webkit-text-security: disc; }
+.pin input:focus { outline: none; border-color: #2e63e0; } .pin.no { animation: eduNo .4s; }
+.switch { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 14px; margin: 10px 0; border-radius: 18px; background: #fff; border: 2px solid #dfe8fb; cursor: pointer; } .switch input { width: 22px; height: 22px; margin-top: 2px; accent-color: #2e63e0; }
+.switch b { display: block; color: #14224f; } .switch small { display: block; color: #55668c; font-size: .86rem; line-height: 1.3; }
+.secApps { list-style: none; padding: 0; margin: 10px 0; display: grid; gap: 8px; } .secApps li { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; padding: 8px 12px 8px 8px; border-radius: 18px; background: #fff; border: 1px solid #dfe8fb; }
+.secApps i:not(.tog i) { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; color: #fff; } .secApps i svg { width: 56%; height: 56%; } .secApps b { color: #14224f; }
+.tog { position: relative; width: 52px; height: 30px; cursor: pointer; } .tog input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 1; }
+.tog i { position: absolute; inset: 0; width: auto !important; height: auto !important; border-radius: 999px !important; background: #cfd8ea; transition: background .2s; } .tog i::after { content: ""; position: absolute; left: 3px; top: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 2px 5px #0003; transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
+.tog input:checked + i { background: #17a05d; } .tog input:checked + i::after { transform: translateX(22px); }

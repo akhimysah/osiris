@@ -3,7 +3,7 @@
 // Chargé avant app.js : ses fonctions n'utilisent store, screen, panel, APPS… qu'au moment de l'appel.
 // Démonstration : le compte et la liste d'applications restent sur l'appareil, rien n'est envoyé.
 
-const PREINSTALLED = ['call', 'chat', 'clock', 'story', 'photo', 'store'];
+const PREINSTALLED = ['call', 'chat', 'clock', 'story', 'photo', 'secure', 'store'];
 const APP_NOTES = {
   youtube: 'Vidéos et dessins animés choisis par les parents.', tiktok: 'Vidéos courtes, sous contrôle parental.', games: 'Cinq jeux à toucher dans l’œil.',
   emo: 'L’œil exprime ses émotions.', core: 'Le cœur énergétique à recharger en jouant.', link: 'Envoyer un cœur ou un câlin à un proche.',
@@ -12,7 +12,7 @@ const APP_NOTES = {
   face: 'Reconnaître les proches et les saluer.', phone: 'Afficher l’écran du téléphone dans l’œil.', iris: 'Changer la couleur de l’iris.', esim: 'Le forfait pour rester connecté partout.',
   whatsapp: 'Ouvrir WhatsApp pour appeler ou écrire.', edu: 'Calcul et couleurs : apprendre en s’amusant, une étoile par bonne réponse.',
 };
-const appsOn = () => { const list = store.get('apps'); return Array.isArray(list) ? [...new Set([...list, 'store'])] : PREINSTALLED; };
+const appsOn = () => { const list = store.get('apps'); return Array.isArray(list) ? [...new Set([...list, 'secure', 'store'])] : PREINSTALLED; };
 const appOn = (id) => appsOn().includes(id);
 const account = () => store.get('account', null);
 const storeIcon = (id) => { const a = APPS.find(([x]) => x === id), e = EXTERNAL.find(([x]) => x === id); return a ? `<i class="${a[2]}">${ICON[id]}</i>` : e ? `<i class="${e[2]}">${ICON[e[3]]}</i>` : `<i class="c-store">${ICON.store}</i>`; };
@@ -83,13 +83,13 @@ function openProfile() {
   const me = account();
   if (!me) return openStore();
   clearInterval(openStore.timer);
-  const mine = [...APPS, ...EXTERNAL].filter(([id]) => appOn(id) && id !== 'store');
+  const mine = [...APPS, ...EXTERNAL].filter(([id]) => appOn(id) && id !== 'store' && id !== 'secure');
   storeEye(`<i class="c-masc"><img class="mascImg" src="store-icone.webp" alt=""></i><b>${me.child ? esc(me.child) : 'Profil'}</b><small>${mine.length} applications</small>`);
   panel.innerHTML = `${backButton}<span class="pill">Profil</span><h2>${me.child ? esc(me.child) : 'Mon compte'}</h2>
     <p class="acct">${esc(me.email)}</p>
     <h3 class="sub">Mes <em>applications</em></h3>
     <div class="mine">${mine.map(([id, label]) => `<button type="button" data-go="${id}" aria-label="${label}">${storeIcon(id)}</button>`).join('')}</div>
-    <div class="row wrap"><button type="button" class="btn" data-go="store">Ouvrir le Beya Store</button><button type="button" class="btn light" data-signout>Changer de compte</button></div>
+    <div class="row wrap"><button type="button" class="btn" data-go="store">Ouvrir le Beya Store</button><button type="button" class="btn light" data-go="secure">Contrôle parental</button><button type="button" class="btn light" data-signout>Changer de compte</button></div>
     <p class="notice">Démonstration : l’adresse reste sur cet appareil et rien n’est envoyé. Dans la version finale, le parent crée le compte et valide chaque téléchargement.</p>`;
 }
 function openStore() {
@@ -118,7 +118,7 @@ function openStore() {
     <div class="storeBar"><span>Ma collection</span><b></b><i></i></div>
     <div class="chips">${STORE_CATS.map(([id, label], i) => `<button type="button" data-cat="${id}" class="${i ? '' : 'on'}">${label}</button>`).join('')}</div>
     <ul class="storeGrid">${all.map((app, i) => storeCard(app, i, on)).join('')}</ul>
-    <p class="muted">Déjà sur la peluche : Appels, Assistant, Heure, Histoires et Photo.</p>
+    <p class="muted">Déjà sur la peluche : Appels, Assistant, Heure, Histoires, Photo et Sécurité.</p>
     <p class="notice">Démonstration : toutes les applications sont gratuites ici et rien n’est réellement téléchargé.</p>`;
   storeStar(0); storeCount();
   // La une change toute seule tant que l'écran est ouvert.
@@ -132,6 +132,7 @@ function openStore() {
 function storeGet(id) {
   const app = [...APPS, ...EXTERNAL].find(([x]) => x === id);
   if (!app || !account()) return openStore();
+  if (typeof secAsk === 'function' && secAsk(id)) return;
   const card = panel.querySelector(`.storeGrid [data-app="${id}"]`);
   if (card?.classList.contains('loading')) return;
   pop(520);
