@@ -9,6 +9,7 @@
 
 const LAB_APPS = [
   ['emo', 'Émotions', 'c-emo'],
+  ['core', 'Cœur', 'c-core'],
   ['link', 'Lien', 'c-link'],
   ['memory', 'Souvenirs', 'c-memory'],
   ['dream', 'Nuit', 'c-dream'],
@@ -16,6 +17,7 @@ const LAB_APPS = [
 ];
 const LAB_ICONS = {
   emo: '<circle cx="12" cy="12" r="9"/><path d="M12 16.5s-4.2-2.5-4.2-5.3A2.3 2.3 0 0 1 12 9.9a2.3 2.3 0 0 1 4.2 1.3c0 2.8-4.2 5.3-4.2 5.3z"/>',
+  core: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>',
   link: '<circle cx="7" cy="12" r="4"/><circle cx="17" cy="12" r="4"/><path d="M11 12h2"/>',
   memory: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h6M9 13h4"/>',
   dream: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
@@ -120,6 +122,52 @@ function openEmo() {
   labClear();
   focusEye();
   emoSet(lab.emo === 'clin' ? 'normal' : lab.emo, lab.msg, lab.zone);
+}
+
+// ---------- Cœur : le cœur énergétique ----------
+// Un cœur de lumière au centre de la peluche : cinq éléments, une énergie réglable, un rythme qui suit.
+
+const ELEMENTS = [
+  ['cosmique', 'Cosmique', '#38a8ff'],
+  ['energie', 'Énergie', '#9cf542'],
+  ['amour', 'Amour', '#ff5c9a'],
+  ['mystique', 'Mystique', '#a56bff'],
+  ['solaire', 'Solaire', '#f5b83d'],
+];
+const coreBpm = () => Math.round(45 + (lab.energy ?? 70) * 0.22);
+function coreDraw() {
+  const [, , color] = ELEMENTS.find((e) => e[0] === (lab.element || 'cosmique')), e = (lab.energy ?? 70) / 100;
+  // Anneaux segmentés, comme une pièce de machine : chacun tourne à sa vitesse.
+  const ring = (r, w, dash, dur, dir, op) => `<circle cx="100" cy="100" r="${r}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-dasharray="${dash}" opacity="${op}" style="animation:emoSpin ${dur}s linear infinite ${dir ? 'reverse' : ''};transform-origin:100px 100px"/>`;
+  screen.innerHTML = `<div class="core" style="--c:${color};--e:${e.toFixed(2)};--t:${(60 / coreBpm()).toFixed(3)}s">
+    <div class="coreGlow"></div>
+    <div class="coreRays"></div>
+    <svg class="coreRings" viewBox="0 0 200 200" aria-hidden="true">
+      ${ring(94, 1, '2 5', 60, 0, 0.55)}${ring(88, 3.2, '26 7 4 7', 26, 1, 0.9)}${ring(80, 1.2, '60 9', 40, 0, 0.6)}
+      ${ring(72, 5, '48 6 10 6', 18, 0, 1)}${ring(63, 1.4, '3 4', 30, 1, 0.7)}${ring(56, 2.6, '70 12', 14, 1, 0.95)}
+      <g stroke="currentColor" stroke-width="5" stroke-linecap="round" opacity=".95"><path d="M8 100h10M182 100h10M100 8v10M100 182v10"/></g>
+    </svg>
+    <div class="corePupil"><s></s></div>
+    <div class="emoTag"><b>${coreBpm()}</b> BPM</div>
+  </div>`;
+}
+function corePanel() {
+  const el = lab.element || 'cosmique', energy = lab.energy ?? 70, color = ELEMENTS.find((x) => x[0] === el)[2];
+  panel.innerHTML = `${backButton}<span class="pill">BeyaBear’s Core</span><h2>Cœur</h2>
+    <p>Le cœur énergétique de la peluche : monte l’énergie et change d’élément pour voir l’iris et la pupille réagir.</p>
+    <div class="coreStats" style="--c:${color}">
+      <div><small>Rythme cardiaque simulé</small><b id="coreBpm">${coreBpm()}</b><i>BPM</i></div>
+      <div><small>Énergie du cœur</small><b><span id="coreE">${energy}</span>%</b></div>
+      <div class="coreBar"><u id="coreFill" style="width:${energy}%"></u></div>
+    </div>
+    <label class="field">Énergie<input id="coreEnergy" type="range" min="0" max="100" value="${energy}"></label>
+    <div class="coreEls">${ELEMENTS.map(([id, label, c]) => `<button type="button" data-lab="element" data-v="${id}" class="${id === el ? 'sel' : ''}" aria-pressed="${id === el}" style="--c:${c}"><i></i>${label}</button>`).join('')}</div>
+    ${labNote('Prototype expérimental : le rythme et l’énergie sont simulés. Sur la peluche, un petit moteur de vibration fera sentir ce battement sous la main. Ce n’est pas un appareil médical.')}`;
+}
+function openCore() {
+  labClear();
+  focusEye();
+  coreDraw(); corePanel();
 }
 
 // ---------- Lien : deux compagnons, un lien ----------
@@ -292,12 +340,18 @@ document.addEventListener('click', (event) => {
     case 'memoClear': return el.dataset.sure ? (store.set('souvenirs', []), memoryEye(null), memoryPanel()) : ((el.dataset.sure = '1'), (el.textContent = 'Toucher encore pour tout effacer'));
     case 'dream': return dreamSet(v);
     case 'holo': return holoSet(v);
+    case 'element': return (lab.element = v), coreDraw(), corePanel();
     case 'holoColor': return (lab.ambiance = v), holoDraw(), holoPanel();
   }
 });
 document.addEventListener('input', (event) => {
   const el = event.target;
   if (el.id === 'memoQ') $('#memoItems').innerHTML = memoryList(el.value);
+  if (el.id === 'coreEnergy') {
+    lab.energy = Number(el.value);
+    const c = $('.core'); if (c) { c.style.setProperty('--e', (lab.energy / 100).toFixed(2)); c.style.setProperty('--t', (60 / coreBpm()).toFixed(3) + 's'); $('.core .emoTag b').textContent = coreBpm(); }
+    $('#coreBpm').textContent = coreBpm(); $('#coreE').textContent = lab.energy; $('#coreFill').style.width = lab.energy + '%';
+  }
   if (el.id === 'dreamLight') { lab.light = Number(el.value); $('.dream')?.style.setProperty('--l', lab.light / 100); }
 });
 document.addEventListener('change', (event) => {

@@ -245,6 +245,15 @@
     "Mode enceinte": ["Speaker mode", "Modo altavoz"],
     "Mode projection": ["Projection mode", "Modo proyección"],
     "Simulation : la batterie est fictive et aucun chargeur, enceinte ni projecteur n’est connecté.": ["Simulation: the battery is fictional and no charger, speaker or projector is connected.", "Simulación: la batería es ficticia y no hay ningún cargador, altavoz ni proyector conectado."],
+    "Cœur": ["Heart", "Corazón"],
+    "Le cœur énergétique de la peluche : monte l’énergie et change d’élément pour voir l’iris et la pupille réagir.": ["The plush’s energy heart: raise the energy and change element to watch the iris and pupil react.", "El corazón energético del peluche: sube la energía y cambia de elemento para ver cómo reaccionan el iris y la pupila."],
+    "Rythme cardiaque simulé": ["Simulated heart rate", "Ritmo cardíaco simulado"],
+    "Énergie du cœur": ["Heart energy", "Energía del corazón"],
+    "Énergie": ["Energy", "Energía"],
+    "Cosmique": ["Cosmic", "Cósmico"],
+    "Mystique": ["Mystic", "Místico"],
+    "Solaire": ["Solar", "Solar"],
+    "Prototype expérimental : le rythme et l’énergie sont simulés. Sur la peluche, un petit moteur de vibration fera sentir ce battement sous la main. Ce n’est pas un appareil médical.": ["Experimental prototype: the rhythm and energy are simulated. On the plush, a small vibration motor will let you feel this beat under your hand. This is not a medical device.", "Prototipo experimental: el ritmo y la energía son simulados. En el peluche, un pequeño motor de vibración hará sentir este latido bajo la mano. No es un dispositivo médico."],
   };
 
   // Textes qui contiennent une valeur variable
