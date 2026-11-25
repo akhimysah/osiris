@@ -69,8 +69,9 @@ const EXTERNAL = [
   ['spotify', 'Spotify', 'c-spotify', 'music', 'https://open.spotify.com/'],
 ];
 // Les mascottes remplacent les pictogrammes : une image ronde par application.
-const MASCOTS = ['tiktok', 'call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'memory', 'phone', 'photo', 'spotify', 'story', 'torch', 'weather', 'whatsapp', 'youtube'];
-MASCOTS.forEach((id) => { ICON['m_' + id] = `<img class="masc" src="m/${id}.webp?v=3" alt="" loading="lazy">`; });
+// Toutes les mascottes tiennent dans une seule image : un seul chargement, donc jamais d'icône vide isolée.
+const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'memory', 'phone', 'photo', 'spotify', 'story', 'tiktok', 'torch', 'weather', 'whatsapp', 'youtube'];
+MASCOTS.forEach((id, n) => { ICON['m_' + id] = `<span class="masc" style="background-position:${(n % 5) * 25}% ${Math.floor(n / 5) * 25}%"></span>`; });
 APPS.forEach((app) => { if (MASCOTS.includes(app[0])) { ICON[app[0]] = ICON['m_' + app[0]]; app[2] = 'c-masc'; } });
 EXTERNAL.forEach((app) => { if (MASCOTS.includes(app[0])) { app[3] = 'm_' + app[0]; app[2] = 'c-masc'; } });
 const externalTile = ([, label, color, icon, url], cls = '') =>
