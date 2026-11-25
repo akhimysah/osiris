@@ -697,3 +697,11 @@ html { scroll-behavior: smooth; }
 .coreEls button.sel img { animation: elemBob 2.6s ease-in-out infinite; box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--c), 0 0 26px var(--c); }
 @keyframes elemBob { 50% { transform: translateY(-5px) scale(1.05); } }
 @media (prefers-reduced-motion: reduce) { .coreEls button.sel img { animation: none; } }
+
+/* Mascottes à la place des pictogrammes */
+.c-masc { background: #050a22 !important; border-radius: 50% !important; overflow: hidden; padding: 0; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2e8bff, 0 8px 18px rgba(20, 100, 230, .28) !important; }
+img.masc { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; position: static; }
+.apps i.c-masc { width: 78px; height: 78px; transition: transform .25s cubic-bezier(.3, 1.5, .5, 1); }
+.apps button:hover i.c-masc, .apps a:hover i.c-masc, .apps button:active i.c-masc { transform: scale(1.08) rotate(-3deg); }
+.menu .app i.c-masc { box-shadow: 0 0 0 .5cqw #2e8bff, 0 0 3cqw rgba(46, 139, 255, .7) !important; }
+@media (max-width: 700px) { .apps i.c-masc { width: 72px; height: 72px; } .l-try .apps i.c-masc { width: 58px; height: 58px; } }
