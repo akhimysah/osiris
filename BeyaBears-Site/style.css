@@ -887,3 +887,7 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 .v-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; border-radius: 0; cursor: pointer; }
 .v-video .play { transition: opacity .25s; pointer-events: none; } .v-video.playing .play { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .liveIris .lp, .liveIris .ll, .v-neon img, .v-neon s { animation: none; } }
+
+/* L'appel de mamie : son vrai visage dans l'écran rond */
+.hwEye, .v-call { overflow: hidden; } .hwEye .mamie, .v-call .mamie { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; border-radius: 0; }
+.hwEye { box-shadow: 0 0 0 3px #0b1020, 0 0 26px rgba(125, 255, 176, .45); }

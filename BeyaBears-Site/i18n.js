@@ -254,6 +254,7 @@
 "Ourson BeyaBear's dont l'iris bouge et change d'humeur": ["BeyaBear's bear whose iris moves and changes mood", "Osito BeyaBear's cuyo iris se mueve y cambia de humor"],
 "Œil néon : des anneaux de lumière bleue": ["Neon eye: rings of blue light", "Ojo neón: anillos de luz azul"],
 "Dessin animé BeyaBear's : une montgolfière et des cigognes livrent les peluches": ["BeyaBear's cartoon: a hot-air balloon and storks deliver the plushes", "Dibujo animado BeyaBear's: un globo y unas cigüeñas reparten los peluches"],
+"Mamie sourit et fait coucou pendant un appel vidéo": ["Grandma smiles and waves during a video call", "La abuela sonríe y saluda durante una videollamada"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
