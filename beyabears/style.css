@@ -1005,3 +1005,9 @@ body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: 104px; }
 .shots { display: flex; gap: 10px; overflow-x: auto; justify-self: stretch; padding: 4px 2px 10px; scroll-snap-type: x mandatory; scrollbar-width: none; } .shots::-webkit-scrollbar { display: none; }
 .shots img { flex: 0 0 46%; width: 46%; max-width: 46%; min-width: 0; height: auto; border-radius: 18px; scroll-snap-align: start; box-shadow: 0 8px 18px #1b2f6a26; animation: tileIn .5s cubic-bezier(.3, 1.4, .5, 1) backwards; animation-delay: calc(var(--i) * 90ms); }
 .appIcon img[src^="shots/"] { transform: scale(1.02); }
+
+/* Accueil : les autres applications restent visibles, avec un petit « + » */
+.apps.discover button { position: relative; background: #f6f9ff; border-style: dashed; border-color: #cfdcf8; }
+.apps.discover i { opacity: .92; }
+.apps.discover u { position: absolute; right: 10px; top: 10px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #2e63e0; color: #fff; font: 800 1rem/1 Lato, system-ui, sans-serif; text-decoration: none; box-shadow: 0 0 0 3px #fff, 0 4px 10px #2e63e055; }
+.apps.discover i:not(.c-masc) { width: 78px; height: 78px; border-radius: 22px; }

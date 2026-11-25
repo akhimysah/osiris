@@ -174,6 +174,7 @@ document.addEventListener('click', (event) => {
   if (data.get) return storeGet(data.get);
   if (data.drop) return store.set('apps', appsOn().filter((id) => id !== data.drop)), panel.querySelector('.appSheet') ? storeDetail(data.drop) : openStore();
   if (data.detail) return pop(620, 70), storeDetail(data.detail);
+  if (data.discover) return pop(620, 70), go('store'), storeDetail(data.discover), window.scrollTo({ top: 0, behavior: 'smooth' });
   if (data.nav === 'profile') return go('store'), openProfile();
   if (data.nav === 'apps') return go('menu'), setView(false), setTimeout(() => panel.querySelector('.apps')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
   if ('signout' in data) return store.set('account', null), openStore();
@@ -200,6 +201,14 @@ function homeIdeas() {
   const ideas = { story: ['story', 'L’histoire du moment', 'Un décor animé à toucher', '#5b62c9', '#272c78'], call: ['call', 'Un bisou à distance', 'Appelle quelqu’un que tu aimes', '#34c98a', '#128a63'], photo: ['photo', 'Souris !', 'Prends une photo rigolote', '#ffb62e', '#ff7a3d'], chat: ['chat', 'Pose-moi une question', 'Je t’écoute', '#4aa8f0', '#2e63e0'], store: ['store', 'Nouvelles applications', 'Jeux, veilleuses, vidéos…', '#9b6bff', '#5b3bd0'] };
   const order = h >= 18 || h < 6 ? ['story', 'call', 'store', 'chat', 'photo'] : h < 12 ? ['chat', 'photo', 'story', 'store', 'call'] : ['photo', 'store', 'call', 'story', 'chat'];
   return `<div class="ideas">${order.map((k) => ideas[k]).map(([id, t, s, a, b2], i) => `<button type="button" data-go="${id}" style="--a:${a};--b:${b2};--i:${i}">${storeIcon(id)}<b>${t}</b><span>${s}</span></button>`).join('')}</div>`;
+}
+// Les applications pas encore installées restent visibles sur l'accueil : un toucher ouvre leur fiche.
+function homeMore() {
+  const rest = storeApps().filter(([id]) => !appOn(id)).sort((x, y) => (y[0] === 'edu') - (x[0] === 'edu')); // Éducation en tête
+  if (!rest.length) return '';
+  return `<h3 class="sub">D’autres <em>applications</em></h3>
+    <div class="apps lively discover">${rest.map(([id, label], i) => `<button data-discover="${id}" type="button" style="--i:${i}" aria-label="${label} : voir la fiche">${storeIcon(id)}<u aria-hidden="true">+</u>${label}</button>`).join('')}</div>
+    <p class="muted">Touchez une application pour voir sa fiche et l’installer.</p>`;
 }
 const homeHero = () => `<div class="hero"><button type="button" class="heroFace" data-poke aria-label="Toucher BeyaBear’s"><img src="emo/joie.webp" alt="" width="120" height="120"></button>
   <div><h2 class="hello">${homeHello()}</h2><p class="bubble" id="bubble">Touche-moi, je réagis !</p></div></div>`;

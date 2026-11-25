@@ -239,6 +239,7 @@
     "Simuler la recharge": ["Simulate charging", "Simular la carga"],
     "Arrêter": ["Stop", "Parar"],
     "Lumière": ["Mood", "Luz"],
+    "D’autres": ["More", "Más"], "Touchez une application pour voir sa fiche et l’installer.": ["Tap an app to see its page and install it.", "Toca una aplicación para ver su ficha e instalarla."],
     "Éducation": ["Learning", "Educación"], "Éducation Beya": ["Beya Learning", "Educación Beya"], "Apprendre en s’amusant": ["Learn while having fun", "Aprender jugando"], "Apprendre": ["Learn", "Aprender"], "Aperçu": ["Preview", "Vista previa"],
     "Réponds dans l’œil : chaque bonne réponse donne une étoile, et dix étoiles donnent une médaille.": ["Answer in the eye: each right answer earns a star, and ten stars earn a medal.", "Responde en el ojo: cada acierto da una estrella y diez estrellas dan una medalla."],
     "étoiles": ["stars", "estrellas"], "médailles": ["medals", "medallas"], "à la suite": ["in a row", "seguidas"], "Prochaine médaille": ["Next medal", "Próxima medalla"], "le jeu": ["the game", "el juego"],

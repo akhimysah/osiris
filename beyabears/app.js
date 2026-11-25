@@ -221,6 +221,7 @@ function renderHome() {
     ${homeIdeas()}
     <h3 class="sub">Mes <em>applications</em></h3>
     <div class="apps lively">${APPS.filter(([id]) => appOn(id) && id !== 'store').map(([id, label, color], i) => `<button data-go="${id}" type="button" style="--i:${i}"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.filter(([id]) => appOn(id)).map((app) => externalTile(app)).join('')}<button data-go="store" type="button" class="more" style="--i:9"><i>+</i>Ajouter</button></div>
+    ${homeMore()}
     ${
       SpeechRecognition
         ? `<label class="check"><input type="checkbox" id="wake" ${state.wake ? 'checked' : ''}> Écouter en continu le mot « Beya »</label>
