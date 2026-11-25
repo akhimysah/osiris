@@ -449,7 +449,8 @@ function openLocate() {
 
 // ---------- Musique : les morceaux se jouent dans l'œil ----------
 
-const TRACKS = ['Safi Ma Bgitsh', 'Bared ou Skhoun', 'Ya Bent L’Mdina', 'Lahbib Li Walafto', 'Black9ett'];
+const ARTIST = 'Chanteur Grave Groove';
+const TRACKS = ['Safi Ma Bgitsh', 'Bared ou Skhoun', 'Ya Bent L’Mdina', 'Lahbib Li Walafto', 'Black9ett', ...Array.from({ length: 10 }, (_, i) => `Yallah Groove ${i + 1}`)];
 const music = { audio: null, n: 0 };
 const musicTime = (s) => (isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '0:00');
 function musicAudio() {
@@ -475,14 +476,14 @@ function musicToggle() { const a = musicAudio(); if (!a.src) return musicPlay(mu
 function musicStop() { if (music.audio) music.audio.pause(); }
 function musicEye() {
   const on = music.audio && !music.audio.paused;
-  screen.innerHTML = `<div class="musEye${on ? ' on' : ''}" style="--p:0"><div class="musRing"></div><div class="musDisc"><span class="masc" style="background-position:${$('.musSrc')?.dataset.pos || '0 0'}"></span></div>
-    <div class="musBars"><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><div class="musTag"><b>${esc(TRACKS[music.n])}</b><small>${on ? 'Lecture en cours' : 'Touchez Lecture'}</small></div></div>`;
-  const src = ICON.music.match(/background-position:([^"]+)"/); if (src) $('.musDisc .masc').style.backgroundPosition = src[1];
+  screen.innerHTML = `<div class="musEye${on ? ' on' : ''}" style="--p:0"><div class="musRing"></div><div class="musDisc"><img src="musique/pochette.webp" alt=""></div>
+    <div class="musBars"><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><div class="musTag"><b>${esc(TRACKS[music.n])}</b><small>${ARTIST}</small></div></div>`;
 }
 function musicPanel() {
   const a = music.audio, on = a && !a.paused;
   panel.innerHTML = `${backButton}<span class="pill">Beya Music</span><h2>Musique</h2>
     <p>La musique se joue dans l’œil : touchez un morceau, la peluche danse avec le rythme.</p>
+    <div class="musArtist"><img src="musique/pochette.webp" alt="Pochette de ${ARTIST}" width="480" height="480"><div><small>Artiste</small><b>${ARTIST}</b><span>Moroccan Funk · Afro-House Groove · ${TRACKS.length} titres</span></div></div>
     <div class="musCtl"><button type="button" data-lab="musPrev" aria-label="Morceau précédent">⏮</button><button type="button" class="big" data-lab="musToggle" aria-label="${on ? 'Pause' : 'Lecture'}">${on ? '⏸' : '▶'}</button><button type="button" data-lab="musNext" aria-label="Morceau suivant">⏭</button></div>
     <div class="musBar" id="musicBar"><u></u></div><p class="muted" id="musicNow" style="text-align:center">${a ? `${musicTime(a.currentTime)} / ${musicTime(a.duration)}` : '0:00 / 0:00'}</p>
     <ol class="musList">${TRACKS.map((t, i) => `<li><button type="button" data-lab="musTrack" data-v="${i}" class="${i === music.n && a && a.src ? 'sel' : ''}"><i>${i === music.n && on ? '♪' : i + 1}</i><b>${esc(t)}</b></button></li>`).join('')}</ol>
