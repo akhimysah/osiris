@@ -673,3 +673,8 @@ html { scroll-behavior: smooth; }
 /* Proportions de la maquette : une pupille plus petite, de longs rayons autour */
 .emoPupil { width: 35%; } .e-joie .emoPupil { width: 40%; } .e-ecoute .emoPupil { width: 33%; } .e-reflexion .emoPupil { width: 31%; } .e-tristesse .emoPupil { width: 32%; } .e-surprise .emoPupil { width: 20%; } .e-alerte .emoPupil { width: 22%; }
 .ed-quantum .emoPupil { width: 34%; } .e-amour .emoPupil { width: 56%; } .e-portail .emoPupil { width: 68%; }
+
+/* Page d'accueil : les applications à portée de doigt, juste sous les boutons */
+.l-try { margin-top: 22px; } .l-try > b { display: block; margin-bottom: 4px; font: 800 1.05rem var(--display); color: var(--ink); }
+.l-try .apps { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 620px; }
+@media (max-width: 700px) { .l-try .apps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; } .l-try .apps a { padding: 12px 2px 10px; font-size: .78rem; } .l-try .apps i { width: 46px; height: 46px; } }

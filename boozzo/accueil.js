@@ -83,7 +83,7 @@
       'Aucun paiement. Désinscription à tout moment.': 'No payment. Unsubscribe at any time.',
       'L’application BeyaBear’s': 'The BeyaBear’s app', 'BeyaBear’s, <em>à portée de main</em>': 'BeyaBear’s, <em>at your fingertips</em>',
       'L’application fonctionne dès maintenant dans votre navigateur, sans téléchargement. Les versions iPhone et Android arrivent.': 'The app works right now in your browser, with no download. iPhone and Android versions are coming.',
-      'Bientôt sur iPhone': 'Coming soon to iPhone', "Astuce : ajoutez BeyaBear’s à l’écran d’accueil de votre téléphone. Sur iPhone, touchez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu puis « Ajouter à l’écran d’accueil ». Elle s’ouvre alors en plein écran, comme une application.": "Tip: add BeyaBear’s to your phone’s home screen. On iPhone, tap Share then “Add to Home Screen”. On Android, open the menu then “Add to Home screen”. It then opens full screen, like an app.", 'Bientôt sur Android': 'Coming soon to Android',
+      'Bientôt sur iPhone': 'Coming soon to iPhone', 'Essayez tout de suite': "Try it right now", "Astuce : ajoutez BeyaBear’s à l’écran d’accueil de votre téléphone. Sur iPhone, touchez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu puis « Ajouter à l’écran d’accueil ». Elle s’ouvre alors en plein écran, comme une application.": "Tip: add BeyaBear’s to your phone’s home screen. On iPhone, tap Share then “Add to Home Screen”. On Android, open the menu then “Add to Home screen”. It then opens full screen, like an app.", 'Bientôt sur Android': 'Coming soon to Android',
       'Indiquez votre prénom et une adresse e-mail valide.': 'Enter your first name and a valid email address.',
       'Merci': 'Thank you', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Your sign-up is saved on this device. Demo: it will be sent when the service opens.',
       'Démonstration · © 2026': 'Demo · © 2026',
@@ -166,7 +166,7 @@
       'Aucun paiement. Désinscription à tout moment.': 'Sin pago. Baja en cualquier momento.',
       'L’application BeyaBear’s': 'La aplicación BeyaBear’s', 'BeyaBear’s, <em>à portée de main</em>': 'BeyaBear’s, <em>al alcance de la mano</em>',
       'L’application fonctionne dès maintenant dans votre navigateur, sans téléchargement. Les versions iPhone et Android arrivent.': 'La aplicación ya funciona en tu navegador, sin descargar nada. Las versiones para iPhone y Android están en camino.',
-      'Bientôt sur iPhone': 'Pronto en iPhone', "Astuce : ajoutez BeyaBear’s à l’écran d’accueil de votre téléphone. Sur iPhone, touchez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu puis « Ajouter à l’écran d’accueil ». Elle s’ouvre alors en plein écran, comme une application.": "Consejo: añade BeyaBear’s a la pantalla de inicio de tu teléfono. En iPhone, toca Compartir y luego «Añadir a pantalla de inicio». En Android, abre el menú y luego «Añadir a pantalla de inicio». Así se abre a pantalla completa, como una aplicación.", 'Bientôt sur Android': 'Pronto en Android',
+      'Bientôt sur iPhone': 'Pronto en iPhone', 'Essayez tout de suite': "Pruébalo ahora mismo", "Astuce : ajoutez BeyaBear’s à l’écran d’accueil de votre téléphone. Sur iPhone, touchez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu puis « Ajouter à l’écran d’accueil ». Elle s’ouvre alors en plein écran, comme une application.": "Consejo: añade BeyaBear’s a la pantalla de inicio de tu teléfono. En iPhone, toca Compartir y luego «Añadir a pantalla de inicio». En Android, abre el menú y luego «Añadir a pantalla de inicio». Así se abre a pantalla completa, como una aplicación.", 'Bientôt sur Android': 'Pronto en Android',
       'Indiquez votre prénom et une adresse e-mail valide.': 'Indica tu nombre y un correo electrónico válido.',
       'Merci': 'Gracias', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Tu registro queda guardado en este dispositivo. Demostración: se enviará cuando abra el servicio.',
       'Démonstration · © 2026': 'Demostración · © 2026',
@@ -175,6 +175,14 @@
   const tr = (s) => (T[lang] && T[lang][s]) || s;
   land.querySelectorAll('[data-t]').forEach((e) => { e.innerHTML = tr(e.innerHTML.trim()); });
   land.querySelectorAll('[data-app]').forEach((a) => { a.href = './?app=1' + (lang !== 'fr' ? '&lang=' + lang : ''); });
+  // Les applications les plus parlantes, à ouvrir d'un toucher depuis la page d'accueil.
+  const box = land.querySelector('#lApps');
+  if (box && typeof APPS !== 'undefined') {
+    const pick = ['emo', 'youtube', 'call', 'games', 'story', 'core', 'chat', 'dream'];
+    box.innerHTML = pick.map((id) => APPS.find((x) => x[0] === id)).filter(Boolean)
+      .map(([id, label, color]) => `<a href="./?app=1&go=${id}${lang !== 'fr' ? '&lang=' + lang : ''}"><i class="${color}">${ICON[id]}</i>${label}</a>`).join('')
+      + EXTERNAL.map((app) => externalTile(app)).join('');
+  }
   land.querySelectorAll('[data-l]').forEach((a) => a.classList.toggle('on', a.dataset.l === lang));
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     land.classList.add('js-up');

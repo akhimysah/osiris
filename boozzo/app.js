@@ -1995,8 +1995,9 @@ if (guestMode) {
   // Le lien d'appel suffit : l'appel démarre dès l'ouverture de la page.
   if (guestCallId) startCall('guest', { callId: guestCallId });
 } else {
-  // L'œil s'ouvre sur ses applications ; le bouton maison du menu ramène à l'iris.
-  go('menu');
+  // L'œil s'ouvre sur ses applications ; un lien peut aussi ouvrir directement l'une d'elles (?go=emo).
+  const wanted = params.get('go');
+  go(APPS.some(([id]) => id === wanted) ? wanted : 'menu');
 }
 if (!guestCallId) {
   watchRings();
