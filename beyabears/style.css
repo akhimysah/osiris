@@ -678,3 +678,9 @@ html { scroll-behavior: smooth; }
 .l-try { margin-top: 22px; } .l-try > b { display: block; margin-bottom: 4px; font: 800 1.05rem var(--display); color: var(--ink); }
 .l-try .apps { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 620px; }
 @media (max-width: 700px) { .l-try .apps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; } .l-try .apps a { padding: 12px 2px 10px; font-size: .78rem; } .l-try .apps i { width: 46px; height: 46px; } }
+
+/* Quantum Eye, Zayn : l'anneau néon tourne autour de la pupille (bleu d'origine, rouge rubis par changement de teinte) */
+.emoNeon { position: absolute; inset: -4%; background: #01030a url(neon.webp) center / cover no-repeat; animation: emoSpin 46s linear infinite, neonPulse 2.4s ease-in-out infinite; }
+.emoNeon.ruby { filter: hue-rotate(128deg) saturate(1.5); animation: emoSpin 46s linear infinite, neonPulseRuby 2.4s ease-in-out infinite; }
+@keyframes neonPulse { 50% { filter: brightness(1.35) saturate(1.2); } } @keyframes neonPulseRuby { 0%, 100% { filter: hue-rotate(128deg) saturate(1.5); } 50% { filter: hue-rotate(128deg) saturate(1.7) brightness(1.35); } }
+.ed-quantum .emoPupil { width: 27%; } .ed-quantum.e-alerte .emoNeon { animation: emoSpin 8s linear infinite, emoAlert .5s steps(2, jump-none) infinite; } .ed-quantum.e-portail .emoPupil { width: 46%; }

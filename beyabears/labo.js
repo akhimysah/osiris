@@ -102,7 +102,7 @@ function emoFreqStart() {
     const [amp, speed, mode] = FREQ[id] || FREQ.normal, color = emoColor(id);
     const pupil = $('.emoPupil'), big = id === 'amour' || id === 'portail';
     const r0 = (big ? (id === 'portail' ? 0.36 : 0.27) : Math.max(0.1, (pupil ? pupil.offsetWidth : box * 0.46) / 2 / box) + 0.012) * size;
-    const rMax = (ed === 'quantum' ? 0.295 : 0.405) * size, span = Math.max(4, rMax - r0), n = FREQ_SEEDS.length;
+    const rMax = (ed === 'quantum' ? 0.235 : 0.405) * size, span = Math.max(4, rMax - r0), n = FREQ_SEEDS.length;
     g.clearRect(0, 0, size, size);
     g.lineCap = 'round'; g.strokeStyle = color; g.shadowColor = color; g.shadowBlur = size * 0.012;
     const beat = 0.5 + 0.5 * Math.sin(t * speed * 3.1);
@@ -153,7 +153,7 @@ function emoDraw() {
   screen.innerHTML = `<div class="emo e-${id} ed-${ed}${canBlink ? ' blink' : ''}" style="--c:${color};--t:${(60 / bpm).toFixed(3)}s">
     ${ed === 'cosmic' ? '<div class="emoNebula"></div><div class="emoStars"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div>' : ''}
     <canvas class="emoFreq" aria-hidden="true"></canvas>
-    ${ed === 'quantum' ? `<svg class="emoTech" viewBox="0 0 200 200" aria-hidden="true">${labRing(92, 3, '26 7 4 7', 26, 1, 0.9)}${labRing(82, 1.2, '60 9', 40, 0, 0.6)}${labRing(73, 5, '48 6 10 6', 18, 0, 1)}${labRing(62, 1.6, '3 4', 30, 1, 0.75)}<g stroke="currentColor" stroke-width="5" stroke-linecap="round"><path d="M6 100h10M184 100h10M100 6v10M100 184v10"/></g></svg>` : ''}
+    ${ed === 'quantum' ? `<div class="emoNeon${(lab.qcolor || QUANTUM_COLORS[0][0]) === '#2d7bff' ? '' : ' ruby'}"></div>` : ''}
     <div class="emoRing"></div>
     ${id === 'ecoute' ? '<i class="emoWave"></i><i class="emoWave"></i><i class="emoWave"></i>' : ''}
     <div class="emoPupil">${id === 'portail' ? '<div class="emoPortal"><i></i><i></i></div>' : glyph ? `<svg viewBox="0 0 100 100" aria-hidden="true">${GLYPH[glyph]}</svg>` : '<s></s>'}</div>
