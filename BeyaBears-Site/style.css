@@ -830,3 +830,19 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
   .fiche .btn, .cart .btn { width: 100%; }
 }
 @keyframes sheetUp { from { transform: translateY(40px); opacity: 0; } }
+
+/* ---------- Technologie : ce qu'il y a dans la peluche ---------- */
+.implant { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(20px, 4vw, 56px); align-items: center; margin-top: clamp(36px, 5vw, 64px); padding: clamp(20px, 3.4vw, 44px); border-radius: 32px; background: radial-gradient(circle at 28% 40%, #142a63, #070d22 70%); color: #fff; }
+.implantArt svg { display: block; width: 100%; max-width: 420px; margin: 0 auto; height: auto; }
+.implant .pin circle { fill: #2e8bff; stroke: #fff; stroke-width: 2.5; } .implant .pin text { fill: #fff; font: 800 15px var(--body); }
+.implant .pin { animation: pinPulse 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.implant .beat { animation: heartBeat 1s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pinPulse { 50% { transform: scale(1.14); } } @keyframes heartBeat { 0%, 40%, 100% { transform: scale(1); } 14% { transform: scale(1.12); } 28% { transform: scale(1.05); } }
+.implantTxt .label { background: rgba(255, 255, 255, .12); color: #cfe2ff; } .implantTxt h3 { margin: 14px 0 6px; font: 800 clamp(1.6rem, 3vw, 2.3rem)/1.08 var(--display); letter-spacing: -.03em; color: #fff; }
+.implantTxt ol { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 12px; }
+.implantTxt li { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; }
+.implantTxt li i { width: 30px; height: 30px; border-radius: 50%; background: #2e8bff; color: #fff; font: 800 .9rem/30px var(--body); font-style: normal; text-align: center; }
+.implantTxt li b { display: block; font-size: 1.04rem; } .implantTxt li span { color: #b9c6e4; font-size: .94rem; line-height: 1.45; }
+.implant .note { color: #93a3c8; margin-top: 18px; }
+@media (max-width: 900px) { .implant { grid-template-columns: minmax(0, 1fr); border-radius: 26px; } .implantArt svg { max-width: 300px; } }
+@media (prefers-reduced-motion: reduce) { .implant .pin, .implant .beat { animation: none; } }
