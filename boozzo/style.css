@@ -707,7 +707,7 @@ img.masc { display: block; width: 100%; height: 100%; object-fit: cover; border-
 @media (max-width: 700px) { .apps i.c-masc { width: 72px; height: 72px; } .l-try .apps i.c-masc { width: 58px; height: 58px; } }
 
 /* Mascottes : une seule planche d'images */
-span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; background: #050a22 url(mascottes.jpg?v=4) no-repeat; background-size: 500% 500%; }
+span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; background: #050a22 url(mascottes.jpg?v=5) no-repeat; background-size: 500% 500%; }
 
 /* --- Localisation --- */
 .c-locate { background: linear-gradient(#ff7a6b, #d62d3a); }
@@ -746,3 +746,9 @@ span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; backg
 .musArtist { display: grid; grid-template-columns: 84px 1fr; gap: 14px; align-items: center; margin: 14px 0; padding: 12px; border-radius: 20px; background: #f7f1e3; color: #2a2112; }
 .musArtist img { width: 84px; height: 84px; border-radius: 14px; object-fit: cover; box-shadow: 0 6px 14px rgba(60, 40, 0, .25); } .musArtist small { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #9a7a2a; } .musArtist b { display: block; font-size: 1.2rem; } .musArtist span { font-size: .86rem; color: #6b5a36; }
 .musList { max-height: 420px; overflow: auto; }
+
+/* Le bouton « Parler » : la mascotte au micro */
+.ghost.mic { padding: 3px; border-radius: 50%; } .ghost.mic span.masc { width: 42px; height: 42px; }
+body.hearing .ghost.mic { box-shadow: 0 0 0 3px var(--danger), 0 0 18px var(--danger); }
+.btn span.masc { width: 36px; height: 36px; flex: none; margin: -6px 2px -6px -10px; box-shadow: 0 0 0 2px #fff; }
+.menu .dock button span.masc { width: 100%; height: 100%; }
