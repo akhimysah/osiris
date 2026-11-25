@@ -689,3 +689,11 @@ html { scroll-behavior: smooth; }
 .emoMoji { font-size: 15cqw; line-height: 1; filter: drop-shadow(0 0 2cqw rgba(0, 0, 0, .6)); }
 .e-amour .emoPupil { background: #020309; box-shadow: 0 0 7cqw #000; width: 38%; } .e-surprise .emoPupil { width: 30%; } .e-alerte .emoPupil { width: 30%; }
 .e-surprise .emoMoji, .e-alerte .emoMoji { font-size: 13cqw; } .ed-quantum .emoMoji { font-size: 12cqw; }
+
+/* Cœur : une mascotte par élément, à la place des pastilles de couleur */
+.coreEls button { padding: 12px 6px 12px; gap: 10px; transition: transform .2s; } .coreEls button:active { transform: scale(.96); }
+.coreEls img { display: block; width: min(100%, 104px); height: auto; aspect-ratio: 1; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--c), 0 8px 18px rgba(8, 28, 80, .2); transition: transform .3s cubic-bezier(.3, 1.5, .5, 1); }
+.coreEls button:hover img { transform: scale(1.06) rotate(-3deg); }
+.coreEls button.sel img { animation: elemBob 2.6s ease-in-out infinite; box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--c), 0 0 26px var(--c); }
+@keyframes elemBob { 50% { transform: translateY(-5px) scale(1.05); } }
+@media (prefers-reduced-motion: reduce) { .coreEls button.sel img { animation: none; } }

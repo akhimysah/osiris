@@ -255,7 +255,7 @@ function corePanel() {
       <div class="coreBar"><u id="coreFill" style="width:${energy}%"></u></div>
     </div>
     <label class="field">Énergie<input id="coreEnergy" type="range" min="0" max="100" value="${energy}"></label>
-    <div class="coreEls">${ELEMENTS.map(([id, label, c]) => `<button type="button" data-lab="element" data-v="${id}" class="${id === el ? 'sel' : ''}" aria-pressed="${id === el}" style="--c:${c}"><i></i>${label}</button>`).join('')}</div>
+    <div class="coreEls">${ELEMENTS.map(([id, label, c]) => `<button type="button" data-lab="element" data-v="${id}" class="${id === el ? 'sel' : ''}" aria-pressed="${id === el}" style="--c:${c}"><img src="e-${id}.webp" alt="" width="360" height="360" loading="lazy">${label}</button>`).join('')}</div>
     ${labNote('Prototype expérimental : le rythme et l’énergie sont simulés. Sur la peluche, un petit moteur de vibration fera sentir ce battement sous la main. Ce n’est pas un appareil médical.')}`;
 }
 function openCore() {
