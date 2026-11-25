@@ -280,6 +280,16 @@
     "Recherche de la position…": ["Looking for the location…", "Buscando la ubicación…"],
     "Position non autorisée ou introuvable.": ["Location not allowed or not found.", "Ubicación no permitida o no encontrada."],
     "Ici, c’est la position de cet appareil qui est utilisée, seulement si vous l’autorisez. Elle reste sur cet appareil et n’est envoyée nulle part. Sur la peluche, la localisation demandera une puce GPS ou le forfait mobile.": ["Here, this device’s location is used, only if you allow it. It stays on this device and is sent nowhere. On the plush, location will need a GPS chip or the mobile plan.", "Aquí se usa la ubicación de este dispositivo, solo si lo permites. Se queda en este dispositivo y no se envía a ningún sitio. En el peluche, la localización necesitará un chip GPS o la tarifa móvil."],
+    "La musique se joue dans l’œil : touchez un morceau, la peluche danse avec le rythme.": ["Music plays in the eye: tap a track, the plush dances to the beat.", "La música suena en el ojo: toca una canción y el peluche baila al ritmo."],
+    "Lecture en cours": ["Now playing", "Reproduciendo"],
+    "Touchez Lecture": ["Tap Play", "Toca Reproducir"],
+    "Ouvrir Spotify": ["Open Spotify", "Abrir Spotify"],
+    "Morceau précédent": ["Previous track", "Canción anterior"],
+    "Morceau suivant": ["Next track", "Canción siguiente"],
+    "Lecture": ["Play", "Reproducir"],
+    "Pause": ["Pause", "Pausa"],
+    "Le morceau ne se charge pas. Vérifiez la connexion.": ["The track will not load. Check the connection.", "La canción no se carga. Comprueba la conexión."],
+    "Morceaux de démonstration, lus depuis cette page. Sur la peluche, la musique viendra des applications de musique du téléphone ou du forfait.": ["Demo tracks, played from this page. On the plush, music will come from the phone’s music apps or the plan.", "Canciones de demostración, reproducidas desde esta página. En el peluche, la música vendrá de las aplicaciones de música del teléfono o de la tarifa."],
   };
 
   // Textes qui contiennent une valeur variable

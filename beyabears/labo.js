@@ -15,6 +15,7 @@ const LAB_APPS = [
   ['dream', 'Nuit', 'c-dream'],
   ['holo', 'Socle', 'c-holo'],
   ['locate', 'Localisation', 'c-locate'],
+  ['music', 'Spotify', 'c-spotify'],
 ];
 const LAB_ICONS = {
   emo: '<circle cx="12" cy="12" r="9"/><path d="M12 16.5s-4.2-2.5-4.2-5.3A2.3 2.3 0 0 1 12 9.9a2.3 2.3 0 0 1 4.2 1.3c0 2.8-4.2 5.3-4.2 5.3z"/>',
@@ -22,6 +23,7 @@ const LAB_ICONS = {
   link: '<circle cx="7" cy="12" r="4"/><circle cx="17" cy="12" r="4"/><path d="M11 12h2"/>',
   memory: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h6M9 13h4"/>',
   dream: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  music: '<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
   locate: '<path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.4"/>',
   holo: '<ellipse cx="12" cy="17.5" rx="8" ry="3"/><path d="M12 3v8M9 8l3 3 3-3"/>',
 };
@@ -445,6 +447,54 @@ function openLocate() {
   locateEye(Boolean(lab.pos)); locatePanel();
 }
 
+// ---------- Musique : les morceaux se jouent dans l'œil ----------
+
+const TRACKS = ['Safi Ma Bgitsh', 'Bared ou Skhoun', 'Ya Bent L’Mdina', 'Lahbib Li Walafto', 'Black9ett'];
+const music = { audio: null, n: 0 };
+const musicTime = (s) => (isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '0:00');
+function musicAudio() {
+  if (music.audio) return music.audio;
+  const a = (music.audio = new Audio());
+  a.preload = 'none';
+  a.addEventListener('ended', () => musicPlay(music.n + 1));
+  ['play', 'pause'].forEach((e) => a.addEventListener(e, () => state.screen === 'music' && (musicEye(), musicPanel())));
+  a.addEventListener('timeupdate', () => {
+    if (state.screen !== 'music') return;
+    const p = a.duration ? a.currentTime / a.duration : 0, bar = $('#musicBar u'), t = $('#musicNow'), ring = $('.musEye');
+    if (bar) bar.style.width = `${p * 100}%`; if (t) t.textContent = `${musicTime(a.currentTime)} / ${musicTime(a.duration)}`; if (ring) ring.style.setProperty('--p', (p * 100).toFixed(1));
+  });
+  a.addEventListener('error', () => state.screen === 'music' && toast('Le morceau ne se charge pas. Vérifiez la connexion.'));
+  return a;
+}
+function musicPlay(n) {
+  const a = musicAudio(); music.n = ((n % TRACKS.length) + TRACKS.length) % TRACKS.length;
+  a.src = `musique/${music.n + 1}.mp3?v=1`; a.play().catch(() => {});
+  musicEye(); musicPanel();
+}
+function musicToggle() { const a = musicAudio(); if (!a.src) return musicPlay(music.n); a.paused ? a.play().catch(() => {}) : a.pause(); }
+function musicStop() { if (music.audio) music.audio.pause(); }
+function musicEye() {
+  const on = music.audio && !music.audio.paused;
+  screen.innerHTML = `<div class="musEye${on ? ' on' : ''}" style="--p:0"><div class="musRing"></div><div class="musDisc"><span class="masc" style="background-position:${$('.musSrc')?.dataset.pos || '0 0'}"></span></div>
+    <div class="musBars"><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><div class="musTag"><b>${esc(TRACKS[music.n])}</b><small>${on ? 'Lecture en cours' : 'Touchez Lecture'}</small></div></div>`;
+  const src = ICON.music.match(/background-position:([^"]+)"/); if (src) $('.musDisc .masc').style.backgroundPosition = src[1];
+}
+function musicPanel() {
+  const a = music.audio, on = a && !a.paused;
+  panel.innerHTML = `${backButton}<span class="pill">Beya Music</span><h2>Musique</h2>
+    <p>La musique se joue dans l’œil : touchez un morceau, la peluche danse avec le rythme.</p>
+    <div class="musCtl"><button type="button" data-lab="musPrev" aria-label="Morceau précédent">⏮</button><button type="button" class="big" data-lab="musToggle" aria-label="${on ? 'Pause' : 'Lecture'}">${on ? '⏸' : '▶'}</button><button type="button" data-lab="musNext" aria-label="Morceau suivant">⏭</button></div>
+    <div class="musBar" id="musicBar"><u></u></div><p class="muted" id="musicNow" style="text-align:center">${a ? `${musicTime(a.currentTime)} / ${musicTime(a.duration)}` : '0:00 / 0:00'}</p>
+    <ol class="musList">${TRACKS.map((t, i) => `<li><button type="button" data-lab="musTrack" data-v="${i}" class="${i === music.n && a && a.src ? 'sel' : ''}"><i>${i === music.n && on ? '♪' : i + 1}</i><b>${esc(t)}</b></button></li>`).join('')}</ol>
+    <div class="row"><a class="btn light" href="https://open.spotify.com/" target="_blank" rel="noopener">Ouvrir Spotify</a></div>
+    ${labNote('Morceaux de démonstration, lus depuis cette page. Sur la peluche, la musique viendra des applications de musique du téléphone ou du forfait.')}`;
+}
+function openMusic() {
+  labClear();
+  focusEye();
+  musicEye(); musicPanel();
+}
+
 // ---------- Gestes ----------
 
 document.addEventListener('click', (event) => {
@@ -472,6 +522,10 @@ document.addEventListener('click', (event) => {
     case 'holo': return holoSet(v);
     case 'element': return (lab.element = v), coreDraw(), corePanel();
     case 'locate': return locateMe();
+    case 'musToggle': return musicToggle();
+    case 'musPrev': return musicPlay(music.n - 1);
+    case 'musNext': return musicPlay(music.n + 1);
+    case 'musTrack': return musicPlay(Number(v));
     case 'holoColor': return (lab.ambiance = v), holoDraw(), holoPanel();
   }
 });

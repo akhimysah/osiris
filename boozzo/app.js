@@ -66,11 +66,10 @@ const APPS = [
 const EXTERNAL = [
   // WhatsApp Web gère les appels audio et vidéo depuis 2026 ; sur téléphone, le lien ouvre l'application.
   ['whatsapp', 'WhatsApp', 'c-wa', 'chat', /Android|iPhone|iPad/i.test(navigator.userAgent) ? 'https://wa.me/' : 'https://web.whatsapp.com/'],
-  ['spotify', 'Spotify', 'c-spotify', 'music', 'https://open.spotify.com/'],
 ];
 // Les mascottes remplacent les pictogrammes : une image ronde par application.
 // Toutes les mascottes tiennent dans une seule image : un seul chargement, donc jamais d'icône vide isolée.
-const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'locate', 'memory', 'phone', 'photo', 'spotify', 'story', 'tiktok', 'torch', 'whatsapp', 'youtube'];
+const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'locate', 'memory', 'music', 'phone', 'photo', 'story', 'tiktok', 'torch', 'whatsapp', 'youtube'];
 MASCOTS.forEach((id, n) => { ICON['m_' + id] = `<span class="masc" style="background-position:${(n % 5) * 25}% ${Math.floor(n / 5) * 25}%"></span>`; });
 APPS.forEach((app) => { if (MASCOTS.includes(app[0])) { ICON[app[0]] = ICON['m_' + app[0]]; app[2] = 'c-masc'; } });
 EXTERNAL.forEach((app) => { if (MASCOTS.includes(app[0])) { app[3] = 'm_' + app[0]; app[2] = 'c-masc'; } });
@@ -183,9 +182,10 @@ function go(name, options = {}) {
   endCall(true, false);
   stopCamera();
   stopSpeaking();
+  if (name !== 'music' && typeof musicStop === 'function') musicStop();
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, locate: openLocate, core: openCore, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, music: openMusic, locate: openLocate, core: openCore, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
 }
 
 function openHome() {
