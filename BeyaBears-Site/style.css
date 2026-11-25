@@ -986,3 +986,38 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 @media (max-width: 1100px) { .mascGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (max-width: 900px) { .mascGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; } .masc:last-child { grid-column: 1 / -1; width: calc(50% - 7px); justify-self: center; } }
 @media (prefers-reduced-motion: reduce) { .masc span { animation: none; } }
+
+/* ---------- La carte du monde des oursons ---------- */
+.carte { margin-top: clamp(24px, 4vw, 44px); }
+.carteHint { text-align: center; color: var(--muted); font-weight: 600; margin: 0 0 12px; } .carteHint span { display: none; }
+.carteScroll { border-radius: 28px; background: linear-gradient(#dcebff, #eef5ff); box-shadow: inset 0 0 0 1px rgba(20, 100, 230, .12); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .carteScroll::-webkit-scrollbar { display: none; }
+.carteIn { position: relative; aspect-ratio: 1000 / 389; min-width: 860px; container-type: inline-size; }
+.carteIn svg { position: absolute; inset: 0; width: 100%; height: 100%; } .carteIn .land { fill: #fff; stroke: #b9d0f5; stroke-width: .8; } .carteIn .lk { stroke: #1464e6; stroke-width: .9; opacity: .55; } .carteIn .dot { fill: #1464e6; stroke: #fff; stroke-width: 1; }
+.pin { position: absolute; width: 4.1cqw; aspect-ratio: 1; transform: translate(-50%, -50%); padding: 0; border: 0; border-radius: 50%; cursor: pointer; background: #fff url(media/pays/vignettes.jpg) no-repeat; box-shadow: 0 0 0 .22cqw #fff, 0 0 0 .42cqw #1464e6, 0 .5cqw 1.2cqw rgba(8, 28, 80, .3); transition: transform .2s cubic-bezier(.3, 1.5, .5, 1), box-shadow .2s; -webkit-tap-highlight-color: transparent; animation: pinPop 3.2s ease-in-out infinite; }
+.pin:nth-child(3n) { animation-delay: -1s; } .pin:nth-child(3n+1) { animation-delay: -2s; }
+.pin:hover, .pin:focus-visible, .pin.on { transform: translate(-50%, -50%) scale(1.45); z-index: 3; box-shadow: 0 0 0 .22cqw #fff, 0 0 0 .5cqw #ff8a1f, 0 .8cqw 2cqw rgba(8, 28, 80, .4); animation: none; }
+.pin b { position: absolute; left: 50%; top: 104%; transform: translateX(-50%); padding: .2cqw .7cqw; border-radius: 99px; background: #0b1020; color: #fff; font: 700 1.05cqw/1.3 var(--body); white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .2s; } .pin:hover b, .pin:focus-visible b { opacity: 1; }
+@keyframes pinPop { 50% { transform: translate(-50%, -56%); } }
+#railMonde .pays { cursor: pointer; }
+.paysBox { border: 0; padding: 0; width: min(94vw, 900px); max-height: 92svh; border-radius: 30px; overflow: auto; background: #fff; color: var(--text); box-shadow: 0 40px 100px rgba(8, 28, 80, .35); }
+.paysBox::backdrop { background: rgba(5, 16, 48, .6); }
+.paysBox[open] { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); animation: paysIn .4s cubic-bezier(.2, .9, .3, 1.2); }
+@keyframes paysIn { from { transform: scale(.7) translateY(40px); opacity: 0; } }
+.paysBox .pic { background: #eef4ff; } .paysBox .pic img { display: block; width: 100%; height: 100%; max-height: 92svh; object-fit: cover; object-position: top; border-radius: 0; }
+.paysBox .txt { padding: clamp(20px, 3vw, 34px); display: flex; flex-direction: column; gap: 14px; }
+.paysBox .hello { align-self: flex-start; padding: 7px 16px; border-radius: 99px; background: #fff1dc; color: #9a5a00; font-weight: 800; }
+.paysBox h3 { margin: 0; font: 800 clamp(1.8rem, 4vw, 2.6rem)/1.05 var(--display); letter-spacing: -.03em; }
+.paysBox dl { margin: 0; display: grid; gap: 12px; } .paysBox dt { font: 800 .74rem var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--eye); } .paysBox dd { margin: 3px 0 0; color: #3d4d73; line-height: 1.5; }
+.paysNav { display: flex; gap: 10px; margin-top: auto; padding-top: 6px; } .paysNav button { height: 48px; flex: 1; border-radius: 99px; border: 1px solid #dbe4f5; background: #fff; color: var(--text); font: 700 1rem var(--body); cursor: pointer; } .paysNav .x { flex: 0 0 48px; font-size: 1.3rem; }
+@media (max-width: 900px) {
+  .carteHint span { display: inline; } .carteIn { min-width: 900px; } .pin b { font-size: 1.2cqw; }
+  .paysBox { margin: auto 0 0; width: 100%; max-width: 100%; border-radius: 28px 28px 0 0; max-height: 90svh; } .paysBox[open] { grid-template-columns: minmax(0, 1fr); animation: sheetUp .32s cubic-bezier(.2, .8, .2, 1); }
+  .paysBox .pic img { max-height: 36svh; aspect-ratio: 4 / 3; } .paysBox .txt { padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) { .pin { animation: none; } }
+
+/* Carte : le nom du pays reste affiché à côté de chaque ourson */
+.pin b { opacity: 1; background: rgba(11, 16, 32, .82); font-size: .95cqw; top: 106%; }
+.pin.lft b { left: auto; right: 118%; top: 50%; transform: translateY(-50%); }
+.paysNav button { font-size: 1.5rem; }
+@media (max-width: 900px) { .pin b { font-size: 1.15cqw; } }
