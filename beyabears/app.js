@@ -2061,8 +2061,7 @@ if (guestMode) {
 } else {
   // L'œil s'ouvre sur ses applications ; un lien peut aussi ouvrir directement l'une d'elles (?go=emo).
   const wanted = params.get('go');
-  // Tout premier lancement : comme un appareil neuf, on commence par créer le compte.
-  go(APPS.some(([id]) => id === wanted) ? wanted : !kiosk && !account() && !store.get('welcomed') ? 'store' : 'menu');
+  go(APPS.some(([id]) => id === wanted) ? wanted : 'menu'); // l'accueil propose la création du compte, sans l'imposer
 }
 if (!guestCallId) {
   watchRings();

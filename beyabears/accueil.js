@@ -78,14 +78,14 @@
       'Histoires et jeux': 'Stories and games', 'Histoires du soir, jeux, assistant vocal et veilleuse.': 'Bedtime stories, games, voice assistant and night light.',
       'Parents aux commandes': 'Parents in control', 'Contacts, horaires et contenus se règlent depuis votre téléphone.': 'Contacts, hours and content are set from your phone.',
       'Inscription gratuite': 'Free sign-up', 'Créez votre <em>compte parent</em>': 'Create your <em>parent account</em>',
-      'Inscrivez-vous pour être prévenu de l’ouverture et recevoir vos accès.': 'Sign up to be told when we open and to receive your access.',
+      'Créez votre compte ici : il ouvre directement votre application BeyaBear’s.': 'Create your account here: it opens your BeyaBear’s application right away.', 'Inscrivez-vous pour être prévenu de l’ouverture et recevoir vos accès.': 'Sign up to be told when we open and to receive your access.',
       'Prénom': 'First name', 'Adresse e-mail': 'Email address', 'Je m’inscris': 'Sign me up',
       'Aucun paiement. Désinscription à tout moment.': 'No payment. Unsubscribe at any time.',
       'L’application BeyaBear’s': 'The BeyaBear’s app', 'BeyaBear’s, <em>à portée de main</em>': 'BeyaBear’s, <em>at your fingertips</em>',
       'L’application fonctionne dès maintenant dans votre navigateur, sans téléchargement. Les versions iPhone et Android arrivent.': 'The app works right now in your browser, with no download. iPhone and Android versions are coming.',
       'Bientôt sur iPhone': 'Coming soon to iPhone', 'Essayez tout de suite': "Try it right now", "Astuce : ajoutez BeyaBear’s à l’écran d’accueil de votre téléphone. Sur iPhone, touchez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu puis « Ajouter à l’écran d’accueil ». Elle s’ouvre alors en plein écran, comme une application.": "Tip: add BeyaBear’s to your phone’s home screen. On iPhone, tap Share then “Add to Home Screen”. On Android, open the menu then “Add to Home screen”. It then opens full screen, like an app.", 'Bientôt sur Android': 'Coming soon to Android',
       'Indiquez votre prénom et une adresse e-mail valide.': 'Enter your first name and a valid email address.',
-      'Merci': 'Thank you', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Your sign-up is saved on this device. Demo: it will be sent when the service opens.',
+      'Merci': 'Thank you', 'Votre compte est prêt sur cet appareil.': 'Your account is ready on this device.', 'Ouvrir mon application': 'Open my application', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Your sign-up is saved on this device. Demo: it will be sent when the service opens.',
       'Démonstration · © 2026': 'Demo · © 2026',
     },
     es: {
@@ -161,14 +161,14 @@
       'Histoires et jeux': 'Cuentos y juegos', 'Histoires du soir, jeux, assistant vocal et veilleuse.': 'Cuentos para dormir, juegos, asistente de voz y luz de noche.',
       'Parents aux commandes': 'Los padres al mando', 'Contacts, horaires et contenus se règlent depuis votre téléphone.': 'Contactos, horarios y contenidos se ajustan desde tu teléfono.',
       'Inscription gratuite': 'Registro gratuito', 'Créez votre <em>compte parent</em>': 'Crea tu <em>cuenta de padre</em>',
-      'Inscrivez-vous pour être prévenu de l’ouverture et recevoir vos accès.': 'Regístrate para enterarte de la apertura y recibir tus accesos.',
+      'Créez votre compte ici : il ouvre directement votre application BeyaBear’s.': 'Crea tu cuenta aquí: abre directamente tu aplicación BeyaBear’s.', 'Inscrivez-vous pour être prévenu de l’ouverture et recevoir vos accès.': 'Regístrate para enterarte de la apertura y recibir tus accesos.',
       'Prénom': 'Nombre', 'Adresse e-mail': 'Correo electrónico', 'Je m’inscris': 'Me registro',
       'Aucun paiement. Désinscription à tout moment.': 'Sin pago. Baja en cualquier momento.',
       'L’application BeyaBear’s': 'La aplicación BeyaBear’s', 'BeyaBear’s, <em>à portée de main</em>': 'BeyaBear’s, <em>al alcance de la mano</em>',
       'L’application fonctionne dès maintenant dans votre navigateur, sans téléchargement. Les versions iPhone et Android arrivent.': 'La aplicación ya funciona en tu navegador, sin descargar nada. Las versiones para iPhone y Android están en camino.',
       'Bientôt sur iPhone': 'Pronto en iPhone', 'Essayez tout de suite': "Pruébalo ahora mismo", "Astuce : ajoutez BeyaBear’s à l’écran d’accueil de votre téléphone. Sur iPhone, touchez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu puis « Ajouter à l’écran d’accueil ». Elle s’ouvre alors en plein écran, comme une application.": "Consejo: añade BeyaBear’s a la pantalla de inicio de tu teléfono. En iPhone, toca Compartir y luego «Añadir a pantalla de inicio». En Android, abre el menú y luego «Añadir a pantalla de inicio». Así se abre a pantalla completa, como una aplicación.", 'Bientôt sur Android': 'Pronto en Android',
       'Indiquez votre prénom et une adresse e-mail valide.': 'Indica tu nombre y un correo electrónico válido.',
-      'Merci': 'Gracias', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Tu registro queda guardado en este dispositivo. Demostración: se enviará cuando abra el servicio.',
+      'Merci': 'Gracias', 'Votre compte est prêt sur cet appareil.': 'Tu cuenta está lista en este dispositivo.', 'Ouvrir mon application': 'Abrir mi aplicación', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Tu registro queda guardado en este dispositivo. Demostración: se enviará cuando abra el servicio.',
       'Démonstration · © 2026': 'Demostración · © 2026',
     },
   };
@@ -197,7 +197,12 @@
     const name = form.prenom.value.trim(), mail = form.email.value.trim();
     if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) { msg.textContent = tr('Indiquez votre prénom et une adresse e-mail valide.'); return; }
     try { localStorage.setItem('boozzo.inscription', JSON.stringify({ name, mail })); } catch {}
-    msg.textContent = tr('Merci') + ' ' + name + ' ! ' + tr('Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.');
+    // Le même compte sert dans l'application : inutile de le recréer dans le Beya Store.
+    try { localStorage.setItem('boozzo.account', JSON.stringify({ email: mail, child: '', parent: name })); localStorage.setItem('boozzo.email', JSON.stringify(mail)); } catch {}
+    msg.textContent = tr('Merci') + ' ' + name + ' ! ' + tr('Votre compte est prêt sur cet appareil.') + ' ';
+    const open = document.createElement('a');
+    open.className = 'btn go big'; open.href = './?app=1' + (lang !== 'fr' ? '&lang=' + lang : ''); open.textContent = tr('Ouvrir mon application'); open.style.marginTop = '12px'; open.style.display = 'inline-flex';
+    msg.append(document.createElement('br'), open);
   }, true);
 
   // ---------- L'œil vivant : l'écran de l'ourson et le grand œil changent de fonction ----------

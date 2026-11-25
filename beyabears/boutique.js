@@ -14,7 +14,8 @@ const APP_NOTES = {
 };
 const appsOn = () => { const list = store.get('apps'); return Array.isArray(list) ? [...new Set([...list, 'secure', 'store'])] : PREINSTALLED; };
 const appOn = (id) => appsOn().includes(id);
-const account = () => store.get('account', null);
+// Le compte vient du Beya Store ou de l'inscription faite sur la page de présentation : c'est le même.
+const account = () => { const me = store.get('account', null); if (me) return me; const sign = store.get('inscription', null); return sign && sign.mail ? { email: sign.mail, child: '', parent: sign.name || '' } : null; };
 const storeIcon = (id) => { const a = APPS.find(([x]) => x === id), e = EXTERNAL.find(([x]) => x === id); return a ? `<i class="${a[2]}">${ICON[id]}</i>` : e ? `<i class="${e[2]}">${ICON[e[3]]}</i>` : `<i class="c-store">${ICON.store}</i>`; };
 
 function storeEye(html) { screen.innerHTML = `<div class="storeEye">${html}</div>`; }
