@@ -75,7 +75,7 @@ eye.append(kbButton);
 const kbField = () => panel.querySelector('form input:not([type=checkbox]):not([type=hidden]):not([type=password])');
 kbButton.addEventListener('click', (event) => { event.stopPropagation(); kbOpen(kbField()); });
 new MutationObserver(() => {
-  kbButton.hidden = !kbField() || ['home', 'menu', 'games'].includes(state.screen);
+  kbButton.hidden = !kbField() || ['home', 'menu', 'games'].includes(state.screen) || (state.screen === 'face' && !kiosk); // Visages : rien ne doit couvrir l'image, le prénom se saisit dans le panneau
   if (kb.input && !kb.input.isConnected) kbClose();
 }).observe(panel, { childList: true, subtree: true });
 

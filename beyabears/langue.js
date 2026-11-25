@@ -65,9 +65,11 @@ const PAROLES = {
 };
 const BACK = '<button class="back" data-go="menu" type="button">‹ Accueil BeyaBear’s</button>';
 Object.assign(PAROLES.en.ui, { [BACK]: BACK.replace('Accueil BeyaBear’s', 'BeyaBear’s home'), Histoire: 'Story', Histoires: 'Stories', Assistant: 'Assistant', 'Arrêter l’histoire': 'Stop the story',
-  'Touchez une histoire : BeyaBear’s la raconte à voix haute, et elle défile dans son œil.': 'Tap a story: BeyaBear’s tells it out loud, and it scrolls in its eye.' });
+  'Touchez une histoire : BeyaBear’s la raconte à voix haute, et elle défile dans son œil.': 'Tap a story: BeyaBear’s tells it out loud, and it scrolls in its eye.' ,
+  'Touchez une histoire : BeyaBear’s la raconte à voix haute, dans un décor animé. Touchez la lune, les fleurs ou le nuage : ils réagissent.': 'Tap a story: BeyaBear’s tells it out loud in an animated scene. Tap the moon, the flowers or the cloud: they react.' });
 Object.assign(PAROLES.es.ui, { [BACK]: BACK.replace('Accueil BeyaBear’s', 'Inicio BeyaBear’s'), Histoire: 'Cuento', Histoires: 'Cuentos', Assistant: 'Asistente', 'Arrêter l’histoire': 'Parar el cuento',
-  'Touchez une histoire : BeyaBear’s la raconte à voix haute, et elle défile dans son œil.': 'Toca un cuento: BeyaBear’s lo cuenta en voz alta y se muestra en su ojo.' });
+  'Touchez une histoire : BeyaBear’s la raconte à voix haute, et elle défile dans son œil.': 'Toca un cuento: BeyaBear’s lo cuenta en voz alta y se muestra en su ojo.' ,
+  'Touchez une histoire : BeyaBear’s la raconte à voix haute, dans un décor animé. Touchez la lune, les fleurs ou le nuage : ils réagissent.': 'Toca un cuento: BeyaBear’s lo cuenta en voz alta en un decorado animado. Toca la luna, las flores o la nube: reaccionan.' });
 const L = (text) => PAROLES[DEMO_LANG]?.ui[text] || text;
 if (PAROLES[DEMO_LANG]) {
   STORIES.splice(0, STORIES.length, ...PAROLES[DEMO_LANG].stories);

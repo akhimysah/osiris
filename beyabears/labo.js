@@ -398,11 +398,22 @@ const HOLO_MODES = { veille: 'Socle en veille', charge: 'Recharge en cours', ple
 function holoDraw() {
   const level = lab.battery ?? 35, color = lab.ambiance || HOLO_COLORS[0], mode = lab.holo || 'veille';
   const clock = new Date().toLocaleTimeString(document.documentElement.lang || 'fr', { hour: '2-digit', minute: '2-digit' });
-  screen.innerHTML = `<div class="holo h-${mode}" style="--c:${color};--p:${level}">
+  // Même mode : on met seulement à jour le niveau, pour que la vague et les bulles ne repartent pas de zéro.
+  const live = screen.querySelector('.holo');
+  if (live && live.dataset.mode === mode) {
+    live.style.setProperty('--c', color); live.style.setProperty('--p', level);
+    live.querySelector('.holoCore b').textContent = level;
+    live.querySelector('.holoCore em').textContent = clock;
+    return;
+  }
+  const bits = (n) => Array.from({ length: n }, () => '<u></u>').join('');
+  screen.innerHTML = `<div class="holo h-${mode}" data-mode="${mode}" style="--c:${color};--p:${level}">
+    <div class="holoTank"><i class="w1"></i><i class="w2"></i><div class="holoBub">${bits(7)}</div></div>
+    ${mode === 'projection' ? `<div class="holoBeam"></div><div class="holoStars">${bits(6)}</div>` : ''}
     <div class="holoRing"></div>
-    <div class="holoCore"><span><b>${level}</b>%</span><small>${HOLO_MODES[mode]}</small><em>${clock}</em></div>
     ${mode === 'enceinte' ? '<i class="emoWave"></i><i class="emoWave"></i><i class="emoWave"></i>' : ''}
-    ${mode === 'projection' ? '<div class="holoStars"><u></u><u></u><u></u><u></u><u></u><u></u></div>' : ''}
+    <div class="holoCore">${mode === 'charge' ? '<svg class="holoBolt" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 5 13.5h5.5L9.5 22 19 9.5h-6z"/></svg>' : ''}<span><b>${level}</b>%</span><small>${HOLO_MODES[mode]}</small>${mode === 'enceinte' ? `<div class="holoEq">${bits(9)}</div>` : ''}<em>${clock}</em></div>
+    ${mode === 'plein' ? `<div class="holoSpark">${bits(8)}</div>` : ''}
   </div>`;
 }
 function holoPanel() {
@@ -410,6 +421,7 @@ function holoPanel() {
   panel.innerHTML = `${backButton}<span class="pill">Beya Holo</span><h2>Socle</h2>
     <p>Le socle où BeyaBear’s se pose le soir : il recharge la peluche, diffuse une lumière d’ambiance et peut servir d’enceinte.</p>
     <div class="dockShape" style="--c:${color}"><i></i></div>
+    <p class="muted coreHint">Touchez l’œil : la lumière fait des vagues.</p>
     <div class="row wrap"><button class="btn${mode === 'charge' ? '' : ' light'}" type="button" data-lab="holo" data-v="charge">Simuler la recharge</button><button class="btn light" type="button" data-lab="holo" data-v="veille">Arrêter</button></div>
     <h3 class="sub">Lumière <em>d’ambiance</em></h3>
     <div class="colors">${HOLO_COLORS.map((c, i) => `<button type="button" data-lab="holoColor" data-v="${c}" class="${c === color ? 'sel' : ''}" aria-pressed="${c === color}" style="background:${c}" aria-label="Couleur ${i + 1}"></button>`).join('')}</div>

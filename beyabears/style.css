@@ -787,3 +787,102 @@ body.hearing .ghost.mic { box-shadow: 0 0 0 3px var(--danger), 0 0 18px var(--da
 .coreEls { gap: 10px; }
 .coreEls button { border: 0; border-radius: 22px; background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--c) 16%, #fff)); box-shadow: inset 0 2px 0 #fff, inset 0 -4px 0 color-mix(in srgb, var(--c) 30%, #e3e9f6), 0 8px 18px rgba(20, 40, 90, .13); transition: transform .28s cubic-bezier(.3, 1.6, .5, 1), box-shadow .28s; -webkit-tap-highlight-color: transparent; }
 .coreEls button.sel { border: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 24%, #fff), color-mix(in srgb, var(--c) 46%, #fff)); box-shadow: inset 0 2px 0 rgba(255, 255, 255, .8), 0 0 0 3px var(--c), 0 16px 28px color-mix(in srgb, var(--c) 48%, transparent); transform: translateY(-5px) scale(1.04); z-index: 1; }
+
+/* ---------- Assistant : l'anneau lumineux (neon.webp) tourne autour du texte ---------- */
+.say.assist { background: #02040c; padding: 0; }
+.say.assist::before { content: ""; position: absolute; inset: -2%; background: url(neon.webp) center / cover no-repeat; animation: assistTurn 48s linear infinite; }
+.say.assist::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle, #030814f2 0 27%, #03081499 38%, transparent 50%); }
+.say.assist > span { position: relative; z-index: 1; max-width: 46cqw; text-shadow: 0 0 3cqw #2e8bffaa; }
+.say.assist.long::before { opacity: .45; } .say.assist.long::after { background: radial-gradient(circle, #030814f5 0 40%, #030814b0 60%, transparent 76%); } .say.assist.long > span { max-width: 62cqw; }
+.listening .say.assist::before { animation: assistTurn 12s linear infinite, assistPulse 1.1s ease-in-out infinite; }
+.thinking .say.assist::before { animation: assistTurn 5s linear infinite; }
+@keyframes assistTurn { to { transform: rotate(360deg); } } @keyframes assistPulse { 50% { filter: brightness(1.5) saturate(1.3); } }
+
+/* ---------- Visages : rien sur l'image ; un simple voyant indique l'état ---------- */
+body:not(.kiosk) .faceBadge { bottom: 5cqw; width: 3.4cqw; height: 3.4cqw; padding: 0; font-size: 0; background: #ffffff66; border: .5cqw solid #fff; transition: background .3s; }
+body:not(.kiosk) .faceBadge[data-s="vu"] { background: #fbbf24; } body:not(.kiosk) .faceBadge[data-s="ok"] { background: #34d399; box-shadow: 0 0 3cqw #34d399; }
+
+/* ---------- Heure : cadrans ---------- */
+.handClock, .neonClock, .skyClock { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; }
+.handClock svg { width: 100%; height: 100%; } .handClock text { font: 800 9px Lato, system-ui, sans-serif; fill: #14224f; }
+.handClock .sec { transform-origin: 50px 50px; animation: assistTurn 60s linear infinite; }
+.neonClock { background: radial-gradient(circle, #101a44, #03040c 76%); align-content: center; gap: 1cqw; }
+.neonClock svg { position: absolute; inset: 0; width: 100%; height: 100%; } .neonClock circle { fill: none; stroke-width: 2.2; stroke-linecap: round; }
+.neonClock .track { stroke: #ffffff14; } .neonClock .run { stroke: #38e1ff; stroke-dasharray: 60; stroke-dashoffset: 60; filter: drop-shadow(0 0 1.4px #38e1ff); animation: neonRun 60s linear infinite; }
+@keyframes neonRun { to { stroke-dashoffset: 0; } }
+.neonClock b { position: relative; font-size: 25cqw; line-height: 1; font-weight: 900; letter-spacing: -.02em; background: linear-gradient(120deg, #38e1ff, #7c8bff 55%, #ff6bd6); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 3cqw #4f7dffaa); }
+.neonClock small { position: relative; font-size: 4.4cqw; letter-spacing: .06em; text-transform: uppercase; opacity: .75; }
+.skyClock svg { position: absolute; inset: 0; width: 100%; height: 100%; } .skyClock .tw { animation: blink 2.6s ease-in-out infinite; }
+.skyClock.m-jour { background: linear-gradient(#4aa8f0, #bfe6ff 62%, #f3fbff); } .skyClock.m-aube { background: linear-gradient(#5b62c9, #ff9d6c 58%, #ffd9a0); } .skyClock.m-soir { background: linear-gradient(#3a6fd8, #ffb27a 60%, #ffe0a8); } .skyClock.m-nuit { background: linear-gradient(#070b2a, #1d2466 60%, #3b3f8f); }
+.skyClock .h1 { fill: #58b865; } .skyClock .h2 { fill: #2f8f4a; } .skyClock .cloud { fill: #fff; opacity: .9; animation: skyDrift 26s ease-in-out infinite alternate; }
+.skyClock.m-nuit .h1 { fill: #1c3a55; } .skyClock.m-nuit .h2 { fill: #122840; } .skyClock.m-nuit .cloud { opacity: .18; } .skyClock.m-nuit .bite { fill: #121848; } .skyClock.m-aube .bite { fill: #6a66c4; }
+.skyClock.m-aube .h1, .skyClock.m-soir .h1 { fill: #4a9a5c; } .skyClock.m-aube .h2, .skyClock.m-soir .h2 { fill: #2a7444; }
+@keyframes skyDrift { to { transform: translateX(34px); } }
+.skyClock span { position: relative; margin-top: 46cqw; display: grid; justify-items: center; color: #fff; text-shadow: 0 .6cqw 2cqw #0009; }
+.skyClock span small { font-size: 4.6cqw; font-weight: 700; letter-spacing: .04em; } .skyClock span b { font-size: 21cqw; line-height: 1; font-weight: 900; }
+.clockStyles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 10px 0 14px; }
+.clockStyles button { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 18px; border: 2px solid #d9e3fb; background: #fff; color: #14224f; font: 700 .95rem Lato, system-ui, sans-serif; cursor: pointer; box-shadow: 0 6px 16px #1b2f6a14; transition: transform .15s, border-color .15s; }
+.clockStyles button.sel { border-color: #2e63e0; box-shadow: 0 8px 20px #2e63e033; } .clockStyles button:active { transform: scale(.97); }
+.clockStyles i { flex: 0 0 38px; height: 38px; border-radius: 50%; border: 3px solid #14224f; }
+.ck-led { background: radial-gradient(circle, #ff3b2b 0 18%, #1a0605 20%); } .ck-aiguilles { background: conic-gradient(from 60deg, #14224f 0 4%, #fbf1da 0) ; } .ck-neon { background: radial-gradient(circle, #03040c 52%, #38e1ff 54% 64%, #03040c 66%); } .ck-ciel { background: radial-gradient(circle at 68% 34%, #ffcf3f 0 16%, transparent 18%), linear-gradient(#4aa8f0 62%, #58b865 0); }
+
+/* ---------- Socle : la lumière remplit l'œil comme un liquide ---------- */
+.holoTank { position: absolute; inset: 0; overflow: hidden; }
+.holoTank .w1, .holoTank .w2 { position: absolute; left: -60cqw; width: 220cqw; height: 220cqw; top: calc((100 - var(--p)) * .86cqw + 7cqw); border-radius: 43%; background: var(--c); opacity: .5; animation: assistTurn 9s linear infinite; transition: top .5s ease-out; }
+.holoTank .w2 { border-radius: 40%; opacity: .32; animation-duration: 13s; animation-direction: reverse; }
+.holo.slosh .w1 { animation-duration: 1.6s; } .holo.slosh .w2 { animation-duration: 2.2s; }
+.holoBub u { position: absolute; bottom: -4cqw; width: 2.4cqw; height: 2.4cqw; border-radius: 50%; border: .4cqw solid #fff; opacity: 0; }
+.h-charge .holoBub u, .holo.slosh .holoBub u { animation: holoBub 2.4s ease-in infinite; }
+.holoBub u:nth-child(1) { left: 22%; } .holoBub u:nth-child(2) { left: 36%; animation-delay: .5s !important; width: 1.6cqw; height: 1.6cqw; } .holoBub u:nth-child(3) { left: 48%; animation-delay: 1.1s !important; } .holoBub u:nth-child(4) { left: 60%; animation-delay: .3s !important; width: 1.8cqw; height: 1.8cqw; } .holoBub u:nth-child(5) { left: 72%; animation-delay: 1.5s !important; } .holoBub u:nth-child(6) { left: 30%; animation-delay: 1.8s !important; width: 1.4cqw; height: 1.4cqw; } .holoBub u:nth-child(7) { left: 66%; animation-delay: .9s !important; }
+@keyframes holoBub { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .9; } 100% { transform: translateY(calc(var(--p) * -0.8cqw - 6cqw)); opacity: 0; } }
+.holo .holoRing { inset: 3%; -webkit-mask-image: radial-gradient(transparent 66%, #000 67%); mask-image: radial-gradient(transparent 66%, #000 67%); }
+.holoCore { text-shadow: 0 .4cqw 2.4cqw #000b; } .holoCore span { color: #fff; }
+.holoBolt { width: 11cqw; height: 11cqw; fill: #ffe14a; filter: drop-shadow(0 0 2cqw #ffe14a); animation: holoBolt .9s ease-in-out infinite; } @keyframes holoBolt { 50% { transform: scale(1.18) rotate(-6deg); opacity: .75; } }
+.holoEq { display: flex; align-items: flex-end; gap: 1.2cqw; height: 11cqw; } .holoEq u { width: 2cqw; height: 100%; border-radius: 1cqw; background: #fff; transform-origin: bottom; animation: holoEq .7s ease-in-out infinite alternate; }
+.holoEq u:nth-child(2n) { animation-duration: .5s; } .holoEq u:nth-child(3n) { animation-duration: .9s; animation-delay: -.3s; } .holoEq u:nth-child(4n+1) { animation-delay: -.5s; }
+@keyframes holoEq { from { transform: scaleY(.18); } to { transform: scaleY(1); } }
+.holoBeam { position: absolute; inset: -20%; background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c) 34%, transparent) 0 8deg, transparent 8deg 30deg); -webkit-mask-image: radial-gradient(#000, transparent 70%); mask-image: radial-gradient(#000, transparent 70%); animation: assistTurn 24s linear infinite; }
+.holoSpark u { position: absolute; left: 50%; top: 50%; width: 2.2cqw; height: 2.2cqw; border-radius: 50%; background: #fff; animation: holoSpark 1.8s ease-out infinite; }
+.holoSpark u:nth-child(1) { --a: 0deg; } .holoSpark u:nth-child(2) { --a: 45deg; animation-delay: .2s; } .holoSpark u:nth-child(3) { --a: 90deg; animation-delay: .5s; } .holoSpark u:nth-child(4) { --a: 135deg; animation-delay: .1s; } .holoSpark u:nth-child(5) { --a: 180deg; animation-delay: .7s; } .holoSpark u:nth-child(6) { --a: 225deg; animation-delay: .4s; } .holoSpark u:nth-child(7) { --a: 270deg; animation-delay: .9s; } .holoSpark u:nth-child(8) { --a: 315deg; animation-delay: .6s; }
+@keyframes holoSpark { 0% { transform: rotate(var(--a)) translateY(-20cqw) scale(.4); opacity: 1; } 100% { transform: rotate(var(--a)) translateY(-44cqw) scale(1.2); opacity: 0; } }
+
+/* ---------- Histoires : scènes animées ---------- */
+.say.story[data-scene] { padding: 0; display: block; background: #0b1230; }
+.say.story[data-scene] .scene, .say.story[data-scene] .scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.say.story[data-scene] > span { position: absolute; left: 50%; bottom: 12cqw; transform: translateX(-50%); width: 62cqw; padding: 2.6cqw 3.6cqw; border-radius: 5cqw; background: #0a1030d6; font-size: 4.8cqw; line-height: 1.25; text-align: center; box-shadow: 0 1cqw 4cqw #0006; }
+.say.story[data-scene].long > span { font-size: 3.9cqw; }
+.scene [data-tap] { cursor: pointer; }
+.sTw { animation: blink 2.4s ease-in-out infinite; } .tapped .sTw { animation: sPop .9s ease-out; }
+@keyframes sPop { 30% { transform: scale(4); filter: drop-shadow(0 0 3px #fff); } }
+.sMoon > circle:nth-child(2) { transition: filter .3s; } .sMoon.tapped { animation: sWobble 1.2s ease-in-out; transform-box: fill-box; transform-origin: center; }
+@keyframes sWobble { 20% { rotate: -12deg; scale: 1.12; } 50% { rotate: 10deg; scale: 1.06; } 80% { rotate: -4deg; } }
+.sWave { animation: sWave 6s linear infinite; } .sWave.back { animation-duration: 9s; animation-direction: reverse; } @keyframes sWave { to { translate: -50px 0; } }
+.sBob { animation: sBob 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 90%; } @keyframes sBob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-4px) rotate(3deg); } }
+.sBoat.tapped .sBob { animation: sJump 1.2s ease-out; } @keyframes sJump { 30% { transform: translateY(-22px) rotate(-10deg); } 60% { transform: translateY(2px) rotate(6deg); } }
+.sShine { animation: blink 3s ease-in-out infinite; }
+.sRays { animation: assistTurn 22s linear infinite; } .sSun.tapped .sRays { animation-duration: 1.2s; }
+.sDrift { animation: skyDrift 18s ease-in-out infinite alternate; }
+.sSway { animation: sSway 3.2s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; } @keyframes sSway { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+.tapped .sBloom { animation: sBloom 1.2s ease-out; transform-box: fill-box; transform-origin: center; } @keyframes sBloom { 30% { scale: 2.1; rotate: 90deg; } 70% { scale: .9; } }
+.sHop { animation: sPeek 5s ease-in-out infinite; } @keyframes sPeek { 0%, 100% { transform: translateY(9px); } 40%, 70% { transform: translateY(-3px); } }
+.sPeek.tapped .sHop { animation: sJump 1.2s ease-out; }
+.sFly { animation: sFly 11s ease-in-out infinite; } @keyframes sFly { 0% { transform: translate(30px, 120px); } 25% { transform: translate(90px, 92px); } 50% { transform: translate(160px, 118px); } 75% { transform: translate(104px, 140px); } 100% { transform: translate(30px, 120px); } }
+.sFlap { animation: sFlap .28s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; } @keyframes sFlap { to { transform: scaleX(.35); } }
+.tapped .sFlap { animation-duration: .08s; }
+.sFloat { animation: sFloat 5s ease-in-out infinite alternate; } @keyframes sFloat { from { transform: translate(-10px, 0); } to { transform: translate(10px, -5px); } }
+.sRain path { opacity: 0; } .raining .sRain path { animation: sRain .9s linear infinite; } @keyframes sRain { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(62px); opacity: 0; } }
+.sBow { opacity: 0; transition: opacity 1.6s 1s; } .raining .sBow { opacity: .85; }
+.sGrow { transform: scale(.45); transform-box: fill-box; transform-origin: 50% 100%; transition: transform 1.8s .6s cubic-bezier(.3, 1.6, .5, 1); } .raining .sGrow { transform: scale(1.15); }
+.sSmile { opacity: 0; transition: opacity .4s; } .sWorry { transition: opacity .4s; } .raining .sSmile { opacity: 1; } .raining .sWorry { opacity: 0; }
+.storyPick { position: absolute; inset: 0; background: radial-gradient(circle at 50% 110%, #2b3f7a, #0b1230 70%); }
+.storyPick small { position: absolute; left: 0; right: 0; top: 13cqw; text-align: center; font-size: 4.4cqw; font-weight: 700; letter-spacing: .04em; }
+.storyPick .pick { position: absolute; width: 33cqw; height: 33cqw; padding: 0; border-radius: 50%; overflow: hidden; border: 1cqw solid #fff; box-shadow: 0 2cqw 5cqw #0008; animation: pickFloat 4s ease-in-out infinite alternate; }
+.storyPick .pick svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+.storyPick .p0 { left: 13cqw; top: 23cqw; } .storyPick .p1 { left: 54cqw; top: 23cqw; animation-delay: -1.3s; } .storyPick .p2 { left: 33.5cqw; top: 57cqw; animation-delay: -2.6s; }
+.storyPick .pick:active { scale: .94; } @keyframes pickFloat { to { transform: translateY(-2cqw); } }
+.storyCards { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 12px; }
+.storyCards button { width: 100%; display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 14px; padding: 10px 16px 10px 10px; border-radius: 22px; border: 2px solid #d9e3fb; background: linear-gradient(#fff, #f3f7ff); color: #14224f; text-align: left; cursor: pointer; box-shadow: 0 8px 18px #1b2f6a1a, inset 0 -3px 0 #dfe8fb; transition: transform .15s, border-color .15s; }
+.storyCards button:active { transform: translateY(2px) scale(.99); } .storyCards button.sel { border-color: #2e63e0; background: linear-gradient(#eef4ff, #dfeaff); }
+.storyCards b { font: 800 1.02rem/1.2 Lato, system-ui, sans-serif; } .storyCards em { font-style: normal; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #2e63e0; color: #fff; font-size: .85rem; }
+.storyThumb { display: block; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 3px solid #fff; box-shadow: 0 4px 10px #1b2f6a33; } .storyThumb svg { width: 100%; height: 100%; display: block; }
+@media (prefers-reduced-motion: reduce) { .scene *, .storyPick *, .storyThumb *, .say.assist::before, .handClock .sec, .neonClock .run, .skyClock * { animation: none !important; } }

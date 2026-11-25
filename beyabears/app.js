@@ -124,7 +124,9 @@ function toast(message) {
   toast.timer = setTimeout(() => ($('#toast').textContent = ''), 4500);
 }
 function sayInEye(text, label = '') {
-  screen.innerHTML = `<div class="say${text.length > 90 ? ' long' : ''}${label === 'Histoire' ? ' story' : ''}"><span>${label ? `<small>${esc(L(label))}</small>` : ''}${esc(text)}</span></div>`;
+  // Une histoire en cours garde sa scène animée : seul le texte change (histoires.js).
+  if (label === 'Histoire' && typeof storyEye === 'function' && storyEye(text)) return;
+  screen.innerHTML = `<div class="say${text.length > 90 ? ' long' : ''}${label === 'Histoire' ? ' story' : ''}${label !== 'Histoire' && state.screen === 'chat' ? ' assist' : ''}"><span>${label ? `<small>${esc(L(label))}</small>` : ''}${esc(text)}</span></div>`;
 }
 function applyColor() {
   $('#iris').style.filter = `hue-rotate(${COLORS[state.color][1]}deg) saturate(1.25)`;
@@ -259,20 +261,60 @@ function ledClock(date = new Date()) {
   return `<div class="led" role="img" aria-label="Il est ${date.getHours()} heures ${date.getMinutes()}"><svg viewBox="0 0 49 18">
     ${ledDigit(h1, 0)}${ledDigit(h2, 11.5)}<g class="colon"><rect x="23.6" y="5" width="1.8" height="1.8" rx=".5" class="on"/><rect x="23.6" y="11.2" width="1.8" height="1.8" rx=".5" class="on"/></g>${ledDigit(m1, 27.5)}${ledDigit(m2, 39)}</svg></div>`;
 }
+// Quatre cadrans au choix ; le choix est gardé sur l'appareil.
+const CLOCK_STYLES = [['led', 'Rouge rétro'], ['aiguilles', 'Aiguilles'], ['neon', 'Néon'], ['ciel', 'Jour et nuit']];
+const hhmm = (date) => `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+function handClock(date) {
+  const s = date.getSeconds(), m = date.getMinutes() + s / 60, h = (date.getHours() % 12) + m / 60;
+  const ticks = Array.from({ length: 60 }, (_, i) => `<path d="M50 ${i % 5 ? 7.5 : 6}v${i % 5 ? 1.6 : 4}" stroke="#1b2550" stroke-width="${i % 5 ? 0.5 : 1.3}" stroke-linecap="round" opacity="${i % 5 ? 0.45 : 1}" transform="rotate(${i * 6} 50 50)"/>`).join('');
+  const nums = [[12, 50, 19], [3, 84, 53.4], [6, 50, 87.5], [9, 16, 53.4]].map(([n, x, y]) => `<text x="${x}" y="${y}" text-anchor="middle">${n}</text>`).join('');
+  return `<div class="handClock" role="img" aria-label="Il est ${date.getHours()} heures ${date.getMinutes()}"><svg viewBox="0 0 100 100">
+    <defs><radialGradient id="hcFace" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#fffdf5"/><stop offset=".7" stop-color="#f6e7c8"/><stop offset="1" stop-color="#e2c796"/></radialGradient></defs>
+    <circle cx="50" cy="50" r="50" fill="#14224f"/><circle cx="50" cy="50" r="46" fill="url(#hcFace)"/>${ticks}${nums}
+    <path d="M50 50V27" stroke="#14224f" stroke-width="4" stroke-linecap="round" transform="rotate(${h * 30} 50 50)"/>
+    <path d="M50 50V14" stroke="#2e63e0" stroke-width="2.6" stroke-linecap="round" transform="rotate(${m * 6} 50 50)"/>
+    <g class="sec" style="animation-delay:-${s}s"><path d="M50 58V12" stroke="#ff4d3d" stroke-width="1" stroke-linecap="round"/></g>
+    <circle cx="50" cy="50" r="5.4" fill="#0b1026"/><circle cx="50" cy="50" r="3.8" fill="#2e8bff"/><circle cx="50" cy="50" r="1.8" fill="#061022"/><circle cx="51.3" cy="48.7" r=".9" fill="#fff"/></svg></div>`;
+}
+function neonClock(date) {
+  const s = date.getSeconds(), day = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  return `<div class="neonClock" role="img" aria-label="Il est ${date.getHours()} heures ${date.getMinutes()}"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="track"/><circle cx="50" cy="50" r="44" class="run" pathLength="60" style="animation-delay:-${s}s" transform="rotate(-90 50 50)"/></svg><b>${hhmm(date)}</b><small>${esc(day)}</small></div>`;
+}
+function skyClock(date) {
+  const t = date.getHours() + date.getMinutes() / 60, day = t >= 7 && t < 19;
+  // Le soleil (ou la lune) suit un arc : lever à gauche, zénith en haut, coucher à droite.
+  const k = day ? (t - 7) / 12 : ((t + 5) % 24) / 12, x = 14 + k * 72, y = 44 - Math.sin(k * Math.PI) * 26;
+  const mood = t < 7 ? 'nuit' : t < 9 ? 'aube' : t < 17 ? 'jour' : t < 19 ? 'soir' : t < 21 ? 'aube' : 'nuit';
+  const hello = t < 5 ? 'Bonne nuit' : t < 12 ? 'Bonjour' : t < 18 ? 'Bon après-midi' : t < 22 ? 'Bonsoir' : 'Bonne nuit';
+  const stars = day ? '' : [[20, 18], [38, 30], [62, 14], [80, 26], [50, 36], [12, 40], [88, 44]].map(([sx, sy], i) => `<circle class="tw" cx="${sx}" cy="${sy}" r=".9" fill="#fff" style="animation-delay:${i * 0.4}s"/>`).join('');
+  const orb = day
+    ? `<circle cx="${x}" cy="${y}" r="15" fill="#fff3b0" opacity=".35"/><circle cx="${x}" cy="${y}" r="8.5" fill="#ffcf3f"/><circle cx="${x - 2.4}" cy="${y - 2.4}" r="3" fill="#fff6c9" opacity=".8"/>`
+    : `<circle cx="${x}" cy="${y}" r="14" fill="#fff3b0" opacity=".25"/><circle cx="${x}" cy="${y}" r="8" fill="#fff0b8"/><circle cx="${x + 3.4}" cy="${y - 2.6}" r="7" class="bite"/>`;
+  return `<div class="skyClock m-${mood}" role="img" aria-label="Il est ${date.getHours()} heures ${date.getMinutes()}"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">${stars}${orb}
+    <path class="cloud" d="M20 30q3-6 9-3q5-5 10 1q6 0 5 5H18q-2-3 2-3z"/><path class="h1" d="M0 70q26-16 52-5t48-8v43H0z"/><path class="h2" d="M0 80q30-12 55-3t45-6v29H0z"/></svg><span><small>${hello}</small><b>${hhmm(date)}</b></span></div>`;
+}
+const CLOCK_FACES = { led: ledClock, aiguilles: handClock, neon: neonClock, ciel: skyClock };
 let clockTimer = 0;
 function openClock() {
+  const style = CLOCK_FACES[store.get('clock')] ? store.get('clock') : 'led';
+  let shown = '';
   const show = () => {
     if (state.screen !== 'clock') return clearInterval(clockTimer);
-    screen.innerHTML = ledClock();
+    const now = new Date(), key = style + hhmm(now);
+    if (key === shown) return; // on ne redessine qu'au changement de minute : les animations restent fluides
+    shown = key;
+    screen.innerHTML = CLOCK_FACES[style](now);
   };
   clearInterval(clockTimer);
-  clockTimer = setInterval(show, 5000);
+  clockTimer = setInterval(show, 2000);
   show();
   focusEye();
   const now = new Date();
   panel.innerHTML = `${backButton}<h2>Heure</h2>
     <p>Il est ${now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}, ${now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.</p>
-    <p class="muted">L’heure s’affiche dans l’œil en grands chiffres rouges. Dites « Beya, quelle heure est-il ? » pour l’afficher.</p>`;
+    <h3 class="sub">Choisir <em>le cadran</em></h3>
+    <div class="clockStyles">${CLOCK_STYLES.map(([id, label]) => `<button type="button" data-clock="${id}" class="${id === style ? 'sel' : ''}" aria-pressed="${id === style}"><i class="ck-${id}"></i><span>${label}</span></button>`).join('')}</div>
+    <p class="muted">Dites « Beya, quelle heure est-il ? » pour afficher l’heure dans l’œil.</p>`;
 }
 
 // ---------- Torche : l'œil éclaire ----------
@@ -549,7 +591,10 @@ function faceStatus(text) {
   faceState.status = text;
   if ($('#faceStatus')) $('#faceStatus').textContent = text;
   const badge = $('.badge', screen);
-  if (badge) badge.textContent = text;
+  if (badge) {
+    badge.textContent = text;
+    badge.dataset.s = /^Bonjour/.test(text) ? 'ok' : /^Visage/.test(text) ? 'vu' : '';
+  }
 }
 async function openFaces() {
   Object.assign(faceState, { ready: false, status: 'Préparation de la reconnaissance…', last: '' });
@@ -565,7 +610,7 @@ async function openFaces() {
     sayInEye(message, 'Visages');
     return faceStatus(message);
   }
-  screen.innerHTML = '<video class="mirror" autoplay playsinline muted></video><span class="badge"></span>';
+  screen.innerHTML = '<video class="mirror" autoplay playsinline muted></video><span class="badge faceBadge"></span>';
   const video = $('video', screen);
   showStream(video, state.camera);
   focusEye();
@@ -938,12 +983,12 @@ let jokeIndex = 0;
 function openStories({ play = false } = {}) {
   renderStories();
   if (play) return playStory(storyIndex++ % STORIES.length);
-  sayInEye(L('Choisis une histoire.'), 'Histoire');
+  storyPick();
 }
 function renderStories(playing = -1) {
   panel.innerHTML = `${L(backButton)}<h2>${L('Histoires')}</h2>
-    <p class="muted">${L('Touchez une histoire : BeyaBear’s la raconte à voix haute, et elle défile dans son œil.')}</p>
-    <ul class="favs">${STORIES.map((story, i) => `<li><button class="btn ${i === playing ? '' : 'light'}" type="button" data-story="${i}">${ICON.story}${story.title}</button></li>`).join('')}</ul>
+    <p class="muted">${L('Touchez une histoire : BeyaBear’s la raconte à voix haute, dans un décor animé. Touchez la lune, les fleurs ou le nuage : ils réagissent.')}</p>
+    <ul class="storyCards">${STORIES.map((story, i) => `<li><button class="${i === playing ? 'sel' : ''}" type="button" data-story="${i}">${storyThumb(i)}<b>${story.title}</b><em>${i === playing ? '♪' : '▶'}</em></button></li>`).join('')}</ul>
     <div class="row"><button class="btn light" id="quiet" type="button">${L('Arrêter l’histoire')}</button></div>
     ${state.assistant ? '<div class="row"><button class="btn light" id="newStory" type="button">Inventer une nouvelle histoire</button></div>' : ''}`;
 }
@@ -951,6 +996,7 @@ function playStory(index) {
   const story = STORIES[index];
   if (!story) return;
   if (state.screen !== 'story') setScreen('story');
+  storyNow = index;
   renderStories(index);
   focusEye();
   speak(story.text, 'Histoire');
@@ -1856,6 +1902,7 @@ document.addEventListener('click', (event) => {
   if ('page' in data) return openMenu({ page: state.menuPage + 1 });
   if (data.color) return setColor(data.color);
   if (data.story) return playStory(Number(data.story));
+  if (data.clock) return store.set('clock', data.clock), openClock();
   if (data.torch) return (torch.mode = data.torch), renderTorch(), floodLight();
   if (data.unface) return store.set('faces', faces().filter((_, i) => i !== Number(data.unface))), renderFaces();
   if (data.esimWho || data.esimOffer) {
