@@ -9,6 +9,9 @@
 <title>BeyaBear's</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="media/cosmos.webp">
+<link rel="preload" as="image" href="media/avion.jpg">
 <link rel="stylesheet" href="style.css">
 <!--/HEAD-->
 </head>
@@ -119,7 +122,7 @@
 
   <div class="marquee" aria-hidden="true"><div><span>Noah</span><i></i><span>Alya</span><i></i><span>Aaron</span><i></i><span>Mila</span><i></i><span>Kaï</span><i></i><span>Naya</span><i></i><span>Sana</span><i></i><span>Enzo</span><i></i><span>Zayn</span><i></i><span>Luna</span><i></i><span>Noah</span><i></i><span>Alya</span><i></i><span>Aaron</span><i></i><span>Mila</span><i></i><span>Kaï</span><i></i><span>Naya</span><i></i><span>Sana</span><i></i><span>Enzo</span><i></i><span>Zayn</span><i></i><span>Luna</span><i></i></div></div>
 
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/regard.jpg"><source src="media/regard.mp4" type="video/mp4"></video></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/regard.jpg"><source data-src="media/regard.mp4" type="video/mp4"></video></section>
 
   <section class="band tones try" id="oeil">
     <div class="wrap">
@@ -153,7 +156,7 @@
               <div class="view v-call" data-view="call"><img class="mamie" src="media/gz/mamie-appel.webp" alt="Mamie sourit et fait coucou pendant un appel vidéo" width="640" height="640" loading="lazy"></div>
               <div class="view v-story" data-view="story"><div class="stack"><div class="moon"></div><b>Le petit nuage qui voulait voyager</b><div class="bar"></div><small>Histoire du soir</small></div></div>
               <div class="view v-talk" data-view="talk"><div class="stack"><div class="wave"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div><b>« Pourquoi le ciel est bleu ? »</b><small>Je t'écoute</small></div></div>
-              <div class="view v-video" data-view="video"><video id="eyeVid" src="media/cigognes.mp4" poster="media/cigognes.jpg" loop playsinline muted preload="none" aria-label="Dessin animé BeyaBear’s : une montgolfière et des cigognes livrent les peluches"></video><div class="play"></div></div>
+              <div class="view v-video" data-view="video"><video id="eyeVid" data-src="media/cigognes.mp4" poster="media/cigognes.jpg" loop playsinline muted preload="none" aria-label="Dessin animé BeyaBear’s : une montgolfière et des cigognes livrent les peluches"></video><div class="play"></div></div>
               <div class="view v-meteo" data-view="meteo"><div class="stack"><div class="sun"></div><b>18°</b><small>Grand soleil</small></div></div>
               <div class="view v-clock" data-view="clock"><div class="stack"><b id="clockNow">20:30</b><small>Bonne soirée</small></div></div>
               <div class="view v-jeu" data-view="jeu"><div class="stack"><small>Course au miel</small><div class="pots"><u></u><u></u><u></u></div><b>12</b><small>pots de miel</small></div></div>
@@ -176,7 +179,7 @@
   </section>
 
   <section class="sep" aria-hidden="true">
-    <video autoplay muted loop playsinline preload="metadata" poster="media/parachutes.jpg"><source src="media/parachutes.mp4" type="video/mp4"></video>
+    <video muted loop playsinline preload="none" poster="media/parachutes.jpg"><source data-src="media/parachutes.mp4" type="video/mp4"></video>
   </section>
 
   <section class="band" id="compagnons" style="padding-top:clamp(40px,6vw,80px)">
@@ -186,8 +189,8 @@
         <h2 class="title">Dix compagnons, dix caractères.</h2>
         <p class="lead">Blouson teddy, casquette, casque audio : chacun a son style et son prénom. Tous ont le même écran rond au milieu du visage.</p>
       </div>
-      <div class="film rise" data-not="es"><video muted loop playsinline preload="metadata" poster="media/dix-fr.jpg" aria-label="Les dix compagnons BeyaBear’s présentés un par un"><source src="media/dix-en.mp4" type="video/mp4"></video></div>
-      <div class="film rise" data-only="es"><video autoplay muted loop playsinline preload="metadata" poster="media/dix-intl.jpg" aria-label="Les dix compagnons BeyaBear’s vus de près, l’un après l’autre"><source src="media/dix-intl.mp4" type="video/mp4"></video></div>
+      <div class="film rise" data-not="es"><video muted loop playsinline preload="none" poster="media/dix-fr.jpg" aria-label="Les dix compagnons BeyaBear’s présentés un par un"><source data-src="media/dix-en.mp4" type="video/mp4"></video></div>
+      <div class="film rise" data-only="es"><video muted loop playsinline preload="none" poster="media/dix-intl.jpg" aria-label="Les dix compagnons BeyaBear’s vus de près, l’un après l’autre"><source data-src="media/dix-intl.mp4" type="video/mp4"></video></div>
       <ul class="names rise"><li><button type="button" data-fiche="noah" data-nom="Noah" data-role="L’Explorateur" data-texte="Lunettes d’aviateur et blouson de cuir. Toujours partant pour découvrir ce qu’il y a derrière la colline."><img src="media/gz/p-noah.webp" alt="" loading="lazy" width="501" height="537"><b>Noah</b><span>L’Explorateur</span></button></li><li><button type="button" data-fiche="alya" data-nom="Alya" data-role="La Créative" data-texte="Casquette rose et grand nœud. Elle dessine, invente et transforme tout en projet."><img src="media/gz/p-alya.webp" alt="" loading="lazy" width="501" height="537"><b>Alya</b><span>La Créative</span></button></li><li><button type="button" data-fiche="aaron" data-nom="Aaron" data-role="Le Geek" data-texte="Casque sur les oreilles, il connaît tous les jeux et adore expliquer comment ça marche."><img src="media/gz/p-aaron.webp" alt="" loading="lazy" width="501" height="537"><b>Aaron</b><span>Le Geek</span></button></li><li><button type="button" data-fiche="mila" data-nom="Mila" data-role="La Star" data-texte="Bandana rouge à pois. Elle chante, elle danse, et la chambre devient une scène."><img src="media/gz/p-mila.webp" alt="" loading="lazy" width="501" height="537"><b>Mila</b><span>La Star</span></button></li><li><button type="button" data-fiche="kai" data-nom="Kaï" data-role="Le Sportif" data-texte="Casquette verte et survêtement. Il ne tient pas en place et motive tout le monde."><img src="media/gz/p-kai.webp" alt="" loading="lazy" width="501" height="537"><b>Kaï</b><span>Le Sportif</span></button></li><li><button type="button" data-fiche="naya" data-nom="Naya" data-role="La Rêveuse" data-texte="Casque violet et papillons. Elle a toujours une histoire en tête."><img src="media/gz/p-naya.webp" alt="" loading="lazy" width="501" height="504"><b>Naya</b><span>La Rêveuse</span></button></li><li><button type="button" data-fiche="sana" data-nom="Sana" data-role="La Douce" data-texte="Bonnet et écharpe en grosse maille. La spécialiste des câlins et des mots gentils."><img src="media/gz/p-sana.webp" alt="" loading="lazy" width="501" height="504"><b>Sana</b><span>La Douce</span></button></li><li><button type="button" data-fiche="enzo" data-nom="Enzo" data-role="Le Stratège" data-texte="Bonnet marine. Il réfléchit avant d’agir et gagne souvent aux échecs."><img src="media/gz/p-enzo.webp" alt="" loading="lazy" width="501" height="504"><b>Enzo</b><span>Le Stratège</span></button></li><li><button type="button" data-fiche="zayn" data-nom="Zayn" data-role="Le Protecteur" data-texte="Capuche rouge et noire. Il veille sur les siens et rassure quand il fait nuit."><img src="media/gz/p-zayn.webp" alt="" loading="lazy" width="501" height="504"><b>Zayn</b><span>Le Protecteur</span></button></li><li><button type="button" data-fiche="luna" data-nom="Luna" data-role="La Poétique" data-texte="Bob bleu ciel et écharpe. Elle regarde les nuages et y trouve des poèmes."><img src="media/gz/p-luna.webp" alt="" loading="lazy" width="501" height="504"><b>Luna</b><span>La Poétique</span></button></li></ul>
       <p class="note">Touchez un compagnon pour ouvrir sa fiche.</p>
       <div class="head rise" style="margin-top:clamp(48px,7vw,90px)">
@@ -195,9 +198,9 @@
         <h2 class="title" style="font-size:clamp(1.8rem,3.6vw,3rem)">Noah prend vie.</h2>
         <p class="lead">Noah se présente, dans votre langue.</p>
       </div>
-      <div class="film noah rise" data-only="fr"><video muted loop playsinline preload="metadata" poster="media/noah-fr.jpg" aria-label="Noah l’Explorateur se présente"><source src="media/noah-fr.mp4" type="video/mp4"></video></div>
-      <div class="film noah rise" data-only="en"><video muted loop playsinline preload="metadata" poster="media/noah-en.jpg" aria-label="Noah l’Explorateur se présente"><source src="media/noah-en.mp4" type="video/mp4"></video></div>
-      <div class="film noah rise" data-only="es"><video muted loop playsinline preload="metadata" poster="media/noah-es.jpg" aria-label="Noah l’Explorateur se présente"><source src="media/noah-es.mp4" type="video/mp4"></video></div>
+      <div class="film noah rise" data-only="fr"><video muted loop playsinline preload="none" poster="media/noah-fr.jpg" aria-label="Noah l’Explorateur se présente"><source data-src="media/noah-fr.mp4" type="video/mp4"></video></div>
+      <div class="film noah rise" data-only="en"><video muted loop playsinline preload="none" poster="media/noah-en.jpg" aria-label="Noah l’Explorateur se présente"><source data-src="media/noah-en.mp4" type="video/mp4"></video></div>
+      <div class="film noah rise" data-only="es"><video muted loop playsinline preload="none" poster="media/noah-es.jpg" aria-label="Noah l’Explorateur se présente"><source data-src="media/noah-es.mp4" type="video/mp4"></video></div>
       <div class="head rise" style="margin-top:clamp(48px,7vw,90px)">
         <span class="label">Demain</span>
         <h2 class="title" style="font-size:clamp(1.8rem,3.6vw,3rem)">D’autres modèles à venir.</h2>
@@ -231,11 +234,11 @@
       <p class="lead">Le même compagnon, habillé aux couleurs du monde. Une série à collectionner, pays après pays, et une porte d’entrée sur chaque marché.</p>
     </div>
     <div class="rail" id="railMonde" tabindex="0" aria-label="Collection du monde"><figure class="pays"><img src="media/pays/maroc.webp" alt="Ourson BeyaBear’s en tenue Maroc" loading="lazy" width="900" height="900"><figcaption><b>Maroc</b><span>Tarbouche et djellaba de velours.</span></figcaption></figure><figure class="pays"><img src="media/pays/france.webp" alt="Ourson BeyaBear’s en tenue France" loading="lazy" width="825" height="1100"><figcaption><b>France</b><span>Béret, marinière et foulard rouge.</span></figcaption></figure><figure class="pays"><img src="media/pays/espagne.webp" alt="Ourson BeyaBear’s en tenue Espagne" loading="lazy" width="880" height="1100"><figcaption><b>Espagne</b><span>Habit de lumière brodé d’or.</span></figcaption></figure><figure class="pays"><img src="media/pays/angleterre.webp" alt="Ourson BeyaBear’s en tenue Angleterre" loading="lazy" width="880" height="1100"><figcaption><b>Angleterre</b><span>Garde royal et bonnet à poils.</span></figcaption></figure><figure class="pays"><img src="media/pays/usa.webp" alt="Ourson BeyaBear’s en tenue États-Unis" loading="lazy" width="880" height="1100"><figcaption><b>États-Unis</b><span>Blouson teddy et baskets étoilées.</span></figcaption></figure><figure class="pays"><img src="media/pays/canada.webp" alt="Ourson BeyaBear’s en tenue Canada" loading="lazy" width="880" height="1100"><figcaption><b>Canada</b><span>Chapka à carreaux et parka rouge.</span></figcaption></figure><figure class="pays"><img src="media/pays/bresil.webp" alt="Ourson BeyaBear’s en tenue Brésil" loading="lazy" width="825" height="1100"><figcaption><b>Brésil</b><span>Chapeau de paille et maillot jaune.</span></figcaption></figure><figure class="pays"><img src="media/pays/japon.webp" alt="Ourson BeyaBear’s en tenue Japon" loading="lazy" width="900" height="900"><figcaption><b>Japon</b><span>Kimono brodé et fleurs de cerisier.</span></figcaption></figure><figure class="pays"><img src="media/pays/portugal.webp" alt="Ourson BeyaBear’s en tenue Portugal" loading="lazy" width="900" height="1125"><figcaption><b>Portugal</b><span>Chapeau noir, gilet brodé et pastéis de nata.</span></figcaption></figure><figure class="pays"><img src="media/pays/colombie.webp" alt="Ourson BeyaBear’s en tenue Colombie" loading="lazy" width="900" height="1125"><figcaption><b>Colombie</b><span>Sombrero vueltiao et écharpe tissée.</span></figcaption></figure><figure class="pays"><img src="media/pays/coree.webp" alt="Ourson BeyaBear’s en tenue Corée du Sud" loading="lazy" width="900" height="1125"><figcaption><b>Corée du Sud</b><span>Hanbok rose et bleu, bibimbap à la main.</span></figcaption></figure><figure class="pays"><img src="media/pays/senegal.webp" alt="Ourson BeyaBear’s en tenue Sénégal" loading="lazy" width="900" height="1125"><figcaption><b>Sénégal</b><span>Boubou blanc brodé d’or et thiéboudienne.</span></figcaption></figure><figure class="pays"><img src="media/pays/allemagne.webp" alt="Ourson BeyaBear’s en tenue Allemagne" loading="lazy" width="900" height="1125"><figcaption><b>Allemagne</b><span>Culotte de peau, chapeau à plume et bretzel.</span></figcaption></figure><figure class="pays"><img src="media/pays/turquie.webp" alt="Ourson BeyaBear’s en tenue Turquie" loading="lazy" width="900" height="1125"><figcaption><b>Turquie</b><span>Fez rouge, gilet brodé et baklavas.</span></figcaption></figure><figure class="pays"><img src="media/pays/italie.webp" alt="Ourson BeyaBear’s en tenue Italie" loading="lazy" width="900" height="1125"><figcaption><b>Italie</b><span>Foulard rouge, pizza et glace.</span></figcaption></figure><figure class="pays"><img src="media/pays/argentine.webp" alt="Ourson BeyaBear’s en tenue Argentine" loading="lazy" width="900" height="1125"><figcaption><b>Argentine</b><span>Poncho de gaucho, empanadas et maté.</span></figcaption></figure><figure class="pays"><img src="media/pays/algerie.webp" alt="Ourson BeyaBear’s en tenue Algérie" loading="lazy" width="900" height="1125"><figcaption><b>Algérie</b><span>Burnous blanc, couscous et thé à la menthe.</span></figcaption></figure><figure class="pays"><img src="media/pays/ecosse.webp" alt="Ourson BeyaBear’s en tenue Écosse" loading="lazy" width="900" height="1125"><figcaption><b>Écosse</b><span>Kilt en tartan et veste noire.</span></figcaption></figure><figure class="pays"><img src="media/pays/chine.webp" alt="Ourson BeyaBear’s en tenue Chine" loading="lazy" width="900" height="1125"><figcaption><b>Chine</b><span>Veste rouge aux dragons dorés et raviolis vapeur.</span></figcaption></figure></div>
-    <div class="wrap"><article class="row rise" style="margin-top:clamp(40px,6vw,72px)"><div class="sep full tall"><video muted loop playsinline preload="none" poster="media/stade.jpg"><source src="media/stade.mp4" type="video/mp4"></video></div><div class="say"><span class="label">Le grand match</span><h3>12 pays, 1 seul trophée</h3><p>Douze oursons aux couleurs de leur pays entrent sur la pelouse. Et vous, quelle équipe choisissez-vous ?</p></div></article></div>
+    <div class="wrap"><article class="row rise" style="margin-top:clamp(40px,6vw,72px)"><div class="sep full tall"><video muted loop playsinline preload="none" poster="media/stade.jpg"><source data-src="media/stade.mp4" type="video/mp4"></video></div><div class="say"><span class="label">Le grand match</span><h3>12 pays, 1 seul trophée</h3><p>Douze oursons aux couleurs de leur pays entrent sur la pelouse. Et vous, quelle équipe choisissez-vous ?</p></div></article></div>
     <div class="wrap"><p class="note">Concepts de tenues. Les modèles commercialisés seront annoncés au lancement.</p></div>
   </section>
 
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/millions-fr.jpg" data-only="fr"><source src="media/millions-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/millions-en.jpg" data-only="en"><source src="media/millions-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/millions-es.jpg" data-only="es"><source src="media/millions-es.mp4" type="video/mp4"></video></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/millions-fr.jpg" data-only="fr"><source data-src="media/millions-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/millions-en.jpg" data-only="en"><source data-src="media/millions-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/millions-es.jpg" data-only="es"><source data-src="media/millions-es.mp4" type="video/mp4"></video></section>
 
   <section class="band" id="usages">
     <div class="wrap">
@@ -251,7 +254,7 @@
         <li><b>Rêver</b><span>Des histoires du soir et une veilleuse pour s’endormir.</span></li>
       </ul>
       <div class="rows">
-        <article class="row rise" data-fr><div class="zoom vid"><video autoplay muted loop playsinline preload="metadata" poster="media/moments.jpg" aria-label="Quatre moments avec BeyaBear’s : jouer, appeler sa famille, s’endormir avec une histoire, regarder une vidéo"><source src="media/moments.mp4" type="video/mp4"></video></div><div class="say"><span class="label">Au quotidien</span><h3>Toujours près de toi</h3><p>Jouer, appeler la famille, s’endormir avec une histoire, regarder une vidéo : quatre moments d’une journée avec BeyaBear’s.</p></div></article>
+        <article class="row rise" data-fr><div class="zoom vid"><video muted loop playsinline preload="none" poster="media/moments.jpg" aria-label="Quatre moments avec BeyaBear’s : jouer, appeler sa famille, s’endormir avec une histoire, regarder une vidéo"><source data-src="media/moments.mp4" type="video/mp4"></video></div><div class="say"><span class="label">Au quotidien</span><h3>Toujours près de toi</h3><p>Jouer, appeler la famille, s’endormir avec une histoire, regarder une vidéo : quatre moments d’une journée avec BeyaBear’s.</p></div></article>
         <article class="row rise" data-fr><button class="zoom" type="button" data-zoom aria-label="Agrandir l’image"><img src="media/gz/ecran.webp" alt="Gros plan sur l’écran rond de la peluche et ses six applications" loading="lazy" width="1600" height="900"></button><div class="say"><span class="label">L’écran</span><h3>Six applications sous le doigt</h3><p>Vidéos, musique, histoires, apprendre, appel vidéo et caméra : de grandes icônes, faciles à viser.</p></div></article>
         <article class="row rise"><button class="zoom" type="button" data-zoom aria-label="Agrandir l’image"><img src="media/gz/tactile.webp" alt="Une fille touche une application sur l’écran de sa peluche" loading="lazy" width="1600" height="900"></button><div class="say"><span class="label">Le toucher</span><h3>Un geste suffit</h3><p>L’enfant touche l’icône, l’application s’ouvre. Pas de menu compliqué, pas de mot de passe.</p></div></article>
         <article class="row rise" data-fr><button class="zoom" type="button" data-zoom aria-label="Agrandir l’image"><img src="media/gz/apprendre.webp" alt="Peluche affichant des applications pour apprendre à lire, compter et dessiner" loading="lazy" width="1536" height="1024"></button><div class="say"><span class="label">Apprendre</span><h3>Apprendre devient un jeu</h3><p>Lecture, écriture, calcul et sciences, avec des exercices courts adaptés à son âge.</p></div></article>
@@ -263,18 +266,18 @@
         <h2 class="title" style="font-size:clamp(1.8rem,3.6vw,3rem)">Les enfants l’adoptent tout de suite.</h2>
         <p class="lead">Ils touchent l’œil, choisissent leur dessin animé, appellent un proche. Pas de mode d’emploi : l’écran est à leur hauteur.</p>
       </div>
-      <div class="film rise"><video autoplay muted loop playsinline preload="none" poster="media/enfants.jpg" aria-label="Des enfants touchent l’écran rond de leur peluche BeyaBear’s pour lancer un dessin animé, puis un ourson reçoit un appel vidéo"><source src="media/enfants.mp4" type="video/mp4"></video></div>
+      <div class="film rise"><video muted loop playsinline preload="none" poster="media/enfants.jpg" aria-label="Des enfants touchent l’écran rond de leur peluche BeyaBear’s pour lancer un dessin animé, puis un ourson reçoit un appel vidéo"><source data-src="media/enfants.mp4" type="video/mp4"></video></div>
       <div class="head rise" style="margin-top:clamp(48px,7vw,90px)">
         <span class="label">Pour qui</span>
         <h2 class="title" style="font-size:clamp(1.8rem,3.6vw,3rem)">Un compagnon pour toute la famille.</h2>
         <p class="lead">L’enfant qui appelle ses parents, la grand-mère qui voit ses petits-enfants, le papa qui suit une recette, l’ado qui joue, la future maman qui se détend.</p>
       </div>
-      <div class="film rise"><video autoplay muted loop playsinline preload="metadata" poster="media/famille.jpg" aria-label="Dix scènes de vie avec BeyaBear’s, puis une grand-mère en appel vidéo avec ses petits-enfants dans l’écran de sa peluche"><source src="media/famille.mp4" type="video/mp4"></video></div>
+      <div class="film rise"><video muted loop playsinline preload="none" poster="media/famille.jpg" aria-label="Dix scènes de vie avec BeyaBear’s, puis une grand-mère en appel vidéo avec ses petits-enfants dans l’écran de sa peluche"><source data-src="media/famille.mp4" type="video/mp4"></video></div>
       <p class="note">Visuels marketing, à titre indicatif. Les applications et marques tierces (YouTube, WhatsApp…) sont montrées comme exemples d’usage et appartiennent à leurs propriétaires respectifs.</p>
     </div>
   </section>
 
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/nuages.jpg"><source src="media/nuages.mp4" type="video/mp4"></video></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/nuages.jpg"><source data-src="media/nuages.mp4" type="video/mp4"></video></section>
 
   <section class="band tones" id="parents">
     <div class="wrap">
@@ -288,7 +291,7 @@
     </div>
   </section>
 
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/ciel-fr.jpg" data-only="fr"><source src="media/ciel-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/ciel-en.jpg" data-only="en"><source src="media/ciel-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/ciel-es.jpg" data-only="es"><source src="media/ciel-es.mp4" type="video/mp4"></video></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/ciel-fr.jpg" data-only="fr"><source data-src="media/ciel-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/ciel-en.jpg" data-only="en"><source data-src="media/ciel-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/ciel-es.jpg" data-only="es"><source data-src="media/ciel-es.mp4" type="video/mp4"></video></section>
 
   <section class="band" id="offre">
     <div class="wrap">
@@ -324,7 +327,7 @@
         <p class="lead">Coucher de soleil, cabriolet et bonne humeur : les compagnons partent en balade, et on a envie de monter avec eux.</p>
       </div>
       <div class="film rise">
-        <video id="filmVideo" autoplay muted loop playsinline preload="metadata" poster="media/cabriolet.jpg" aria-label="Film BeyaBear’s : les compagnons roulent en cabriolet au bord de la mer"><source src="media/cabriolet.mp4" type="video/mp4"></video>
+        <video id="filmVideo" muted loop playsinline preload="none" poster="media/cabriolet.jpg" aria-label="Film BeyaBear’s : les compagnons roulent en cabriolet au bord de la mer"><source data-src="media/cabriolet.mp4" type="video/mp4"></video>
         <button id="filmToggle" type="button">Pause</button>
       </div>
     </div>
@@ -358,7 +361,7 @@
         <h2 class="title">Demain, une boutique BeyaBear’s.</h2>
         <p class="lead">Un lieu où l’on vient choisir son compagnon, l’essayer et repartir avec tout son univers : peluches, casques, montres et accessoires.</p>
       </div>
-      <div class="film rise"><video autoplay muted loop playsinline preload="metadata" poster="media/danse.jpg" aria-label="Trois oursons BeyaBear’s dansent au milieu de la boutique, l’œil allumé"><source src="media/danse.mp4" type="video/mp4"></video></div>
+      <div class="film rise"><video muted loop playsinline preload="none" poster="media/danse.jpg" aria-label="Trois oursons BeyaBear’s dansent au milieu de la boutique, l’œil allumé"><source data-src="media/danse.mp4" type="video/mp4"></video></div>
       <figure class="roster rise" style="margin-top:18px" data-fr><img src="media/gz/magasin.webp" alt="Concept de boutique BeyaBear’s : cinq peluches sur un présentoir central, entourées d’écrans et d’accessoires" loading="lazy" width="1672" height="941"></figure>
       <p class="note">Image de concept. Aucune boutique n’est ouverte à ce jour.</p>
     </div>
@@ -394,7 +397,7 @@
       </div>
     </div>
   </section>
-  <section class="sep full"><video muted loop playsinline preload="none" poster="media/envol-fr.jpg" data-only="fr"><source src="media/envol-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/envol-en.jpg" data-only="en"><source src="media/envol-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/envol-es.jpg" data-only="es"><source src="media/envol-es.mp4" type="video/mp4"></video></section>
+  <section class="sep full"><video muted loop playsinline preload="none" poster="media/envol-fr.jpg" data-only="fr"><source data-src="media/envol-fr.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/envol-en.jpg" data-only="en"><source data-src="media/envol-en.mp4" type="video/mp4"></video><video muted loop playsinline preload="none" poster="media/envol-es.jpg" data-only="es"><source data-src="media/envol-es.mp4" type="video/mp4"></video></section>
 
   <section class="band" id="faq" style="padding-top:0">
     <div class="wrap">

@@ -17,6 +17,9 @@
   // Son du site. Aucun navigateur ne laisse une page lancer du son sans un toucher : l'écran d'entrée fournit ce toucher.
   // Ensuite, la vidéo la plus proche du centre de l'écran joue avec le son, les autres tournent en silence.
   let sonOn = false, sonHold = false;
+  // Les vidéos ne reçoivent leur adresse qu'à l'approche de l'écran : rien ne se télécharge avant, sur aucun navigateur.
+  const arm = (v) => { if (v.dataset.armed) return; v.dataset.armed = '1'; let n = 0; if (v.dataset.src) { v.src = v.dataset.src; n++; } v.querySelectorAll('source[data-src]').forEach((s) => { s.src = s.dataset.src; n++; }); if (n) v.load(); };
+  if ('IntersectionObserver' in window) { const near = new IntersectionObserver((list) => list.forEach((e) => { if (e.isIntersecting) { arm(e.target); near.unobserve(e.target); } }), { rootMargin: '500px 0px' }); $$('video').forEach((v) => near.observe(v)); } else $$('video').forEach(arm);
   const ambient = $$('video').filter((v) => !v.closest('.talk') && !v.closest('.eyeball'));
   const sonToggle = $('#sonToggle'), gate = $('#gate');
   ambient.forEach((v) => { v.muted = true; v.defaultMuted = true; v.loop = true; v.removeAttribute('autoplay'); });
@@ -37,7 +40,7 @@
     ambient.forEach((v) => {
       if (!inView(v) || v.dataset.stopped) { if (!v.paused) v.pause(); v.muted = true; return; }
       const loud = sonOn && !sonHold && v === cur && !('silent' in v.dataset);
-      v.muted = !loud; v.volume = 1;
+      v.muted = !loud; v.volume = 1; arm(v);
       if (v.paused) v.play().catch(() => {
         // Son refusé par le navigateur : on continue en silence et le bouton clignote pour le demander.
         v.muted = true; v.play().catch(() => {});
@@ -51,7 +54,8 @@
     ambient.forEach((v) => {
       if (!v.offsetParent || 'silent' in v.dataset) return;
       const wasPaused = v.paused, away = wasPaused && !inView(v);
-      v.muted = false;
+      if (away) return; // ne pas lancer le chargement de toutes les vidéos du site d'un coup : c'est ce qui ralentissait l'ouverture
+      v.muted = false; arm(v);
       const p = v.play();
       // Les vidéos hors écran sont remises en pause tout de suite : le téléphone retient l'autorisation du son,
       // mais ne se met pas à charger et jouer toutes les vidéos du site en même temps.
@@ -61,6 +65,9 @@
   };
   const sonSet = (on) => { sonOn = on; if (sonToggle) sonToggle.classList.remove('ask'); if (on) sonUnlock(); sonPaint(); sonSync(); };
   if (sonToggle) sonToggle.addEventListener('click', () => sonSet(!sonOn));
+  // Chaque toucher sur la page redonne le son à la vidéo affichée (l'iPhone ne l'accorde que pendant un toucher).
+  const sonTap = () => { if (!sonOn || sonHold) return; const cur = sonCurrent(); if (cur && cur.muted && !('silent' in cur.dataset)) { cur.muted = false; const p = cur.play(); if (p && p.catch) p.catch(() => { cur.muted = true; }); if (sonToggle) sonToggle.classList.remove('ask'); } };
+  addEventListener('touchend', sonTap, { passive: true }); addEventListener('click', sonTap);
   const gateClose = (on) => { gate.hidden = true; document.documentElement.style.overflow = ''; if (sonToggle) sonToggle.hidden = false; sonSet(on); };
   if (gate) {
     if (calm) { gate.hidden = true; }
@@ -89,7 +96,7 @@
       if (box.classList.contains('playing')) return talkStop(box);
       sonHold = true; sonSync();
       v.muted = false; v.volume = 1; v.currentTime = 0;
-      v.play().then(() => { box.classList.add('playing'); btn.textContent = T('Arrêter'); }).catch(() => { v.controls = true; });
+      arm(v); v.play().then(() => { box.classList.add('playing'); btn.textContent = T('Arrêter'); }).catch(() => { v.controls = true; });
     });
     v.addEventListener('ended', () => talkStop(box));
   });
@@ -114,7 +121,7 @@
   if (eyeVid) {
     const stage = eyeVid.closest('.view'), paint = () => stage.classList.toggle('playing', !eyeVid.paused);
     eyeVid.addEventListener('play', paint); eyeVid.addEventListener('pause', paint);
-    stage.addEventListener('click', () => { touched = true; clearInterval(timer); if (eyeVid.paused) { eyeVid.muted = !sonOn; eyeVid.play().catch(() => {}); } else eyeVid.pause(); });
+    stage.addEventListener('click', () => { touched = true; clearInterval(timer); if (eyeVid.paused) { arm(eyeVid); eyeVid.muted = !sonOn; eyeVid.play().catch(() => {}); } else eyeVid.pause(); });
     document.addEventListener('visibilitychange', () => { if (document.hidden) eyeVid.pause(); });
     if (sonToggle) sonToggle.addEventListener('click', () => setTimeout(() => { eyeVid.muted = !sonOn; }, 0));
   }
@@ -132,7 +139,7 @@
     ball.style.setProperty('--halo', HALO[name] || HALO.iris);
     // La vraie vidéo ne joue que quand son bouton est choisi ; le son suit le bouton du haut.
     const vid = $('#eyeVid');
-    if (vid) { if (name === 'video') { vid.muted = !sonOn; vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); }); } else vid.pause(); }
+    if (vid) { if (name === 'video') { arm(vid); vid.muted = !sonOn; vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); }); } else vid.pause(); }
     if (cap) { cap.textContent = $('span', modes[current]).textContent; const box = modes[current].parentElement, m = modes[current]; if (box.scrollWidth > box.clientWidth + 4) box.scrollTo({ left: m.offsetLeft - (box.clientWidth - m.offsetWidth) / 2, behavior: 'smooth' }); }
   }
   modes.forEach((m, k) => {
@@ -365,7 +372,7 @@
   const dive = $('#dive'), dEye = $('#diveEye');
   if (dive && dEye && !calm) {
     const A = $('#diveA'), B = $('#diveB'), hint = $('#diveGo'), shine = $('#diveShine');
-    const stage = dEye.parentElement, root = document.documentElement, DUR = 3200; let P = 0, t0 = 0;
+    const stage = dEye.parentElement, root = document.documentElement, DUR = 2200; let P = 0, t0 = 0;
     let px = 0, py = 0, tx = 0, ty = 0, raf = 0, last = 0;
     const clamp = (v) => Math.max(0, Math.min(1, v));
     const draw = (now) => {
@@ -402,7 +409,7 @@
       const live = () => !P && !t0 && !(document.querySelector('#gate') && !document.querySelector('#gate').hidden);
       let sy = 0;
       // Personne n'a rien à faire : l'œil s'ouvre de lui-même peu après l'arrivée. La page ne peut donc jamais rester bloquée.
-      let seen = 0; const wait = setInterval(() => { if (P || t0) return clearInterval(wait); if (live() && ++seen >= 3) { clearInterval(wait); diveIn(); } }, 500);
+      let seen = 0; const wait = setInterval(() => { if (P || t0) return clearInterval(wait); if (live() && ++seen >= 2) { clearInterval(wait); diveIn(); } }, 500);
       addEventListener('wheel', (e) => { if (live() && e.deltaY > 0) diveIn(); }, { passive: true });
       addEventListener('keydown', (e) => { if (live() && [' ', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) diveIn(); });
       stage.addEventListener('touchstart', (e) => { sy = e.touches[0].clientY; }, { passive: true });
