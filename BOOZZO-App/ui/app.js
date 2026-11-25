@@ -69,7 +69,7 @@ const EXTERNAL = [
   ['spotify', 'Spotify', 'c-spotify', 'music', 'https://open.spotify.com/'],
 ];
 // Les mascottes remplacent les pictogrammes : une image ronde par application.
-const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'memory', 'phone', 'photo', 'spotify', 'story', 'torch', 'weather', 'whatsapp', 'youtube'];
+const MASCOTS = ['tiktok', 'call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'memory', 'phone', 'photo', 'spotify', 'story', 'torch', 'weather', 'whatsapp', 'youtube'];
 MASCOTS.forEach((id) => { ICON['m_' + id] = `<img class="masc" src="m/${id}.webp" alt="" loading="lazy">`; });
 APPS.forEach((app) => { if (MASCOTS.includes(app[0])) { ICON[app[0]] = ICON['m_' + app[0]]; app[2] = 'c-masc'; } });
 EXTERNAL.forEach((app) => { if (MASCOTS.includes(app[0])) { app[3] = 'm_' + app[0]; app[2] = 'c-masc'; } });
