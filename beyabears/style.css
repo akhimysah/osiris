@@ -1053,3 +1053,10 @@ body:not(.landing):not(.kiosk):not(.guest) > .foot { display: none; }
 .bearEye { position: absolute; left: 33.1%; top: 28.8%; width: 34.5%; aspect-ratio: 1; padding: 0; border: 0; border-radius: 50%; overflow: hidden; background: #03060f; cursor: zoom-in; box-shadow: inset 0 0 0 2px #0b1a44; }
 .bearEye video { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
 .tryBear .chips { margin-top: 8px; } .screen video.clipBig { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* Page de démo : la peluche se touche, l'œil ouvre l'application */
+a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-highlight-color: transparent; } a.l-bear:active { transform: scale(.985); }
+.l-tap { position: absolute; right: 4%; top: 4%; padding: 9px 14px; border-radius: 999px; background: #fff; color: #1464e6; font: 800 .86rem/1 Lato, system-ui, sans-serif; white-space: nowrap; box-shadow: 0 10px 24px rgba(8, 28, 80, .35); animation: lTap 1.8s ease-in-out infinite; z-index: 3; }
+.l-tap::before { content: "👆"; margin-right: 6px; } @keyframes lTap { 50% { transform: translateY(-6px); box-shadow: 0 16px 28px rgba(8, 28, 80, .3); } }
+@media (prefers-reduced-motion: reduce) { .l-tap { animation: none; } }
+.l-visual .chip { pointer-events: none; }

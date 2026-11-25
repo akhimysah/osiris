@@ -85,7 +85,7 @@
       'L’application fonctionne dès maintenant dans votre navigateur, sans téléchargement. Les versions iPhone et Android arrivent.': 'The app works right now in your browser, with no download. iPhone and Android versions are coming.',
       'Bientôt sur iPhone': 'Coming soon to iPhone', 'Essayez tout de suite': "Try it right now", "Astuce : ajoutez BeyaBear’s à l’écran d’accueil de votre téléphone. Sur iPhone, touchez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu puis « Ajouter à l’écran d’accueil ». Elle s’ouvre alors en plein écran, comme une application.": "Tip: add BeyaBear’s to your phone’s home screen. On iPhone, tap Share then “Add to Home Screen”. On Android, open the menu then “Add to Home screen”. It then opens full screen, like an app.", 'Bientôt sur Android': 'Coming soon to Android',
       'Indiquez votre prénom et une adresse e-mail valide.': 'Enter your first name and a valid email address.',
-      'Merci': 'Thank you', 'Votre compte est prêt sur cet appareil.': 'Your account is ready on this device.', 'Ouvrir mon application': 'Open my application', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Your sign-up is saved on this device. Demo: it will be sent when the service opens.',
+      'Merci': 'Thank you', 'Touchez l’œil pour jouer': 'Tap the eye to play', 'Jouer maintenant': 'Play now', 'Votre compte est prêt sur cet appareil.': 'Your account is ready on this device.', 'Ouvrir mon application': 'Open my application', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Your sign-up is saved on this device. Demo: it will be sent when the service opens.',
       'Démonstration · © 2026': 'Demo · © 2026',
     },
     es: {
@@ -168,13 +168,13 @@
       'L’application fonctionne dès maintenant dans votre navigateur, sans téléchargement. Les versions iPhone et Android arrivent.': 'La aplicación ya funciona en tu navegador, sin descargar nada. Las versiones para iPhone y Android están en camino.',
       'Bientôt sur iPhone': 'Pronto en iPhone', 'Essayez tout de suite': "Pruébalo ahora mismo", "Astuce : ajoutez BeyaBear’s à l’écran d’accueil de votre téléphone. Sur iPhone, touchez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu puis « Ajouter à l’écran d’accueil ». Elle s’ouvre alors en plein écran, comme une application.": "Consejo: añade BeyaBear’s a la pantalla de inicio de tu teléfono. En iPhone, toca Compartir y luego «Añadir a pantalla de inicio». En Android, abre el menú y luego «Añadir a pantalla de inicio». Así se abre a pantalla completa, como una aplicación.", 'Bientôt sur Android': 'Pronto en Android',
       'Indiquez votre prénom et une adresse e-mail valide.': 'Indica tu nombre y un correo electrónico válido.',
-      'Merci': 'Gracias', 'Votre compte est prêt sur cet appareil.': 'Tu cuenta está lista en este dispositivo.', 'Ouvrir mon application': 'Abrir mi aplicación', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Tu registro queda guardado en este dispositivo. Demostración: se enviará cuando abra el servicio.',
+      'Merci': 'Gracias', 'Touchez l’œil pour jouer': 'Toca el ojo para jugar', 'Jouer maintenant': 'Jugar ahora', 'Votre compte est prêt sur cet appareil.': 'Tu cuenta está lista en este dispositivo.', 'Ouvrir mon application': 'Abrir mi aplicación', 'Votre inscription est notée sur cet appareil. Démonstration : elle sera envoyée à l’ouverture du service.': 'Tu registro queda guardado en este dispositivo. Demostración: se enviará cuando abra el servicio.',
       'Démonstration · © 2026': 'Demostración · © 2026',
     },
   };
   const tr = (s) => (T[lang] && T[lang][s]) || s;
   land.querySelectorAll('[data-t]').forEach((e) => { e.innerHTML = tr(e.innerHTML.trim()); });
-  land.querySelectorAll('[data-app]').forEach((a) => { a.href = './?app=1' + (lang !== 'fr' ? '&lang=' + lang : ''); });
+  land.querySelectorAll('[data-app]').forEach((a) => { a.href = './?app=1' + (a.dataset.appGo ? '&go=' + a.dataset.appGo : '') + (lang !== 'fr' ? '&lang=' + lang : ''); });
   // Les applications les plus parlantes, à ouvrir d'un toucher depuis la page d'accueil.
   const box = land.querySelector('#lApps');
   if (box && typeof APPS !== 'undefined') {
