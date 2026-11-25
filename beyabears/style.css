@@ -1075,3 +1075,10 @@ a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-h
 @media (prefers-reduced-motion: reduce) { .tryMe, .pin .halo { animation: none; } }
 .touchBear.photo.pins .pin.on { animation: none; stroke: none; fill: none; } .pin text, .pin rect { stroke: none; }
 .touchWrap { margin-top: 22px; }
+/* Étiquettes bleu ciel et rond + qui clignote */
+.pin rect { fill: #5cc8ff; } .pin text { fill: #06224a; }
+.pin .dot, .pin .halo { fill: #5cc8ff; } .pin .plus { stroke: #06224a; }
+.pin .dot, .pin .plus { animation: pinBlink 1.1s ease-in-out infinite; } @keyframes pinBlink { 50% { opacity: .25; } }
+.pin.on .dot, .pin.on .halo, .pin.on rect { fill: #ff8a4c; } .pin.on text { fill: #fff; } .pin.on .plus { stroke: #fff; } .pin.on .dot, .pin.on .plus { animation: none; }
+.tryMe { background: #5cc8ff; color: #06224a; box-shadow: 0 8px 18px #5cc8ff66; }
+@media (prefers-reduced-motion: reduce) { .pin .dot, .pin .plus { animation: none; } }

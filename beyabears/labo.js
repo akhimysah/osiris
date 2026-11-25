@@ -184,7 +184,7 @@ function emoPanel() {
     <label class="check"><input type="checkbox" id="emoSolo" ${stage.classList.contains('eyeView') ? 'checked' : ''}> Œil seul</label>
     <label class="check"><input type="checkbox" id="emoNoBlink" ${lab.blink ? '' : 'checked'}> Sans clignement</label>
     <h3 class="sub">Toucher <em>la peluche</em></h3>
-    <p class="muted">Touche un point bleu sur Noah : chaque contact déclenche une réaction dans l’œil.</p>
+    <p class="muted">Touche un rond + qui clignote sur Noah : chaque contact déclenche une réaction dans l’œil.</p>
     <div class="touchBox">
       <div class="touchWrap"><span class="tryMe">Teste-moi !</span>
       <svg class="touchBear photo pins" viewBox="0 0 550 760" role="img" aria-label="Noah, la peluche, avec ses zones à toucher">

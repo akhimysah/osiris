@@ -239,7 +239,7 @@
     "Simuler la recharge": ["Simulate charging", "Simular la carga"],
     "Arrêter": ["Stop", "Parar"],
     "Lumière": ["Mood", "Luz"],
-    "Teste-moi !": ["Try me!", "¡Pruébame!"], "Touche un point bleu sur Noah : chaque contact déclenche une réaction dans l’œil.": ["Tap a blue dot on Noah: each touch triggers a reaction in the eye.", "Toca un punto azul en Noah: cada contacto provoca una reacción en el ojo."],
+    "Teste-moi !": ["Try me!", "¡Pruébame!"], "Touche un rond + qui clignote sur Noah : chaque contact déclenche une réaction dans l’œil.": ["Tap a blinking + dot on Noah: each touch triggers a reaction in the eye.", "Toca un círculo + que parpadea en Noah: cada contacto provoca una reacción en el ojo."],
     "Toutes les applications sont déjà installées. Ouvrez une fiche pour en retirer une, puis la remettre.": ["Every app is already installed. Open an app page to remove one, then add it back.", "Todas las aplicaciones ya están instaladas. Abre una ficha para quitar una y volver a ponerla."],
     "Pluie d’oursons": ["Raining bears", "Lluvia de ositos"], "Montgolfière": ["Hot-air balloon", "Globo"],
     "Regarde": ["Look", "Mira"], "dans mon œil": ["into my eye", "en mi ojo"], "Messages": ["Messages", "Mensajes"], "Internet": ["Internet", "Internet"],
