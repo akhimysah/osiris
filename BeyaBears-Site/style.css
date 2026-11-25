@@ -921,3 +921,13 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 .offer { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .offerPic { grid-column: 1 / -1; order: -1; display: block; padding: 0; border: 0; background: none; border-radius: 22px; overflow: hidden; cursor: zoom-in; box-shadow: 0 20px 50px rgba(0, 0, 0, .3); }
 .offerPic img { display: block; width: 100%; height: auto; }
 .heroEye { left: 29.49%; top: 14.03%; width: 28.37%; }
+
+/* ---------- Les Petits BeyaBear's : 5 à 8 ans ---------- */
+.kids { background: linear-gradient(#fff7ef, #fff); }
+.kidGrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; margin-top: clamp(28px, 4vw, 48px); }
+.kid { display: grid; gap: 2px; padding: 0 0 14px; border: 0; border-radius: 24px; overflow: hidden; background: #fff; color: var(--text); font: inherit; text-align: center; cursor: zoom-in; box-shadow: 0 14px 34px rgba(120, 70, 20, .12), 0 0 0 1px rgba(120, 70, 20, .06); transition: transform .25s, box-shadow .25s; }
+.kid:hover { transform: translateY(-4px); box-shadow: 0 22px 44px rgba(120, 70, 20, .18); }
+.kid img { display: block; width: 100%; height: auto; margin-bottom: 10px; border-radius: 0; }
+.kid b { font: 800 1.2rem/1.1 var(--display); letter-spacing: -.02em; } .kid span { color: #8a6a45; font-weight: 600; font-size: .9rem; padding-inline: 6px; }
+@media (max-width: 1100px) { .kidGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .kidGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .kid b { font-size: 1.05rem; } .kid span { font-size: .82rem; } }
