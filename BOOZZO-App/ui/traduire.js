@@ -290,6 +290,7 @@
     "Pause": ["Pause", "Pausa"],
     "Le morceau ne se charge pas. Vérifiez la connexion.": ["The track will not load. Check the connection.", "La canción no se carga. Comprueba la conexión."],
     "Morceaux de démonstration, lus depuis cette page. Sur la peluche, la musique viendra des applications de musique du téléphone ou du forfait.": ["Demo tracks, played from this page. On the plush, music will come from the phone’s music apps or the plan.", "Canciones de demostración, reproducidas desde esta página. En el peluche, la música vendrá de las aplicaciones de música del teléfono o de la tarifa."],
+    "Artiste": ["Artist", "Artista"],
   };
 
   // Textes qui contiennent une valeur variable
@@ -302,6 +303,7 @@
     [/^Compris · (.*)$/, (m) => [`Got it · ${m[1]}`, `Entendido · ${m[1]}`][col]],
     [/^✅ Caméra : image reçue \((.+)\)\. Vous devez vous voir dans l’œil\.$/, (m) => [`✅ Camera: picture received (${m[1]}). You should see yourself in the eye.`, `✅ Cámara: imagen recibida (${m[1]}). Deberías verte en el ojo.`][col]],
     [/^Précision : environ (\d+) mètres\.$/, (m) => [`Accuracy: about ${m[1]} metres.`, `Precisión: unos ${m[1]} metros.`][col]],
+    [/^Moroccan Funk · Afro-House Groove · (\d+) titres$/, (m) => [`Moroccan Funk · Afro-House Groove · ${m[1]} tracks`, `Moroccan Funk · Afro-House Groove · ${m[1]} canciones`][col]],
     [/^Carte (\d+)$/, (m) => [`Card ${m[1]}`, `Carta ${m[1]}`][col]],
     [/^Couleur (\d+)$/, (m) => [`Colour ${m[1]}`, `Color ${m[1]}`][col]],
   ];

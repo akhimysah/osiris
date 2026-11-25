@@ -740,3 +740,9 @@ span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; backg
 .musList button { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; width: 100%; padding: 12px 14px; border-radius: 16px; background: #f5f9ff; color: var(--ink); text-align: left; }
 .musList i { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-style: normal; font-weight: 800; color: var(--muted); } .musList button.sel { background: #e6fbee; box-shadow: 0 0 0 2px #1ed760; } .musList button.sel i { background: #1ed760; color: #04210f; }
 @media (prefers-reduced-motion: reduce) { .musDisc, .musBars u { animation: none !important; } }
+
+/* Musique : la pochette de l'artiste */
+.musDisc { padding: 2.5%; } .musDisc img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.musArtist { display: grid; grid-template-columns: 84px 1fr; gap: 14px; align-items: center; margin: 14px 0; padding: 12px; border-radius: 20px; background: #f7f1e3; color: #2a2112; }
+.musArtist img { width: 84px; height: 84px; border-radius: 14px; object-fit: cover; box-shadow: 0 6px 14px rgba(60, 40, 0, .25); } .musArtist small { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #9a7a2a; } .musArtist b { display: block; font-size: 1.2rem; } .musArtist span { font-size: .86rem; color: #6b5a36; }
+.musList { max-height: 420px; overflow: auto; }
