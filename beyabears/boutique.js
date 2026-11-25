@@ -179,7 +179,19 @@ document.addEventListener('click', (event) => {
   if (data.nav === 'profile') return go('store'), openProfile();
   if (data.nav === 'apps') return (homeTab = 'apps'), go('menu'), setView(false), panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   if (data.go === 'menu' || data.go === 'home') homeTab = 'home';
-  if (data.mood) return (lab.emo = data.mood), go('emo');
+  if (data.clip) {
+    pop(640, 70);
+    panel.querySelectorAll('[data-clip]').forEach((x) => x.classList.toggle('on', x.dataset.clip === data.clip));
+    const v = panel.querySelector('.bearEye video');
+    if (v) { v.poster = `clips/${data.clip}.jpg`; v.src = `clips/${data.clip}.mp4`; v.play().catch(() => {}); }
+    return;
+  }
+  if ('clipBig' in data) {
+    const v = panel.querySelector('.bearEye video');
+    if (!v) return;
+    screen.innerHTML = `<video class="clipBig" muted loop playsinline autoplay src="${v.getAttribute('src')}" poster="${v.getAttribute('poster')}"></video>`;
+    return focusEye();
+  }
   if ('signout' in data) return store.set('account', null), openStore();
   if (data.star) return storeStar(Number(data.star));
   if (data.cat && panel.querySelector('.chips')) {
@@ -213,15 +225,18 @@ function renderApps() {
     ${homeMore()}`;
 }
 // Accueil : chiffres du jour, histoires, humeurs et porte du Store.
-const HOME_MOODS = [['joie', 'Joie'], ['amour', 'Affection'], ['rire', 'Rire'], ['surprise', 'Surprise'], ['musique', 'Musique'], ['sommeil', 'Sommeil']];
+// Vidéos des mascottes, recadrées pour l'œil rond : on les teste directement dans la peluche.
+const HOME_CLIPS = [['messages', 'Messages'], ['souvenirs', 'Souvenirs'], ['photo', 'Photo'], ['internet', 'Internet'], ['localisation', 'Localisation']];
 function homeExtras() {
   const rest = storeApps().filter(([id]) => !appOn(id)).length, mine = [...APPS, ...EXTERNAL].filter(([id]) => appOn(id) && id !== 'store').length;
   const mins = typeof secUsed === 'function' ? Math.round(secUsed() / 60) : 0, stars = typeof eduStars === 'function' ? eduStars() : 0;
   return `<div class="statRow"><button type="button" data-go="edu"><b>★ ${stars}</b><span>étoiles</span></button><button type="button" data-nav="apps"><b>${mine}</b><span>applis</span></button><button type="button" data-go="secure"><b>${mins}</b><span>min d’écran</span></button></div>
     <h3 class="sub">Histoires <em>du soir</em></h3>
     <div class="storyRow">${STORIES.slice(0, 3).map((story, i) => `<button type="button" data-story="${i}" style="--i:${i}">${storyThumb(i)}<b>${story.title}</b></button>`).join('')}</div>
-    <h3 class="sub">L’humeur <em>de BeyaBear’s</em></h3>
-    <div class="moods">${HOME_MOODS.map(([id, label], i) => `<button type="button" data-mood="${id}" style="--i:${i}" aria-label="${label}"><img src="emo/${id}.webp" alt="" width="72" height="72" loading="lazy"><span>${label}</span></button>`).join('')}</div>
+    <h3 class="sub">Regarde <em>dans mon œil</em></h3>
+    <div class="tryBear"><div class="bearBox"><img src="emo/noah-toucher.webp" alt="Noah, la peluche aviateur BeyaBear’s" width="550" height="760" loading="lazy"><button type="button" class="bearEye" data-clip-big aria-label="Voir cette vidéo dans le grand œil"><video muted loop playsinline autoplay preload="metadata" poster="clips/${HOME_CLIPS[0][0]}.jpg" src="clips/${HOME_CLIPS[0][0]}.mp4"></video></button></div>
+      <div class="chips">${HOME_CLIPS.map(([id, label], k) => `<button type="button" data-clip="${id}" class="${k ? '' : 'on'}">${label}</button>`).join('')}</div>
+      <p class="muted">Choisissez une vidéo : elle joue dans l’œil de la peluche, comme sur la vraie. Touchez l’œil pour la voir en grand.</p></div>
     <button type="button" class="storeBanner" data-go="store"><img src="store.webp" alt="" width="96" height="96" loading="lazy"><span><b>Beya Store</b><small><i>${rest}</i> applications à découvrir</small></span><em>›</em></button>`;
 }
 // Les applications pas encore installées : un toucher ouvre leur fiche.

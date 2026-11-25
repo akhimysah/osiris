@@ -239,6 +239,8 @@
     "Simuler la recharge": ["Simulate charging", "Simular la carga"],
     "Arrêter": ["Stop", "Parar"],
     "Lumière": ["Mood", "Luz"],
+    "Regarde": ["Look", "Mira"], "dans mon œil": ["into my eye", "en mi ojo"], "Messages": ["Messages", "Mensajes"], "Internet": ["Internet", "Internet"],
+    "Choisissez une vidéo : elle joue dans l’œil de la peluche, comme sur la vraie. Touchez l’œil pour la voir en grand.": ["Pick a video: it plays in the plush’s eye, just like on the real one. Tap the eye to see it full size.", "Elige un vídeo: se reproduce en el ojo del peluche, como en el de verdad. Toca el ojo para verlo en grande."],
     "applis": ["apps", "apps"], "min d’écran": ["min of screen", "min de pantalla"], "du soir": ["for bedtime", "para dormir"], "L’humeur": ["The mood", "El humor"], "de BeyaBear’s": ["of BeyaBear’s", "de BeyaBear’s"], "applications à découvrir": ["apps to discover", "aplicaciones por descubrir"],
     "Sécurité": ["Safety", "Seguridad"], "Code parent": ["Parent code", "Código de padres"], "Le contrôle parental": ["Parental controls", "El control parental"], "Contrôle parental": ["Parental controls", "Control parental"],
     "Chut…": ["Shh…", "Chis…"], "Demande à un parent.": ["Ask a parent.", "Pregunta a un adulto."], "Déverrouiller": ["Unlock", "Desbloquear"], "Le code ouvre tout pendant quinze minutes.": ["The code unlocks everything for fifteen minutes.", "El código lo abre todo durante quince minutos."],

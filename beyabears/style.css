@@ -1046,3 +1046,10 @@ body:not(.landing):not(.kiosk):not(.guest) > .foot { display: none; }
 .storeBanner { width: 100%; display: grid; grid-template-columns: 84px 1fr auto; align-items: center; gap: 12px; margin: 10px 0 16px; padding: 12px 16px 12px 12px; border: 0; border-radius: 24px; text-align: left; color: #fff; cursor: pointer; background: linear-gradient(135deg, #2e63e0, #14224f); box-shadow: 0 12px 26px #14224f40; }
 .storeBanner img { width: 84px; height: 84px; border-radius: 22px; object-fit: cover; animation: heroFloat 3s ease-in-out infinite alternate; } .storeBanner b { display: block; font-size: 1.2rem; } .storeBanner small { display: block; opacity: .9; font-size: .88rem; } .storeBanner small i { font-style: normal; font-weight: 800; } .storeBanner em { font-style: normal; font-size: 1.8rem; opacity: .8; } .storeBanner:active { transform: scale(.98); }
 .appsPage { margin: 12px 0 4px; } .appsPage em { font-style: normal; color: #2e63e0; }
+
+/* ---------- Accueil : une vidéo joue dans l'œil d'une peluche ---------- */
+.tryBear { margin: 10px 0 6px; } .bearBox { position: relative; border-radius: 26px; overflow: hidden; box-shadow: 0 16px 34px #1464e62e, 0 0 0 1px #081c5010; }
+.bearBox { aspect-ratio: 550 / 600; } .bearBox > img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.bearEye { position: absolute; left: 33.1%; top: 28.8%; width: 34.5%; aspect-ratio: 1; padding: 0; border: 0; border-radius: 50%; overflow: hidden; background: #03060f; cursor: zoom-in; box-shadow: inset 0 0 0 2px #0b1a44; }
+.bearEye video { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
+.tryBear .chips { margin-top: 8px; } .screen video.clipBig { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
