@@ -239,6 +239,7 @@
     "Simuler la recharge": ["Simulate charging", "Simular la carga"],
     "Arrêter": ["Stop", "Parar"],
     "Lumière": ["Mood", "Luz"],
+    "applis": ["apps", "apps"], "min d’écran": ["min of screen", "min de pantalla"], "du soir": ["for bedtime", "para dormir"], "L’humeur": ["The mood", "El humor"], "de BeyaBear’s": ["of BeyaBear’s", "de BeyaBear’s"], "applications à découvrir": ["apps to discover", "aplicaciones por descubrir"],
     "Sécurité": ["Safety", "Seguridad"], "Code parent": ["Parent code", "Código de padres"], "Le contrôle parental": ["Parental controls", "El control parental"], "Contrôle parental": ["Parental controls", "Control parental"],
     "Chut…": ["Shh…", "Chis…"], "Demande à un parent.": ["Ask a parent.", "Pregunta a un adulto."], "Déverrouiller": ["Unlock", "Desbloquear"], "Le code ouvre tout pendant quinze minutes.": ["The code unlocks everything for fifteen minutes.", "El código lo abre todo durante quince minutos."],
     "Cette application est verrouillée par tes parents.": ["This app is locked by your parents.", "Esta aplicación está bloqueada por tus padres."], "C’est l’heure de dormir. Les histoires et les veilleuses restent ouvertes.": ["It’s bedtime. Stories and night lights stay open.", "Es hora de dormir. Los cuentos y las luces de noche siguen abiertos."],

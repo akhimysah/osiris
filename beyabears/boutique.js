@@ -177,7 +177,9 @@ document.addEventListener('click', (event) => {
   if (data.detail) return pop(620, 70), storeDetail(data.detail);
   if (data.discover) return pop(620, 70), go('store'), storeDetail(data.discover), window.scrollTo({ top: 0, behavior: 'smooth' });
   if (data.nav === 'profile') return go('store'), openProfile();
-  if (data.nav === 'apps') return go('menu'), setView(false), setTimeout(() => panel.querySelector('.apps')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
+  if (data.nav === 'apps') return (homeTab = 'apps'), go('menu'), setView(false), panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (data.go === 'menu' || data.go === 'home') homeTab = 'home';
+  if (data.mood) return (lab.emo = data.mood), go('emo');
   if ('signout' in data) return store.set('account', null), openStore();
   if (data.star) return storeStar(Number(data.star));
   if (data.cat && panel.querySelector('.chips')) {
@@ -203,7 +205,26 @@ function homeIdeas() {
   const order = h >= 18 || h < 6 ? ['story', 'call', 'store', 'chat', 'photo'] : h < 12 ? ['chat', 'photo', 'story', 'store', 'call'] : ['photo', 'store', 'call', 'story', 'chat'];
   return `<div class="ideas">${order.map((k) => ideas[k]).map(([id, t, s, a, b2], i) => `<button type="button" data-go="${id}" style="--a:${a};--b:${b2};--i:${i}">${storeIcon(id)}<b>${t}</b><span>${s}</span></button>`).join('')}</div>`;
 }
-// Les applications pas encore installées restent visibles sur l'accueil : un toucher ouvre leur fiche.
+// Onglet Apps : mes applications, puis celles qui restent à installer. L'accueil, lui, ne les répète pas.
+let homeTab = 'home';
+function renderApps() {
+  panel.innerHTML = `<span class="pill">Apps</span><h2 class="appsPage">Mes <em>applications</em></h2>
+    <div class="apps lively">${APPS.filter(([id]) => appOn(id) && id !== 'store').map(([id, label, color], i) => `<button data-go="${id}" type="button" style="--i:${i}"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.filter(([id]) => appOn(id)).map((app) => externalTile(app)).join('')}<button data-go="store" type="button" class="more" style="--i:9"><i>+</i>Ajouter</button></div>
+    ${homeMore()}`;
+}
+// Accueil : chiffres du jour, histoires, humeurs et porte du Store.
+const HOME_MOODS = [['joie', 'Joie'], ['amour', 'Affection'], ['rire', 'Rire'], ['surprise', 'Surprise'], ['musique', 'Musique'], ['sommeil', 'Sommeil']];
+function homeExtras() {
+  const rest = storeApps().filter(([id]) => !appOn(id)).length, mine = [...APPS, ...EXTERNAL].filter(([id]) => appOn(id) && id !== 'store').length;
+  const mins = typeof secUsed === 'function' ? Math.round(secUsed() / 60) : 0, stars = typeof eduStars === 'function' ? eduStars() : 0;
+  return `<div class="statRow"><button type="button" data-go="edu"><b>★ ${stars}</b><span>étoiles</span></button><button type="button" data-nav="apps"><b>${mine}</b><span>applis</span></button><button type="button" data-go="secure"><b>${mins}</b><span>min d’écran</span></button></div>
+    <h3 class="sub">Histoires <em>du soir</em></h3>
+    <div class="storyRow">${STORIES.slice(0, 3).map((story, i) => `<button type="button" data-story="${i}" style="--i:${i}">${storyThumb(i)}<b>${story.title}</b></button>`).join('')}</div>
+    <h3 class="sub">L’humeur <em>de BeyaBear’s</em></h3>
+    <div class="moods">${HOME_MOODS.map(([id, label], i) => `<button type="button" data-mood="${id}" style="--i:${i}" aria-label="${label}"><img src="emo/${id}.webp" alt="" width="72" height="72" loading="lazy"><span>${label}</span></button>`).join('')}</div>
+    <button type="button" class="storeBanner" data-go="store"><img src="store.webp" alt="" width="96" height="96" loading="lazy"><span><b>Beya Store</b><small><i>${rest}</i> applications à découvrir</small></span><em>›</em></button>`;
+}
+// Les applications pas encore installées : un toucher ouvre leur fiche.
 function homeMore() {
   const rest = storeApps().filter(([id]) => !appOn(id)).sort((x, y) => (y[0] === 'edu') - (x[0] === 'edu')); // Éducation en tête
   if (!rest.length) return '';
@@ -244,6 +265,6 @@ tabbar.innerHTML = `<button type="button" data-go="menu" data-tab="home"><svg vi
 document.body.append(tabbar);
 setInterval(() => {
   if (typeof state === 'undefined') return;
-  const tab = state.screen === 'store' ? (panel.querySelector('.mine') ? 'profile' : 'store') : ['home', 'menu'].includes(state.screen) ? 'home' : 'apps';
+  const tab = state.screen === 'store' ? (panel.querySelector('.mine') ? 'profile' : 'store') : ['home', 'menu'].includes(state.screen) && !panel.querySelector('.appsPage') ? 'home' : 'apps';
   tabbar.querySelectorAll('button').forEach((b2) => b2.classList.toggle('on', b2.dataset.tab === tab));
 }, 400);
