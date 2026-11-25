@@ -278,6 +278,12 @@
 "Socle": ["Dock", "Base"],
 "La peluche s'y pose pour se recharger.": ["The plush rests on it to recharge.", "El peluche se posa en ella para cargarse."],
 "Ourson docteur BeyaBear's sur son socle, avec l'emplacement de la caméra, de l'écran rond, du cœur, des capteurs et de la carte électronique": ["BeyaBear's doctor bear on its dock, showing the camera, round screen, heart, sensors and electronics board", "Osito doctor BeyaBear's en su base, con la ubicación de la cámara, la pantalla redonda, el corazón, los sensores y la placa electrónica"],
+"Du bout du doigt": ["At their fingertips", "Con la punta del dedo"],
+"Les enfants l'adoptent tout de suite.": ["Children take to it straight away.", "Los niños lo adoptan enseguida."],
+"Ils touchent l'œil, choisissent leur dessin animé, appellent un proche. Pas de mode d'emploi : l'écran est à leur hauteur.": ["They tap the eye, pick their cartoon, call a loved one. No manual needed: the screen is at their height.", "Tocan el ojo, eligen sus dibujos, llaman a un familiar. Sin manual: la pantalla está a su altura."],
+"Des enfants touchent l'écran rond de leur peluche BeyaBear's pour lancer un dessin animé, puis un ourson reçoit un appel vidéo": ["Children tap their BeyaBear's plush's round screen to start a cartoon, then a bear receives a video call", "Unos niños tocan la pantalla redonda de su peluche BeyaBear's para poner dibujos, y luego un osito recibe una videollamada"],
+"Noah, ourson BeyaBear's assis dans sa chambre, dont l'iris bouge et change d'humeur": ["Noah, a BeyaBear's bear sitting in his room, whose iris moves and changes mood", "Noah, osito BeyaBear's sentado en su habitación, cuyo iris se mueve y cambia de humor"],
+"Noah, compagnon intelligent, assis à côté de son coffret BeyaBear's : plus qu'une peluche, un vrai compagnon de vie": ["Noah, smart companion, sitting next to his BeyaBear's box: more than a plush, a real life companion", "Noah, compañero inteligente, sentado junto a su caja BeyaBear's: más que un peluche, un verdadero compañero de vida"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();

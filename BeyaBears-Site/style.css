@@ -914,3 +914,10 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 .implantTxt li i { width: 12px; height: 12px; margin-top: 7px; background: #4fb4ff; box-shadow: 0 0 10px #4fb4ff; }
 @media (prefers-reduced-motion: reduce) { .appTiles i { animation: none; } }
 @media (min-width: 901px) { .try .emoWall, .try .appLinks { grid-column: 1 / -1; } .try .appTiles { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+
+/* Nouvelles photos : Noah dans sa chambre à l'accueil, l'ourson à casquette noire pour l'appel, le coffret dans l'offre */
+.heroBear { width: min(100%, 520px); } .heroEye { left: 36.1%; top: 14.03%; width: 26.48%; }
+.hwEye { left: 44.74%; top: 13.26%; width: 26.83%; }
+.offer { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .offerPic { grid-column: 1 / -1; order: -1; display: block; padding: 0; border: 0; background: none; border-radius: 22px; overflow: hidden; cursor: zoom-in; box-shadow: 0 20px 50px rgba(0, 0, 0, .3); }
+.offerPic img { display: block; width: 100%; height: auto; }
+.heroEye { left: 29.49%; top: 14.03%; width: 28.37%; }
