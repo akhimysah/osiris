@@ -80,6 +80,9 @@ const ZONES = [
   ['ventre', 'Ventre', 'rire', 'Chatouilles !'],
   ['dos', 'Dos', 'sommeil', 'Mode détente'],
 ];
+// Nos émojis : le visage de la mascotte pour chaque émotion (Alerte et Portail gardent leur symbole).
+const EMO_FACES = ['normal', 'joie', 'amour', 'musique', 'rire', 'surprise', 'tristesse', 'sommeil', 'reflexion', 'fete', 'ecoute', 'clin'];
+const emoFace = (id, emoji) => (EMO_FACES.includes(id) ? `<img src="emo/${id}.webp" alt="" width="320" height="320">` : emoji);
 const lab = { emo: 'normal', msg: '', zone: '', edition: 'living', blink: true };
 // Anneau segmenté qui tourne, comme une pièce de machine (Quantum Eye et Cœur).
 const labRing = (r, w, dash, dur, dir, op) => `<circle cx="100" cy="100" r="${r}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-dasharray="${dash}" opacity="${op}" style="animation:emoSpin ${dur}s linear infinite ${dir ? 'reverse' : ''};transform-origin:100px 100px"/>`;
@@ -160,7 +163,7 @@ function emoDraw() {
     ${ed === 'quantum' ? `<div class="emoNeon${(lab.qcolor || QUANTUM_COLORS[0][0]) === '#2d7bff' ? '' : ' ruby'}"></div>` : ''}
     <div class="emoRing"></div>
     ${id === 'ecoute' ? '<i class="emoWave"></i><i class="emoWave"></i><i class="emoWave"></i>' : ''}
-    <div class="emoPupil">${id === 'portail' ? '<div class="emoPortal"><i></i><i></i></div>' : id === 'normal' ? '<s></s>' : `<span class="emoMoji">${emoji}</span>`}</div>
+    <div class="emoPupil">${id === 'portail' ? '<div class="emoPortal"><i></i><i></i></div>' : id === 'normal' ? '<s></s>' : `<span class="emoMoji${EMO_FACES.includes(id) ? ' face' : ''}">${emoFace(id, emoji)}</span>`}</div>
     <div class="emoLid top"></div><div class="emoLid bot"></div>
     <div class="emoFx" aria-hidden="true">${bits}</div>
     <div class="emoTag"><b>${bpm}</b> BPM</div>
@@ -174,25 +177,17 @@ function emoPanel() {
     <p>Chaque compagnon a son regard. Choisis une édition, puis une émotion : l’œil change de couleur, de forme et de rythme.</p>
     <div class="edGrid">${EDITIONS.map(([id, name, who, tag, c]) => `<button type="button" data-lab="edition" data-v="${id}" class="${id === ed ? 'sel' : ''}" aria-pressed="${id === ed}" style="--c:${id === 'quantum' ? lab.qcolor || c : c}"><i></i><b>${who}</b><span>${name}</span><small>${tag}</small></button>`).join('')}</div>
     ${ed === 'quantum' ? `<div class="row wrap">${QUANTUM_COLORS.map(([c, label]) => `<button class="btn${(lab.qcolor || QUANTUM_COLORS[0][0]) === c ? '' : ' light'}" type="button" data-lab="qcolor" data-v="${c}"><i class="dot" style="background:${c}"></i>${label}</button>`).join('')}</div>` : ''}
-    <div class="emoGrid">${modes.map((id) => EMOTIONS.find((e) => e[0] === id)).map(([id, label, emoji]) => `<button type="button" data-lab="emo" data-v="${id}" class="${id === lab.emo ? 'sel' : ''}" aria-pressed="${id === lab.emo}"><span aria-hidden="true">${emoji}</span>${label}</button>`).join('')}</div>
+    <div class="emoGrid">${modes.map((id) => EMOTIONS.find((e) => e[0] === id)).map(([id, label, emoji, c]) => `<button type="button" data-lab="emo" data-v="${id}" class="${id === lab.emo ? 'sel' : ''}" aria-pressed="${id === lab.emo}" style="--c:${c}"><span aria-hidden="true">${emoFace(id, emoji)}</span>${label}</button>`).join('')}</div>
     <div class="heartLine" style="--c:${color};--t:${(60 / cur[4]).toFixed(3)}s"><i aria-hidden="true">♥</i><div><em>${hero}</em><b>${cur[4]}</b> BPM<small>${lab.msg || cur[5]}</small></div></div>
     <label class="check"><input type="checkbox" id="emoSolo" ${stage.classList.contains('eyeView') ? 'checked' : ''}> Œil seul</label>
     <label class="check"><input type="checkbox" id="emoNoBlink" ${lab.blink ? '' : 'checked'}> Sans clignement</label>
     <h3 class="sub">Toucher <em>la peluche</em></h3>
     <p class="muted">Touche une zone : chaque contact déclenche une réaction dans l’œil.</p>
     <div class="touchBox">
-      <svg class="touchBear" viewBox="0 0 300 310" role="img" aria-label="Peluche avec six zones à toucher">
-        <g fill="#ead9b8" stroke="#c9b38a" stroke-width="2">
-          <circle cx="100" cy="40" r="28"/><circle cx="200" cy="40" r="28"/>
-          <ellipse class="${lab.zone === 'patteG' ? 'on' : ''}" data-lab="zone" data-v="patteG" cx="75" cy="194" rx="27" ry="53"/>
-          <ellipse class="${lab.zone === 'patteD' ? 'on' : ''}" data-lab="zone" data-v="patteD" cx="225" cy="194" rx="27" ry="53"/>
-          <ellipse class="${lab.zone === 'dos' ? 'on' : ''}" data-lab="zone" data-v="dos" cx="150" cy="205" rx="67" ry="83"/>
-          <ellipse cx="110" cy="277" rx="35" ry="25"/><ellipse cx="190" cy="277" rx="35" ry="25"/>
-          <circle class="${lab.zone === 'tete' ? 'on' : ''}" data-lab="zone" data-v="tete" cx="150" cy="92" r="66"/>
-          <ellipse class="${lab.zone === 'poitrine' ? 'on' : ''}" data-lab="zone" data-v="poitrine" cx="150" cy="182" rx="38" ry="26" fill="#f3e6cb"/>
-          <ellipse class="${lab.zone === 'ventre' ? 'on' : ''}" data-lab="zone" data-v="ventre" cx="150" cy="238" rx="42" ry="30" fill="#f3e6cb"/>
-        </g>
-        <g pointer-events="none"><circle cx="150" cy="92" r="34" fill="#06080f"/><circle cx="150" cy="92" r="24" fill="none" stroke="${color}" stroke-width="7"/><circle cx="150" cy="92" r="11" fill="#020309"/></g>
+      <svg class="touchBear photo" viewBox="0 0 550 760" role="img" aria-label="Noah, la peluche, avec ses zones à toucher">
+        <image href="emo/noah-toucher.webp" width="550" height="760" preserveAspectRatio="xMidYMid slice"/>
+        <circle cx="277" cy="262" r="101" fill="none" stroke="${color}" stroke-width="9" opacity=".85" pointer-events="none"/>
+        <ellipse class="${lab.zone === 'tete' ? 'on' : ''}" data-lab="zone" data-v="tete" cx="275" cy="230" rx="205" ry="195"/><ellipse class="${lab.zone === 'patteG' ? 'on' : ''}" data-lab="zone" data-v="patteG" cx="165" cy="650" rx="100" ry="92"/><ellipse class="${lab.zone === 'patteD' ? 'on' : ''}" data-lab="zone" data-v="patteD" cx="445" cy="650" rx="100" ry="92"/><ellipse class="${lab.zone === 'poitrine' ? 'on' : ''}" data-lab="zone" data-v="poitrine" cx="292" cy="478" rx="112" ry="48"/><ellipse class="${lab.zone === 'ventre' ? 'on' : ''}" data-lab="zone" data-v="ventre" cx="300" cy="566" rx="58" ry="40"/>
       </svg>
       <div class="touchKeys">${ZONES.map(([id, label]) => `<button type="button" data-lab="zone" data-v="${id}" class="${id === lab.zone ? 'sel' : ''}">${label}</button>`).join('')}</div>
     </div>

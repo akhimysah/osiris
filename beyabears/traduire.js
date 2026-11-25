@@ -190,6 +190,7 @@
     "Ventre": ["Tummy", "Barriga"],
     "Dos": ["Back", "Espalda"],
     "Peluche avec six zones à toucher": ["Plush with six zones to touch", "Peluche con seis zonas para tocar"],
+    "Noah, la peluche, avec ses zones à toucher": ["Noah, the plush, with its zones to touch", "Noah, el peluche, con sus zonas para tocar"],
     "Simulation visuelle, sans audio ni capteurs : sur la peluche, ces réactions viendront de capteurs de toucher. Les battements sont simulés, ce n’est pas un appareil médical.": ["Visual simulation, without audio or sensors: on the plush, these reactions will come from touch sensors. The heartbeat is simulated; this is not a medical device.", "Simulación visual, sin audio ni sensores: en el peluche, estas reacciones vendrán de sensores táctiles. Los latidos son simulados; no es un dispositivo médico."],
     "Deux compagnons, un lien : envoie un cœur, un câlin ou un petit mot à la peluche d’un proche. Son œil s’allume, puis il te répond.": ["Two companions, one link: send a heart, a hug or a little note to a loved one’s plush. Its eye lights up, then it answers you.", "Dos compañeros, un vínculo: envía un corazón, un abrazo o una notita al peluche de un ser querido. Su ojo se enciende y luego te responde."],
     "Envoyé": ["Sent", "Enviado"],
