@@ -14,6 +14,7 @@ const LAB_APPS = [
   ['memory', 'Souvenirs', 'c-memory'],
   ['dream', 'Nuit', 'c-dream'],
   ['holo', 'Socle', 'c-holo'],
+  ['locate', 'Localisation', 'c-locate'],
 ];
 const LAB_ICONS = {
   emo: '<circle cx="12" cy="12" r="9"/><path d="M12 16.5s-4.2-2.5-4.2-5.3A2.3 2.3 0 0 1 12 9.9a2.3 2.3 0 0 1 4.2 1.3c0 2.8-4.2 5.3-4.2 5.3z"/>',
@@ -21,6 +22,7 @@ const LAB_ICONS = {
   link: '<circle cx="7" cy="12" r="4"/><circle cx="17" cy="12" r="4"/><path d="M11 12h2"/>',
   memory: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h6M9 13h4"/>',
   dream: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  locate: '<path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.4"/>',
   holo: '<ellipse cx="12" cy="17.5" rx="8" ry="3"/><path d="M12 3v8M9 8l3 3 3-3"/>',
 };
 const labNote = (text) => `<p class="muted labNote">${text}</p>`;
@@ -411,6 +413,38 @@ function openHolo() {
   holoDraw(); holoPanel();
 }
 
+// ---------- Localisation : où est la peluche ----------
+// Par défaut, une carte de démonstration. Si la personne l'autorise, la vraie position de l'appareil s'affiche.
+
+function locateEye(found) {
+  const pos = lab.pos;
+  screen.innerHTML = `<div class="loc${found ? ' found' : ''}"><div class="locMap"></div><i class="locRing"></i><i class="locRing"></i><div class="locPin"></div>
+    <div class="locTag"><b>${found ? 'Position trouvée' : 'À la maison'}</b><small>${found && pos ? `${pos.lat.toFixed(3)}, ${pos.lon.toFixed(3)}` : 'Carte de démonstration'}</small></div></div>`;
+}
+function locatePanel(status = '') {
+  const pos = lab.pos;
+  panel.innerHTML = `${backButton}<span class="pill">Beya Locate</span><h2>Localisation</h2>
+    <p>Pour savoir où se trouve la peluche : à la maison, chez mamie ou oubliée à l’école. Seuls les parents voient sa position.</p>
+    <div class="row wrap"><button class="btn" type="button" data-lab="locate">Me localiser</button>${pos ? `<a class="btn light" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${pos.lat}&mlon=${pos.lon}#map=16/${pos.lat}/${pos.lon}">Voir sur la carte</a>` : ''}</div>
+    ${status ? `<p>${status}</p>` : ''}
+    ${pos ? `<p class="muted">Précision : environ ${Math.round(pos.acc)} mètres.</p>` : ''}
+    ${labNote('Ici, c’est la position de cet appareil qui est utilisée, seulement si vous l’autorisez. Elle reste sur cet appareil et n’est envoyée nulle part. Sur la peluche, la localisation demandera une puce GPS ou le forfait mobile.')}`;
+}
+function locateMe() {
+  if (!navigator.geolocation) return toast('La position n’est pas disponible sur cet appareil.');
+  locatePanel('Recherche de la position…');
+  navigator.geolocation.getCurrentPosition(
+    (p) => { lab.pos = { lat: p.coords.latitude, lon: p.coords.longitude, acc: p.coords.accuracy }; if (state.screen === 'locate') { locateEye(true); locatePanel('Position trouvée.'); } },
+    () => { if (state.screen === 'locate') locatePanel('Position non autorisée ou introuvable.'); },
+    { timeout: 10000, maximumAge: 60000 },
+  );
+}
+function openLocate() {
+  labClear();
+  focusEye();
+  locateEye(Boolean(lab.pos)); locatePanel();
+}
+
 // ---------- Gestes ----------
 
 document.addEventListener('click', (event) => {
@@ -437,6 +471,7 @@ document.addEventListener('click', (event) => {
     case 'dream': return dreamSet(v);
     case 'holo': return holoSet(v);
     case 'element': return (lab.element = v), coreDraw(), corePanel();
+    case 'locate': return locateMe();
     case 'holoColor': return (lab.ambiance = v), holoDraw(), holoPanel();
   }
 });

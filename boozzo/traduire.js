@@ -269,6 +269,17 @@
     "Bleu électrique": ["Electric blue", "Azul eléctrico"],
     "Le Geek": ["The Geek", "El Geek"],
     "Prototype visuel autonome : le portail est simulé, aucune caméra ni application n’est connectée. Les battements sont simulés, ce n’est pas un appareil médical.": ["Stand-alone visual prototype: the portal is simulated, no camera or app is connected. The heartbeat is simulated; this is not a medical device.", "Prototipo visual autónomo: el portal es simulado, no hay ninguna cámara ni aplicación conectada. Los latidos son simulados; no es un dispositivo médico."],
+    "Localisation": ["Location", "Ubicación"],
+    "Pour savoir où se trouve la peluche : à la maison, chez mamie ou oubliée à l’école. Seuls les parents voient sa position.": ["To know where the plush is: at home, at grandma’s or left at school. Only parents see its location.", "Para saber dónde está el peluche: en casa, en casa de la abuela u olvidado en el colegio. Solo los padres ven su ubicación."],
+    "Me localiser": ["Locate me", "Localizarme"],
+    "Voir sur la carte": ["See on the map", "Ver en el mapa"],
+    "Position trouvée": ["Location found", "Ubicación encontrada"],
+    "Position trouvée.": ["Location found.", "Ubicación encontrada."],
+    "À la maison": ["At home", "En casa"],
+    "Carte de démonstration": ["Demo map", "Mapa de demostración"],
+    "Recherche de la position…": ["Looking for the location…", "Buscando la ubicación…"],
+    "Position non autorisée ou introuvable.": ["Location not allowed or not found.", "Ubicación no permitida o no encontrada."],
+    "Ici, c’est la position de cet appareil qui est utilisée, seulement si vous l’autorisez. Elle reste sur cet appareil et n’est envoyée nulle part. Sur la peluche, la localisation demandera une puce GPS ou le forfait mobile.": ["Here, this device’s location is used, only if you allow it. It stays on this device and is sent nowhere. On the plush, location will need a GPS chip or the mobile plan.", "Aquí se usa la ubicación de este dispositivo, solo si lo permites. Se queda en este dispositivo y no se envía a ningún sitio. En el peluche, la localización necesitará un chip GPS o la tarifa móvil."],
   };
 
   // Textes qui contiennent une valeur variable
@@ -280,6 +291,7 @@
     [/^Visage de (.+) enregistré sur cet appareil\.$/, (m) => [`${m[1]}’s face saved on this device.`, `Cara de ${m[1]} guardada en este dispositivo.`][col]],
     [/^Compris · (.*)$/, (m) => [`Got it · ${m[1]}`, `Entendido · ${m[1]}`][col]],
     [/^✅ Caméra : image reçue \((.+)\)\. Vous devez vous voir dans l’œil\.$/, (m) => [`✅ Camera: picture received (${m[1]}). You should see yourself in the eye.`, `✅ Cámara: imagen recibida (${m[1]}). Deberías verte en el ojo.`][col]],
+    [/^Précision : environ (\d+) mètres\.$/, (m) => [`Accuracy: about ${m[1]} metres.`, `Precisión: unos ${m[1]} metros.`][col]],
     [/^Carte (\d+)$/, (m) => [`Card ${m[1]}`, `Carta ${m[1]}`][col]],
     [/^Couleur (\d+)$/, (m) => [`Colour ${m[1]}`, `Color ${m[1]}`][col]],
   ];

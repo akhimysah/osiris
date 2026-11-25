@@ -707,4 +707,18 @@ img.masc { display: block; width: 100%; height: 100%; object-fit: cover; border-
 @media (max-width: 700px) { .apps i.c-masc { width: 72px; height: 72px; } .l-try .apps i.c-masc { width: 58px; height: 58px; } }
 
 /* Mascottes : une seule planche d'images */
-span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; background: #050a22 url(mascottes.jpg?v=2) no-repeat; background-size: 500% 500%; }
+span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; background: #050a22 url(mascottes.jpg?v=3) no-repeat; background-size: 500% 500%; }
+
+/* --- Localisation --- */
+.c-locate { background: linear-gradient(#ff7a6b, #d62d3a); }
+.loc { position: absolute; inset: 0; overflow: hidden; display: grid; place-items: center; background: #dfeccd; }
+.locMap { position: absolute; inset: -20%; background: linear-gradient(90deg, transparent 46%, #fff 46% 54%, transparent 54%) 0 0 / 34cqw 34cqw, linear-gradient(transparent 46%, #fff 46% 54%, transparent 54%) 0 0 / 30cqw 30cqw, linear-gradient(115deg, transparent 47%, #ffd77a 47% 51%, transparent 51%), radial-gradient(circle at 76% 28%, #9fd3ff 0 16%, transparent 17%), radial-gradient(circle at 20% 74%, #b9e2a1 0 20%, transparent 21%), #e6efd9; transform: rotate(-12deg); animation: locDrift 26s linear infinite alternate; }
+@keyframes locDrift { to { transform: rotate(-12deg) translate(-6cqw, -5cqw); } }
+.locPin { position: relative; z-index: 2; width: 17cqw; height: 17cqw; margin-top: -14cqw; background: #e8323f; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 2cqw 4cqw rgba(0, 0, 0, .35); animation: locBob 1.6s ease-in-out infinite; }
+.locPin::after { content: ""; position: absolute; inset: 30%; border-radius: 50%; background: #fff; }
+@keyframes locBob { 50% { transform: rotate(-45deg) translate(2cqw, -2cqw); } }
+.locRing { position: absolute; width: 16cqw; height: 16cqw; border-radius: 50%; border: 1cqw solid #e8323f; opacity: 0; animation: emoWave 2.2s ease-out infinite; } .locRing + .locRing { animation-delay: 1.1s; }
+.loc.found .locPin { background: #1464e6; } .loc.found .locRing { border-color: #1464e6; }
+.locTag { position: absolute; z-index: 3; bottom: 9%; left: 50%; transform: translateX(-50%); padding: 2cqw 5cqw; border-radius: 4cqw; background: rgba(5, 10, 34, .82); color: #fff; text-align: center; white-space: nowrap; }
+.locTag b { display: block; font-size: 5cqw; } .locTag small { font-size: 3.6cqw; opacity: .85; }
+@media (prefers-reduced-motion: reduce) { .loc * { animation: none !important; } }
