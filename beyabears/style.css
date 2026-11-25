@@ -707,4 +707,4 @@ img.masc { display: block; width: 100%; height: 100%; object-fit: cover; border-
 @media (max-width: 700px) { .apps i.c-masc { width: 72px; height: 72px; } .l-try .apps i.c-masc { width: 58px; height: 58px; } }
 
 /* Mascottes : une seule planche d'images */
-span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; background: #050a22 url(mascottes.jpg?v=1) no-repeat; background-size: 500% 500%; }
+span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; background: #050a22 url(mascottes.jpg?v=2) no-repeat; background-size: 500% 500%; }
