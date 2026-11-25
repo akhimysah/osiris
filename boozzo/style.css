@@ -663,3 +663,13 @@ html { scroll-behavior: smooth; }
 .e-portail .emoIris { animation-duration: 6s; }
 @media (max-width: 560px) { .edGrid b { font-size: .92rem; } .edGrid span { font-size: .64rem; } }
 .emoStars { position: absolute; inset: 0; }
+
+/* Iris « fréquences » : dessiné image par image, il remplace les rayons fixes */
+.emoFreq { position: absolute; inset: 0; width: 100%; height: 100%; }
+.emo .emoRing { inset: 1.2%; border-width: .5cqw; opacity: .45; box-shadow: 0 0 5cqw var(--c), inset 0 0 4cqw var(--c); }
+.ed-cosmic .emoRing { inset: 1.2%; } .e-alerte .emoRing { border-width: 2cqw; opacity: .8; } .e-surprise .emoRing { border-width: 1.6cqw; }
+.e-fete .emoFreq { animation: emoHue 2.4s linear infinite; } .e-tristesse .emoFreq { opacity: .7; } .e-sommeil .emoFreq { opacity: .6; }
+.emoPupil s { background: radial-gradient(circle, #fff, rgba(255, 255, 255, .15) 60%, transparent 72%); width: 22%; right: 54%; top: 18%; }
+/* Proportions de la maquette : une pupille plus petite, de longs rayons autour */
+.emoPupil { width: 35%; } .e-joie .emoPupil { width: 40%; } .e-ecoute .emoPupil { width: 33%; } .e-reflexion .emoPupil { width: 31%; } .e-tristesse .emoPupil { width: 32%; } .e-surprise .emoPupil { width: 20%; } .e-alerte .emoPupil { width: 22%; }
+.ed-quantum .emoPupil { width: 34%; } .e-amour .emoPupil { width: 56%; } .e-portail .emoPupil { width: 68%; }

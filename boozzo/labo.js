@@ -80,6 +80,60 @@ const lab = { emo: 'normal', msg: '', zone: '', edition: 'living', blink: true }
 // Anneau segmenté qui tourne, comme une pièce de machine (Quantum Eye et Cœur).
 const labRing = (r, w, dash, dur, dir, op) => `<circle cx="100" cy="100" r="${r}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-dasharray="${dash}" opacity="${op}" style="animation:emoSpin ${dur}s linear infinite ${dir ? 'reverse' : ''};transform-origin:100px 100px"/>`;
 const emoEdition = () => EDITIONS.find((e) => e[0] === lab.edition) || EDITIONS[0];
+// L'iris « fréquences » : des rayons de longueurs différentes qui bougent sans arrêt, comme un égaliseur,
+// entourés d'anneaux en pointillés qui tournent. Chaque émotion a son énergie : ample et rapide quand il
+// écoute, lente quand il dort, nerveuse en alerte.
+const FREQ = {
+  normal: [0.55, 1, 0], ecoute: [1, 3.2, 0], reflexion: [0.7, 0.8, 1], joie: [0.92, 2.3, 0], sommeil: [0.22, 0.32, 0], alerte: [1, 6, 2],
+  amour: [0.7, 1.4, 0], musique: [1, 2.8, 0], rire: [0.95, 3.6, 2], surprise: [1, 1.2, 0], tristesse: [0.3, 0.5, 0], fete: [1, 3, 0], clin: [0.55, 1, 0], portail: [0.85, 2, 1],
+};
+const FREQ_SEEDS = Array.from({ length: 180 }, (_, i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); });
+let freqRaf = 0;
+function emoFreqStart() {
+  cancelAnimationFrame(freqRaf);
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tick = (now) => {
+    const cv = $('.emoFreq');
+    if (!cv || state.screen !== 'emo') return;
+    const box = cv.clientWidth, dpr = Math.min(2, window.devicePixelRatio || 1), size = Math.round(box * dpr);
+    if (size < 20) return void (freqRaf = requestAnimationFrame(tick));
+    if (cv.width !== size) cv.width = cv.height = size;
+    const g = cv.getContext('2d'), c = size / 2, t = still ? 0 : now / 1000, id = lab.emo, ed = lab.edition;
+    const [amp, speed, mode] = FREQ[id] || FREQ.normal, color = emoColor(id);
+    const pupil = $('.emoPupil'), big = id === 'amour' || id === 'portail';
+    const r0 = (big ? (id === 'portail' ? 0.36 : 0.27) : Math.max(0.1, (pupil ? pupil.offsetWidth : box * 0.46) / 2 / box) + 0.012) * size;
+    const rMax = (ed === 'quantum' ? 0.295 : 0.405) * size, span = Math.max(4, rMax - r0), n = FREQ_SEEDS.length;
+    g.clearRect(0, 0, size, size);
+    g.lineCap = 'round'; g.strokeStyle = color; g.shadowColor = color; g.shadowBlur = size * 0.012;
+    const beat = 0.5 + 0.5 * Math.sin(t * speed * 3.1);
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + t * 0.05, s = FREQ_SEEDS[i];
+      // Une onde lente, une rapide, et pour la réflexion une vague qui tourne autour de la pupille.
+      let k = 0.5 + 0.5 * Math.sin(t * speed * 1.7 + s * 6.283);
+      k *= 0.62 + 0.38 * Math.sin(i * 0.21 + t * speed * 0.6);
+      if (mode === 1) k = 0.25 + 0.75 * Math.pow(0.5 + 0.5 * Math.sin(a * 3 - t * 2.2), 2) * (0.6 + 0.4 * s);
+      if (mode === 2) k = Math.abs(Math.sin(t * speed * 2 + s * 40)) * (0.5 + 0.5 * s);
+      if (id === 'ecoute' || id === 'musique') k *= 0.55 + 0.45 * beat;
+      const len = span * (0.34 + 0.26 * s + 0.5 * amp * Math.max(0, k));
+      g.globalAlpha = 0.45 + 0.55 * Math.min(1, len / span);
+      g.lineWidth = size * (i % 3 === 0 ? 0.0075 : 0.0045);
+      g.beginPath(); g.moveTo(c + Math.cos(a) * r0, c + Math.sin(a) * r0); g.lineTo(c + Math.cos(a) * (r0 + len), c + Math.sin(a) * (r0 + len)); g.stroke();
+    }
+    // Bord de la pupille, puis les anneaux en pointillés (absents en Quantum, qui a ses propres anneaux).
+    g.globalAlpha = 0.95; g.lineWidth = size * 0.006; g.setLineDash([]); g.beginPath(); g.arc(c, c, r0 - size * 0.004, 0, 6.2832); g.stroke();
+    if (ed !== 'quantum') {
+      const rings = [[0.428, 0.012, [0.02, 0.016], 0.12, 0.9], [0.455, 0.005, [0.05, 0.02], -0.08, 0.6], [0.478, 0.003, [0.012, 0.03], 0.05, 0.45]];
+      for (const [r, w, dash, spin, alpha] of rings) {
+        g.globalAlpha = alpha * (0.75 + 0.25 * amp); g.lineWidth = size * w; g.lineCap = 'butt'; g.setLineDash(dash.map((d) => d * size)); g.lineDashOffset = -t * spin * speed * size * 0.2;
+        g.beginPath(); g.arc(c, c, r * size, 0, 6.2832); g.stroke();
+      }
+      g.setLineDash([]);
+    }
+    g.globalAlpha = 1; g.shadowBlur = 0;
+    if (!still) freqRaf = requestAnimationFrame(tick);
+  };
+  freqRaf = requestAnimationFrame(tick);
+}
 function emoColor(id) {
   const [ed, , , , base] = emoEdition(), own = (EMOTIONS.find((e) => e[0] === id) || EMOTIONS[0])[3];
   if (id === 'alerte') return '#ff4d4d';
@@ -98,7 +152,7 @@ function emoDraw() {
   const canBlink = lab.blink && !['joie', 'rire', 'tristesse', 'sommeil', 'reflexion', 'clin'].includes(id);
   screen.innerHTML = `<div class="emo e-${id} ed-${ed}${canBlink ? ' blink' : ''}" style="--c:${color};--t:${(60 / bpm).toFixed(3)}s">
     ${ed === 'cosmic' ? '<div class="emoNebula"></div><div class="emoStars"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div>' : ''}
-    <div class="emoIris"></div>
+    <canvas class="emoFreq" aria-hidden="true"></canvas>
     ${ed === 'quantum' ? `<svg class="emoTech" viewBox="0 0 200 200" aria-hidden="true">${labRing(92, 3, '26 7 4 7', 26, 1, 0.9)}${labRing(82, 1.2, '60 9', 40, 0, 0.6)}${labRing(73, 5, '48 6 10 6', 18, 0, 1)}${labRing(62, 1.6, '3 4', 30, 1, 0.75)}<g stroke="currentColor" stroke-width="5" stroke-linecap="round"><path d="M6 100h10M184 100h10M100 6v10M100 184v10"/></g></svg>` : ''}
     <div class="emoRing"></div>
     ${id === 'ecoute' ? '<i class="emoWave"></i><i class="emoWave"></i><i class="emoWave"></i>' : ''}
@@ -107,6 +161,7 @@ function emoDraw() {
     <div class="emoFx" aria-hidden="true">${bits}</div>
     <div class="emoTag"><b>${bpm}</b> BPM</div>
   </div>`;
+  emoFreqStart();
 }
 function emoPanel() {
   const [ed, eye, hero, sign, , modes] = emoEdition();
