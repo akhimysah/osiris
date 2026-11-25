@@ -312,9 +312,9 @@
   $$('[data-live-iris]').forEach((host) => {
     const fixed = host.dataset.emo, mini = host.classList.contains('emoMini'), main = 'main' in host.dataset;
     host.classList.add('liveIris');
-    host.innerHTML = '<canvas></canvas><div class="lp"><span></span></div>' + (mini ? '' : '<div class="ll"></div><small></small>');
-    const cv = $('canvas', host), tag = $('small', host), face = $('.lp span', host); let id = fixed || 'normal', step = 0, seen = false, raf = 0;
-    const paint = () => { const e = EMO[id] || EMO.normal; face.textContent = id === 'normal' && !mini ? '' : e[0]; host.style.setProperty('--c', e[2]); if (tag) tag.textContent = T(e[1]); };
+    host.innerHTML = '<canvas></canvas><div class="lp"><img alt="" decoding="async"></div>' + (mini ? '' : '<small></small>');
+    const cv = $('canvas', host), tag = $('small', host), face = $('.lp img', host); let id = fixed || 'normal', step = 0, seen = false, raf = 0;
+    const paint = () => { const e = EMO[id] || EMO.normal; const src = 'media/gz/f-' + id + '.webp'; if (face.getAttribute('src') !== src) face.src = src; host.dataset.m = e[5]; host.style.setProperty('--c', e[2]); if (tag) tag.textContent = T(e[1]); };
     const set = (next) => { id = EMO[next] ? next : 'normal'; paint(); kickIris(); };
     document.addEventListener('langue', paint);
     // L'ourson de l'accueil fait le tour de quelques émotions tout seul.
@@ -324,7 +324,7 @@
       const box = cv.clientWidth; if (!seen || box < 12 || (host.classList.contains('view') && !host.classList.contains('on'))) return;
       const dpr = Math.min(2, devicePixelRatio || 1), size = Math.round(box * dpr); if (cv.width !== size) cv.width = cv.height = size;
       const g = cv.getContext('2d'), c = size / 2, t = calm ? 0 : now / 1000, [, , color, amp, speed, mode] = EMO[id] || EMO.normal;
-      const r0 = size * (mini ? 0.27 : 0.19), span = size * 0.405 - r0, n = mini ? 72 : SEEDS.length, beat = Math.pow(0.5 + 0.5 * Math.sin(t * speed * 3.1), 2);
+      const r0 = size * 0.285, span = size * 0.405 - r0, n = mini ? 72 : SEEDS.length, beat = Math.pow(0.5 + 0.5 * Math.sin(t * speed * 3.1), 2);
       g.clearRect(0, 0, size, size); g.lineCap = 'round'; g.strokeStyle = color; g.shadowColor = color; g.shadowBlur = size * 0.012;
       for (let i = 0; i < n; i++) {
         const a = (i / n) * 6.2832 + t * 0.05, s = SEEDS[i];
@@ -380,15 +380,19 @@
       const vw = stage.clientWidth || innerWidth, vh = stage.clientHeight || innerHeight;
       if (t0) { const k = Math.min(1, (now - t0) / DUR); P = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; if (k >= 1) { t0 = 0; opened(); } }
       const p = P;
-      // L'œil cosmique : la photo couvre l'écran et sa pupille est une fenêtre qui s'ouvre sur la vidéo.
-      const iw = Math.max(vw, vh * 1290 / 1715), ih = iw * 1715 / 1290;
-      const e = clamp(p / .78), k = e * e * (3 - 2 * e);
-      const cx = vw / 2 + .007 * iw, cy = vh / 2 - .001 * ih;
-      const R0 = iw * .086, Rmax = Math.hypot(vw, vh) * .62, R = R0 * Math.pow(Rmax / R0, k), zoom = 1 + k * 1.6;
-      const hole = 'radial-gradient(circle at ' + cx.toFixed(1) + 'px ' + cy.toFixed(1) + 'px, transparent ' + (R / zoom * .96).toFixed(1) + 'px, #000 ' + (R / zoom).toFixed(1) + 'px)';
-      dEye.style.webkitMaskImage = hole; dEye.style.maskImage = hole;
-      dEye.style.transformOrigin = cx.toFixed(1) + 'px ' + cy.toFixed(1) + 'px'; dEye.style.transform = 'scale(' + zoom.toFixed(3) + ')';
-      dEye.style.opacity = (1 - clamp((p - .84) / .14)).toFixed(2);
+      // Sans souris, l'œil regarde doucement autour de lui
+      if (now - last > 2200) { tx = Math.sin(now / 1500) * .6; ty = Math.cos(now / 2100) * .35; }
+      px += (tx - px) * .12; py += (ty - py) * .12;
+      const calmDown = 1 - clamp(p / .35);
+      const R0 = Math.min(vw, vh) * .1, Rmax = Math.hypot(vw, vh) * .62;
+      const e = clamp(p / .78), R = R0 * Math.pow(Rmax / R0, e * e * (3 - 2 * e));
+      const cx = vw / 2 + px * R0 * 1.5 * calmDown, cy = vh / 2 + py * R0 * 1.1 * calmDown + (1 - clamp(p / .5)) * vh * .04;
+      const f = (k) => (R * k).toFixed(1) + 'px';
+      dEye.style.background =
+        'radial-gradient(circle at ' + cx.toFixed(1) + 'px ' + cy.toFixed(1) + 'px,' +
+        'rgba(3,6,15,0) 0,rgba(3,6,15,0) ' + f(.97) + ',#03060f ' + f(1) + ',#03060f ' + f(1.05) + ',#7fd2ff ' + f(1.16) + ',#2aa7ff ' + f(1.4) + ',#1464e6 ' + f(1.85) + ',#0b3fb0 ' + f(2.12) + ',#061a44 ' + f(2.24) + ',#f4f7fd ' + f(2.3) + ',#ffffff ' + f(2.9) + ',#eef3fc ' + f(3.7) + ',#cfdcf5 ' + f(4.15) + ',#dbe6fb ' + f(4.22) + ',#f3f7ff ' + f(4.6) + ',#ffffff ' + f(5.2) + ')';
+      const sz = R * .5; shine.style.width = shine.style.height = sz.toFixed(1) + 'px'; shine.style.transform = 'translate(' + (cx + R * 1.2 - sz / 2).toFixed(1) + 'px,' + (cy - R * 1.3 - sz / 2).toFixed(1) + 'px)';
+      shine.style.opacity = (1 - clamp((p - .3) / .25)).toFixed(2);
       A.style.opacity = (1 - clamp(p / .16)).toFixed(2); A.style.transform = 'translateY(' + (-p * 160).toFixed(0) + 'px)';
       hint.style.opacity = (1 - clamp(p / .08)).toFixed(2);
       const b = clamp((p - .74) / .16);

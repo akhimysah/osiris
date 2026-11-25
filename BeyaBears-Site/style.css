@@ -949,3 +949,25 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 .gamePad button:active { background: #2e8bff; } .gamePad .wide { grid-column: span 2; font-size: 1rem; background: var(--blue, #1464e6); } .gamePad .wide.soft { grid-column: span 1; background: #1b2b52; }
 .gameTip { margin: 12px 0 0; text-align: center; color: #aab6d4; font-size: .86rem; }
 @media (prefers-reduced-motion: reduce) { .eyeGame b { animation: none; } }
+
+/* ================= Les douze visages BeyaBear's, et le retour de l'œil bleu en ouverture ================= */
+.liveIris .lp, .emoMini .lp { width: 56%; background: #0a0d1a; box-shadow: 0 0 0 .9cqw var(--c), 0 0 6cqw #000; overflow: hidden; animation: none; }
+.emoMini .lp { box-shadow: 0 0 0 1.4cqw var(--c); }
+.liveIris .lp img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; border-radius: 50%; }
+.liveIris[data-m="0"] .lp { animation: faceBob 2.4s ease-in-out infinite; }
+.liveIris[data-m="1"] .lp { animation: faceTilt 3.2s ease-in-out infinite; }
+.liveIris[data-m="2"] .lp { animation: faceShake .28s linear infinite; }
+.liveIris[data-m="3"] .lp { animation: lpBeat .9s ease-in-out infinite; }
+.liveIris[data-m="4"] .lp { animation: faceBreathe 5s ease-in-out infinite; }
+.liveIris[data-m="5"] .lp { animation: faceJump .7s ease-in-out infinite; }
+@keyframes faceBob { 50% { transform: translateY(-2.5%) scale(1.03); } }
+@keyframes faceTilt { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes faceShake { 0%, 100% { transform: translate(0, 0) rotate(0); } 25% { transform: translate(-1.5%, 1%) rotate(-2deg); } 75% { transform: translate(1.5%, -1%) rotate(2deg); } }
+@keyframes faceBreathe { 50% { transform: scale(.94); } }
+@keyframes faceJump { 50% { transform: translateY(-6%) scale(1.05); } }
+.emoMini { width: min(100%, 150px); }
+.diveEye { background: none; } .diveShine { display: block; }
+.diveA p { color: var(--text); text-shadow: none; } .diveA span { color: #3d4d73; text-shadow: none; }
+.gate { background: radial-gradient(900px 600px at 50% 20%, #d6e6ff, #fff 70%); } .gate h2 { color: var(--text); } .gate p { color: var(--muted); }
+.gate .btn.line { background: #fff; color: var(--eye); border-color: rgba(20, 100, 230, .35); }
+@media (prefers-reduced-motion: reduce) { .liveIris .lp { animation: none !important; } }

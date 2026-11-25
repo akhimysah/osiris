@@ -314,6 +314,8 @@
 "Touchez l'écran pour tourner, glissez pour déplacer.": ["Tap the screen to rotate, swipe to move.", "Toca la pantalla para girar, desliza para mover."],
 "Jouer aux Briques de miel dans l'écran rond": ["Play Honey bricks in the round screen", "Jugar a Ladrillos de miel en la pantalla redonda"],
 "Gros plan sur l'écran rond de la peluche, où se joue une partie de briques": ["Close-up of the plush's round screen, with a game of bricks being played", "Primer plano de la pantalla redonda del peluche, donde se juega una partida de ladrillos"],
+"Touchez une émotion : le visage de l'ourson change, et son iris prend sa couleur et son rythme.": ["Tap an emotion: the bear's face changes, and its iris takes on its colour and rhythm.", "Toca una emoción: la cara del osito cambia, y su iris toma su color y su ritmo."],
+"Douze émotions : chacune a son visage, sa couleur et son rythme.": ["Twelve emotions: each has its own face, colour and rhythm.", "Doce emociones: cada una tiene su cara, su color y su ritmo."],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
