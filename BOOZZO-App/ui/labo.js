@@ -100,7 +100,7 @@ function emoFreqStart() {
     if (cv.width !== size) cv.width = cv.height = size;
     const g = cv.getContext('2d'), c = size / 2, t = still ? 0 : now / 1000, id = lab.emo, ed = lab.edition;
     const [amp, speed, mode] = FREQ[id] || FREQ.normal, color = emoColor(id);
-    const pupil = $('.emoPupil'), big = id === 'amour' || id === 'portail';
+    const pupil = $('.emoPupil'), big = id === 'portail';
     const r0 = (big ? (id === 'portail' ? 0.36 : 0.27) : Math.max(0.1, (pupil ? pupil.offsetWidth : box * 0.46) / 2 / box) + 0.012) * size;
     const rMax = (ed === 'quantum' ? 0.235 : 0.405) * size, span = Math.max(4, rMax - r0), n = FREQ_SEEDS.length;
     g.clearRect(0, 0, size, size);
@@ -142,7 +142,7 @@ function emoColor(id) {
   return id === 'normal' || id === 'clin' ? base : own;
 }
 function emoDraw() {
-  const [id, , , , bpm, , glyph, fx] = EMOTIONS.find((e) => e[0] === lab.emo) || EMOTIONS[0];
+  const [id, , emoji, , bpm, , , fx] = EMOTIONS.find((e) => e[0] === lab.emo) || EMOTIONS[0];
   const ed = lab.edition, color = emoColor(id);
   const bits = fx ? Array.from({ length: id === 'fete' ? 16 : 9 }, (_, i) => {
     const chars = [...fx], hue = id === 'fete' ? `color:hsl(${(i * 47) % 360} 90% 62%);` : '';
@@ -156,7 +156,7 @@ function emoDraw() {
     ${ed === 'quantum' ? `<div class="emoNeon${(lab.qcolor || QUANTUM_COLORS[0][0]) === '#2d7bff' ? '' : ' ruby'}"></div>` : ''}
     <div class="emoRing"></div>
     ${id === 'ecoute' ? '<i class="emoWave"></i><i class="emoWave"></i><i class="emoWave"></i>' : ''}
-    <div class="emoPupil">${id === 'portail' ? '<div class="emoPortal"><i></i><i></i></div>' : glyph ? `<svg viewBox="0 0 100 100" aria-hidden="true">${GLYPH[glyph]}</svg>` : '<s></s>'}</div>
+    <div class="emoPupil">${id === 'portail' ? '<div class="emoPortal"><i></i><i></i></div>' : id === 'normal' ? '<s></s>' : `<span class="emoMoji">${emoji}</span>`}</div>
     <div class="emoLid top"></div><div class="emoLid bot"></div>
     <div class="emoFx" aria-hidden="true">${bits}</div>
     <div class="emoTag"><b>${bpm}</b> BPM</div>

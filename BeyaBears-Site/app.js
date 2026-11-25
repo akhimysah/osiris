@@ -105,7 +105,7 @@
   }
 
   // L'œil : un mode à la fois
-  const HALO = { neon: '#2d7bff', iris: '#2e8bff', call: '#5c7cff', story: '#8a6bff', talk: '#2e8bff', video: '#ff7a59', meteo: '#6fc3ff', clock: '#ff5a4a', jeu: '#ffb21f', night: '#ffb347' };
+  const HALO = { emo: '#ffca55', neon: '#2d7bff', iris: '#2e8bff', call: '#5c7cff', story: '#8a6bff', talk: '#2e8bff', video: '#ff7a59', meteo: '#6fc3ff', clock: '#ff5a4a', jeu: '#ffb21f', night: '#ffb347' };
   const modes = $$('.mode'), ball = $('.eyeball');
   let current = 0, timer = null, touched = false;
   // Sur téléphone : la description de la fonction choisie s'affiche sous les pastilles, puis le bouton de la démo.
@@ -290,44 +290,75 @@
 
   // ---------- L'iris vivant ----------
   // Des rayons de longueurs différentes qui bougent sans arrêt, des anneaux en pointillés qui tournent,
-  // une pupille qui cligne. L'humeur change toute seule : on voit l'œil vivre sans rien toucher.
-  const MOODS = [['Normal', '#29baff', 0.55, 1, 0], ['Écoute', '#22d3ee', 1, 3.2, 0], ['Réflexion', '#a56bff', 0.7, 0.8, 1], ['Joie', '#ffca55', 0.92, 2.3, 0]];
+  // une pupille qui porte l'émoji de l'émotion. Chaque émotion a sa couleur et sa façon de bouger.
+  // identifiant : [émoji, nom, couleur, amplitude, vitesse, mouvement]
+  // mouvements : 0 vagues, 1 vague qui tourne, 2 saccades, 3 battement, 4 respiration lente, 5 étincelles
+  const EMO = {
+    normal: ['👁️', 'Iris normal', '#29baff', 0.55, 1, 0], joie: ['😄', 'Joie', '#ffca55', 0.95, 2.3, 0], affection: ['❤️', 'Affection', '#ff478c', 0.8, 1.3, 3],
+    musique: ['🎵', 'Musique', '#ff9f1c', 1, 2.6, 3], rire: ['😂', 'Rire', '#d4f13a', 1, 3.6, 2], surprise: ['😮', 'Surprise', '#7dd3fc', 1, 1.1, 2],
+    tristesse: ['😢', 'Tristesse', '#6f9bd8', 0.3, 0.45, 4], sommeil: ['😴', 'Sommeil', '#827aff', 0.22, 0.3, 4], reflexion: ['🤔', 'Réflexion', '#a56bff', 0.75, 0.8, 1],
+    celebration: ['🎉', 'Célébration', '#ff7ad9', 1, 3, 5], ecoute: ['👂', 'Écoute', '#22d3ee', 1, 3.2, 3], complicite: ['😉', 'Complicité', '#34d399', 0.65, 1.5, 1],
+  };
+  const TOUR = ['normal', 'ecoute', 'reflexion', 'joie', 'affection'];
   const SEEDS = Array.from({ length: 150 }, (_, i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); });
-  $$('[data-live-iris]').forEach((host, index) => {
+  const irises = [];
+  $$('[data-live-iris]').forEach((host) => {
+    const fixed = host.dataset.emo, mini = host.classList.contains('emoMini'), main = 'main' in host.dataset;
     host.classList.add('liveIris');
-    host.innerHTML = '<canvas></canvas><div class="lp"><s></s></div><div class="ll"></div><small></small>';
-    const cv = $('canvas', host), tag = $('small', host); let mood = index % MOODS.length, seen = false, raf = 0;
-    const label = () => { tag.textContent = T(MOODS[mood][0]); host.style.setProperty('--c', MOODS[mood][1]); };
-    label(); document.addEventListener('langue', label);
-    setInterval(() => { if (seen && !document.hidden) { mood = (mood + 1) % MOODS.length; label(); } }, 3800);
+    host.innerHTML = '<canvas></canvas><div class="lp"><span></span></div>' + (mini ? '' : '<div class="ll"></div><small></small>');
+    const cv = $('canvas', host), tag = $('small', host), face = $('.lp span', host); let id = fixed || 'normal', step = 0, seen = false, raf = 0;
+    const paint = () => { const e = EMO[id] || EMO.normal; face.textContent = id === 'normal' && !mini ? '' : e[0]; host.style.setProperty('--c', e[2]); if (tag) tag.textContent = T(e[1]); };
+    const set = (next) => { id = EMO[next] ? next : 'normal'; paint(); kickIris(); };
+    document.addEventListener('langue', paint);
+    // L'ourson de l'accueil fait le tour de quelques émotions tout seul.
+    if (!fixed) setInterval(() => { if (seen && !document.hidden) { step = (step + 1) % TOUR.length; set(TOUR[step]); } }, 3800);
     const draw = (now) => {
       raf = 0;
-      const box = cv.clientWidth; if (!seen || box < 20 || (host.classList.contains('view') && !host.classList.contains('on'))) return;
+      const box = cv.clientWidth; if (!seen || box < 12 || (host.classList.contains('view') && !host.classList.contains('on'))) return;
       const dpr = Math.min(2, devicePixelRatio || 1), size = Math.round(box * dpr); if (cv.width !== size) cv.width = cv.height = size;
-      const g = cv.getContext('2d'), c = size / 2, t = calm ? 0 : now / 1000, [, color, amp, speed, mode] = MOODS[mood];
-      const r0 = size * 0.19, span = size * 0.405 - r0, n = SEEDS.length, beat = 0.5 + 0.5 * Math.sin(t * speed * 3.1);
+      const g = cv.getContext('2d'), c = size / 2, t = calm ? 0 : now / 1000, [, , color, amp, speed, mode] = EMO[id] || EMO.normal;
+      const r0 = size * (mini ? 0.27 : 0.19), span = size * 0.405 - r0, n = mini ? 72 : SEEDS.length, beat = Math.pow(0.5 + 0.5 * Math.sin(t * speed * 3.1), 2);
       g.clearRect(0, 0, size, size); g.lineCap = 'round'; g.strokeStyle = color; g.shadowColor = color; g.shadowBlur = size * 0.012;
       for (let i = 0; i < n; i++) {
         const a = (i / n) * 6.2832 + t * 0.05, s = SEEDS[i];
         let k = (0.5 + 0.5 * Math.sin(t * speed * 1.7 + s * 6.283)) * (0.62 + 0.38 * Math.sin(i * 0.21 + t * speed * 0.6));
         if (mode === 1) k = 0.25 + 0.75 * Math.pow(0.5 + 0.5 * Math.sin(a * 3 - t * 2.2), 2) * (0.6 + 0.4 * s);
-        if (MOODS[mood][0] === 'Écoute') k *= 0.55 + 0.45 * beat;
-        const len = span * (0.34 + 0.26 * s + 0.5 * amp * Math.max(0, k));
-        g.globalAlpha = 0.45 + 0.55 * Math.min(1, len / span); g.lineWidth = size * (i % 3 === 0 ? 0.0075 : 0.0045);
+        if (mode === 2) k = Math.abs(Math.sin(t * speed * 2 + s * 40)) * (0.5 + 0.5 * s);
+        if (mode === 3) k = (0.35 + 0.65 * s) * (0.3 + 0.7 * beat);
+        if (mode === 4) k = (0.5 + 0.5 * Math.sin(t * speed * 1.2)) * (0.6 + 0.4 * s);
+        if (mode === 5) { k = Math.pow(Math.abs(Math.sin(t * 3 + s * 30)), 6) + 0.25 * s; g.strokeStyle = g.shadowColor = 'hsl(' + ((s * 360 + t * 90) % 360).toFixed(0) + ' 95% 66%)'; }
+        const len = span * (0.34 + 0.26 * s + 0.5 * amp * Math.max(0, Math.min(1.2, k)));
+        g.globalAlpha = 0.45 + 0.55 * Math.min(1, len / span); g.lineWidth = size * (i % 3 === 0 ? 0.0075 : 0.0045) * (mini ? 1.6 : 1);
         g.beginPath(); g.moveTo(c + Math.cos(a) * r0, c + Math.sin(a) * r0); g.lineTo(c + Math.cos(a) * (r0 + len), c + Math.sin(a) * (r0 + len)); g.stroke();
       }
+      g.strokeStyle = g.shadowColor = color;
       for (const [r, w, dash, spin, alpha] of [[0.428, 0.012, [0.02, 0.016], 0.12, 0.9], [0.455, 0.005, [0.05, 0.02], -0.08, 0.6], [0.478, 0.003, [0.012, 0.03], 0.05, 0.45]]) {
-        g.globalAlpha = alpha; g.lineWidth = size * w; g.lineCap = 'butt'; g.setLineDash(dash.map((d) => d * size)); g.lineDashOffset = -t * spin * speed * size * 0.2;
+        g.globalAlpha = alpha; g.lineWidth = size * w * (mini ? 1.5 : 1); g.lineCap = 'butt'; g.setLineDash(dash.map((d) => d * size)); g.lineDashOffset = -t * spin * speed * size * 0.2;
         g.beginPath(); g.arc(c, c, r * size, 0, 6.2832); g.stroke();
       }
       g.setLineDash([]); g.globalAlpha = 1; g.shadowBlur = 0;
       if (!calm) raf = requestAnimationFrame(draw);
     };
     const kickIris = () => { if (!raf) raf = requestAnimationFrame(draw); };
-    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { seen = e.isIntersecting; if (seen) kickIris(); }, { rootMargin: '80px' }).observe(host); else { seen = true; kickIris(); }
+    paint();
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { seen = e.isIntersecting; if (seen) kickIris(); }, { rootMargin: '60px' }).observe(host); else { seen = true; kickIris(); }
     modes.forEach((m) => m.addEventListener('click', () => setTimeout(kickIris, 60)));
     setInterval(kickIris, 1200);
+    irises.push({ host, set, main });
   });
+  // Le mur des émotions : on touche une tuile, l'œil de l'ourson prend cette émotion.
+  const tiles = $$('.emoTile'), emoMode = modes.findIndex((m) => m.dataset.view === 'emo');
+  const pickEmo = (id, reveal) => {
+    tiles.forEach((t) => { const on = t.dataset.emo === id; t.classList.toggle('sel', on); t.setAttribute('aria-pressed', String(on)); });
+    irises.filter((i) => i.main).forEach((i) => i.set(id));
+    if (EMO[id] && ball) ball.style.setProperty('--halo', EMO[id][2]);
+    if (reveal && emoMode >= 0) {
+      touched = true; clearInterval(timer); show(emoMode); if (EMO[id]) ball.style.setProperty('--halo', EMO[id][2]);
+      const r = ball.getBoundingClientRect(); if (r.top < 70 || r.bottom > innerHeight - 70) ball.scrollIntoView({ block: 'center', behavior: calm ? 'auto' : 'smooth' });
+    }
+  };
+  tiles.forEach((t) => t.addEventListener('click', () => pickEmo(t.dataset.emo, true)));
+  if (tiles.length) pickEmo('joie', false);
 
   // ---------- La plongée dans l'œil ----------
   // Un œil géant dont la pupille est une fenêtre sur la vidéo. En défilant, la pupille grandit jusqu'à remplir l'écran.

@@ -891,3 +891,26 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 /* L'appel de mamie : son vrai visage dans l'écran rond */
 .hwEye, .v-call { overflow: hidden; } .hwEye .mamie, .v-call .mamie { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; border-radius: 0; }
 .hwEye { box-shadow: 0 0 0 3px #0b1020, 0 0 26px rgba(125, 255, 176, .45); }
+
+/* ================= Douze émotions, douze regards ================= */
+.liveIris .lp { display: grid; place-items: center; } .liveIris .lp span { font-size: 17cqw; line-height: 1; filter: drop-shadow(0 0 2cqw rgba(0, 0, 0, .6)); }
+.liveIris .lp s { display: none; }
+.v-emo.liveIris { position: absolute; }
+.emoWall { margin-top: clamp(36px, 5vw, 64px); text-align: center; }
+.emoWall h3 { font: 800 clamp(1.5rem, 3vw, 2.2rem)/1.1 var(--display); letter-spacing: -.03em; color: var(--text); margin: 0; } .emoWall p { color: var(--muted); margin: 8px 0 0; }
+.emoTiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
+.emoTile { display: grid; justify-items: center; gap: 12px; padding: 18px 8px 16px; border-radius: 24px; border: 2px solid transparent; background: #0a0d1a; color: #fff; cursor: pointer; font: inherit; transition: transform .2s, border-color .2s, box-shadow .2s; -webkit-tap-highlight-color: transparent; }
+.emoTile:hover { transform: translateY(-3px); } .emoTile b { font-size: 1rem; font-weight: 700; }
+.emoTile.sel { border-color: var(--eye-soft, #7fd2ff); box-shadow: 0 14px 34px rgba(8, 28, 80, .28); }
+.emoMini { position: relative; width: min(100%, 120px); aspect-ratio: 1; border-radius: 50%; background: #02040a; }
+.emoMini .lp { width: 54%; box-shadow: 0 0 0 1.4cqw var(--c); animation: none; } .emoMini .lp span { font-size: 30cqw; }
+@media (max-width: 1100px) { .emoTiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .emoTiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .emoTile { padding: 14px 4px 12px; border-radius: 20px; gap: 9px; } .emoTile b { font-size: .86rem; } }
+/* Les boutons d'application : un petit iris de la couleur de l'application, plus de carré */
+.appTiles i { border-radius: 50%; background: radial-gradient(circle, #02040a 0 30%, transparent 32%), repeating-conic-gradient(var(--c) 0 5deg, #0a0d1a 6deg 12deg); box-shadow: 0 0 0 3px #0a0d1a, 0 0 0 5px var(--c), 0 8px 18px rgba(8, 28, 80, .2); animation: neonSpin 30s linear infinite; }
+.appTiles i::after { inset: 34%; background: #fff; box-shadow: none; opacity: .0; }
+/* Technologie : la photo de l'ourson docteur */
+.implantArt img { display: block; width: 100%; max-width: 460px; height: auto; margin: 0 auto; border-radius: 24px; box-shadow: 0 24px 60px rgba(0, 0, 0, .4); }
+.implantTxt li i { width: 12px; height: 12px; margin-top: 7px; background: #4fb4ff; box-shadow: 0 0 10px #4fb4ff; }
+@media (prefers-reduced-motion: reduce) { .appTiles i { animation: none; } }
+@media (min-width: 901px) { .try .emoWall, .try .appLinks { grid-column: 1 / -1; } .try .appTiles { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
