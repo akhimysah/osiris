@@ -23,6 +23,7 @@ const store = {
 const svg = (body, filled) =>
   `<svg viewBox="0 0 24 24" aria-hidden="true" fill="${filled ? 'currentColor' : 'none'}" stroke="${filled ? 'none' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
 const ICON = {
+  store: svg('<path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/><path d="M12 11.5v5M9.5 14h5"/>'),
   call: svg('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'),
   youtube: svg('<path d="M8 5v14l11-7z"/>', true),
   photo: svg('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
@@ -60,6 +61,7 @@ const APPS = [
   ['iris', 'Iris', 'c-iris'],
   ...LAB_APPS.slice(1), // Lien, Souvenirs, Nuit, Socle (labo.js)
   ['esim', 'Forfait', 'c-esim'],
+  ['store', 'Beya Store', 'c-store'], // boutique.js : compte et téléchargement des applications
 ];
 // Applications officielles : BeyaBear’s ne les intègre pas, il les ouvre. Sur un appareil Android,
 // le lien lance l'application installée ; ailleurs, il ouvre son site dans un nouvel onglet.
@@ -188,7 +190,7 @@ function go(name, options = {}) {
   if (name !== 'music' && typeof musicStop === 'function') musicStop();
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, music: openMusic, locate: openLocate, core: openCore, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, store: openStore, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, music: openMusic, locate: openLocate, core: openCore, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
 }
 
 function openHome() {
@@ -198,8 +200,8 @@ function openHome() {
 function openMenu({ page = 0 } = {}) {
   const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   const tiles = [
-    ...APPS.map(([id, label, color]) => `<button class="app" data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`),
-    ...EXTERNAL.map((app) => externalTile(app, 'app')),
+    ...APPS.filter(([id]) => appOn(id)).map(([id, label, color]) => `<button class="app" data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`),
+    ...EXTERNAL.filter(([id]) => appOn(id)).map((app) => externalTile(app, 'app')),
   ];
   const pages = Math.ceil(tiles.length / 6);
   state.menuPage = ((page % pages) + pages) % pages;
@@ -212,8 +214,9 @@ function renderHome() {
     <h2 class="hello">Bonjour, je suis <em>BeyaBear’s</em></h2>
     <p class="lead">Touchez mon œil ou choisissez une application. Vous pouvez aussi me parler.</p>
     <div class="row"><button class="btn go" data-listen type="button">${ICON.mic}Parler à BeyaBear’s</button></div>
+    ${account() ? '' : '<div class="setup"><b>Première mise en route</b><span>Créez votre compte pour télécharger d’autres applications.</span><button class="btn" data-go="store" type="button">Créer mon compte</button></div>'}
     <h3 class="sub">Mes <em>applications</em></h3>
-    <div class="apps">${APPS.map(([id, label, color]) => `<button data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.map((app) => externalTile(app)).join('')}</div>
+    <div class="apps">${APPS.filter(([id]) => appOn(id)).map(([id, label, color]) => `<button data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.filter(([id]) => appOn(id)).map((app) => externalTile(app)).join('')}</div>
     ${
       SpeechRecognition
         ? `<label class="check"><input type="checkbox" id="wake" ${state.wake ? 'checked' : ''}> Écouter en continu le mot « Beya »</label>
@@ -2051,7 +2054,8 @@ if (guestMode) {
 } else {
   // L'œil s'ouvre sur ses applications ; un lien peut aussi ouvrir directement l'une d'elles (?go=emo).
   const wanted = params.get('go');
-  go(APPS.some(([id]) => id === wanted) ? wanted : 'menu');
+  // Tout premier lancement : comme un appareil neuf, on commence par créer le compte.
+  go(APPS.some(([id]) => id === wanted) ? wanted : !kiosk && !account() && !store.get('welcomed') ? 'store' : 'menu');
 }
 if (!guestCallId) {
   watchRings();
