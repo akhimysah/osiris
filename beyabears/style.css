@@ -1088,3 +1088,11 @@ a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-h
 .pin.heart .beat { fill: #ff3d6e; stroke: #fff; stroke-width: 4; stroke-linejoin: round; transform-box: fill-box; transform-origin: center; animation: heartBeat var(--t, 1s) ease-in-out infinite; filter: drop-shadow(0 3px 6px rgba(255, 61, 110, .55)); }
 .pin.heart .halo { fill: #ff3d6e; } @keyframes heartBeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.28); } 30% { transform: scale(1); } 45% { transform: scale(1.18); } }
 @media (prefers-reduced-motion: reduce) { .pin.heart .beat, .eyeLive { animation: none; } }
+/* Direction artistique « toucher » : marine + blanc, bleu ciel pour inviter, corail réservé au cœur */
+.tryMe { background: #14224f; color: #fff; box-shadow: 0 8px 18px rgba(20, 34, 79, .3); }
+.pin rect { fill: rgba(255, 255, 255, .94); } .pin text { fill: #14224f; }
+.pin .dot { fill: #5cc8ff; stroke: #fff; } .pin .halo { fill: #5cc8ff; } .pin .plus { stroke: #14224f; }
+.pin.on rect { fill: #14224f; } .pin.on text { fill: #fff; } .pin.on .dot { fill: #14224f; } .pin.on .plus { stroke: #fff; } .pin.on .halo { fill: #14224f; }
+.pin.heart .beat, .pin.heart .halo, .pin.heart.on .halo { fill: #ff5d73; } .pin.heart .beat { filter: drop-shadow(0 3px 6px rgba(255, 93, 115, .45)); }
+.touchBear.photo.pins [data-lab].on { fill: rgba(255, 255, 255, .14); }
+.eyeSay rect { fill: rgba(255, 255, 255, .94) !important; } .eyeSay text { fill: #14224f; }
