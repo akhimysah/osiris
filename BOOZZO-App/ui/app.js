@@ -70,7 +70,7 @@ const EXTERNAL = [
 ];
 // Les mascottes remplacent les pictogrammes : une image ronde par application.
 // Toutes les mascottes tiennent dans une seule image : un seul chargement, donc jamais d'icône vide isolée.
-const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'memory', 'phone', 'photo', 'spotify', 'story', 'tiktok', 'torch', 'weather', 'whatsapp', 'youtube'];
+const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face', 'games', 'iris', 'link', 'locate', 'memory', 'phone', 'photo', 'spotify', 'story', 'tiktok', 'torch', 'whatsapp', 'youtube'];
 MASCOTS.forEach((id, n) => { ICON['m_' + id] = `<span class="masc" style="background-position:${(n % 5) * 25}% ${Math.floor(n / 5) * 25}%"></span>`; });
 APPS.forEach((app) => { if (MASCOTS.includes(app[0])) { ICON[app[0]] = ICON['m_' + app[0]]; app[2] = 'c-masc'; } });
 EXTERNAL.forEach((app) => { if (MASCOTS.includes(app[0])) { app[3] = 'm_' + app[0]; app[2] = 'c-masc'; } });
@@ -185,7 +185,7 @@ function go(name, options = {}) {
   stopSpeaking();
   setScreen(name);
   screen.replaceChildren();
-  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, core: openCore, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
+  ({ home: openHome, menu: openMenu, call: openCall, youtube: () => openVideo('youtube', options), tiktok: () => openVideo('tiktok', options), photo: openPhoto, chat: openChat, iris: openIris, story: openStories, clock: openClock, weather: openWeather, torch: openTorch, face: openFaces, phone: openPhone, esim: openEsim, games: openGames, emo: openEmo, locate: openLocate, core: openCore, link: openLink, memory: openMemory, dream: openDream, holo: openHolo })[name](options);
 }
 
 function openHome() {
