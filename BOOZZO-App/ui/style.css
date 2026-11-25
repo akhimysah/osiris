@@ -707,7 +707,7 @@ img.masc { display: block; width: 100%; height: 100%; object-fit: cover; border-
 @media (max-width: 700px) { .apps i.c-masc { width: 72px; height: 72px; } .l-try .apps i.c-masc { width: 58px; height: 58px; } }
 
 /* Mascottes : une seule planche d'images */
-span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; background: #050a22 url(mascottes.jpg?v=3) no-repeat; background-size: 500% 500%; }
+span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; background: #050a22 url(mascottes.jpg?v=4) no-repeat; background-size: 500% 500%; }
 
 /* --- Localisation --- */
 .c-locate { background: linear-gradient(#ff7a6b, #d62d3a); }
@@ -722,3 +722,21 @@ span.masc { display: block; width: 100%; height: 100%; border-radius: 50%; backg
 .locTag { position: absolute; z-index: 3; bottom: 9%; left: 50%; transform: translateX(-50%); padding: 2cqw 5cqw; border-radius: 4cqw; background: rgba(5, 10, 34, .82); color: #fff; text-align: center; white-space: nowrap; }
 .locTag b { display: block; font-size: 5cqw; } .locTag small { font-size: 3.6cqw; opacity: .85; }
 @media (prefers-reduced-motion: reduce) { .loc * { animation: none !important; } }
+
+/* --- Musique --- */
+.musEye { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle, #10224f, #03060f 78%); overflow: hidden; }
+.musRing { position: absolute; inset: 4%; border-radius: 50%; background: conic-gradient(#1ed760 calc(var(--p) * 1%), #16264a 0); -webkit-mask-image: radial-gradient(transparent 66%, #000 67%); mask-image: radial-gradient(transparent 66%, #000 67%); }
+.musDisc { width: 50%; aspect-ratio: 1; margin-top: -12%; border-radius: 50%; padding: 3%; background: repeating-radial-gradient(circle, #0b0b10 0 2px, #1c1c26 2px 4px); box-shadow: 0 0 6cqw rgba(30, 215, 96, .35); animation: emoSpin 6s linear infinite paused; }
+.musEye.on .musDisc { animation-play-state: running; }
+.musBars { position: absolute; bottom: 30%; display: flex; gap: 1.6cqw; align-items: flex-end; height: 9cqw; }
+.musBars u { width: 2cqw; height: 20%; border-radius: 1cqw; background: #1ed760; } .musEye.on .musBars u { animation: musBar .7s ease-in-out infinite alternate; }
+.musBars u:nth-child(2) { animation-delay: -.2s; } .musBars u:nth-child(3) { animation-delay: -.45s; } .musBars u:nth-child(4) { animation-delay: -.1s; } .musBars u:nth-child(5) { animation-delay: -.6s; } .musBars u:nth-child(6) { animation-delay: -.3s; } .musBars u:nth-child(7) { animation-delay: -.5s; }
+@keyframes musBar { to { height: 100%; } }
+.musTag { position: absolute; bottom: 11%; left: 0; right: 0; text-align: center; padding: 0 16%; } .musTag b { display: block; font-size: 5.4cqw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .musTag small { font-size: 3.6cqw; opacity: .8; letter-spacing: .06em; text-transform: uppercase; }
+.musCtl { display: flex; justify-content: center; align-items: center; gap: 18px; margin: 16px 0 12px; }
+.musCtl button { width: 54px; height: 54px; border-radius: 50%; background: #eef4ff; color: var(--ink); font-size: 1.3rem; } .musCtl .big { width: 76px; height: 76px; background: #1ed760; color: #04210f; font-size: 1.9rem; box-shadow: 0 10px 24px rgba(30, 215, 96, .4); }
+.musBar { height: 8px; border-radius: 4px; background: #e3e9f6; overflow: hidden; } .musBar u { display: block; height: 100%; width: 0; background: #1ed760; border-radius: 4px; }
+.musList { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 8px; }
+.musList button { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; width: 100%; padding: 12px 14px; border-radius: 16px; background: #f5f9ff; color: var(--ink); text-align: left; }
+.musList i { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-style: normal; font-weight: 800; color: var(--muted); } .musList button.sel { background: #e6fbee; box-shadow: 0 0 0 2px #1ed760; } .musList button.sel i { background: #1ed760; color: #04210f; }
+@media (prefers-reduced-motion: reduce) { .musDisc, .musBars u { animation: none !important; } }
