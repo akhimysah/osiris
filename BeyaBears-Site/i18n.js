@@ -234,6 +234,15 @@
 "La peluche s'y pose pour se recharger. Il sert aussi de lumière d'ambiance.": ["The plush rests on it to recharge. It also works as a mood light.", "El peluche se posa en ella para cargarse. También sirve de luz ambiental."],
 "Schéma de principe, non contractuel et non à l'échelle. Le cœur, les capteurs et le socle sont à l'étude.": ["Concept diagram, non-contractual and not to scale. The heart, sensors and dock are under study.", "Esquema conceptual, no contractual y no a escala. El corazón, los sensores y la base están en estudio."],
 "Schéma de la peluche avec l'emplacement de ses composants": ["Diagram of the plush showing where its components sit", "Esquema del peluche con la ubicación de sus componentes"],
+"Ouvrez une application dans la démo": ["Open an app in the demo", "Abre una aplicación en la demo"],
+"Chaque bouton ouvre la vraie application de l'œil, dans un nouvel onglet.": ["Each button opens the real eye app, in a new tab.", "Cada botón abre la aplicación real del ojo, en una pestaña nueva."],
+"Émotions": ["Emotions", "Emociones"],
+"Cœur énergétique": ["Energy heart", "Corazón energético"],
+"Nouveau": ["New", "Nuevo"],
+"Histoires": ["Stories", "Cuentos"],
+"Assistant": ["Assistant", "Asistente"],
+"Nuit": ["Night", "Noche"],
+"YouTube": ["YouTube", "YouTube"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();

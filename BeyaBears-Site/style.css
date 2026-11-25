@@ -846,3 +846,14 @@ html.diveLock, html.diveLock body { overflow: hidden !important; overscroll-beha
 .implant .note { color: #93a3c8; margin-top: 18px; }
 @media (max-width: 900px) { .implant { grid-template-columns: minmax(0, 1fr); border-radius: 26px; } .implantArt svg { max-width: 300px; } }
 @media (prefers-reduced-motion: reduce) { .implant .pin, .implant .beat { animation: none; } }
+
+/* ---------- Tester l'œil : un bouton par application de la démo ---------- */
+.appLinks { margin-top: clamp(36px, 5vw, 64px); text-align: center; }
+.appLinks h3 { font: 800 clamp(1.5rem, 3vw, 2.2rem)/1.1 var(--display); letter-spacing: -.03em; color: var(--text); margin: 0; } .appLinks p { color: var(--muted); margin: 8px 0 0; }
+.appTiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
+.appTiles a { position: relative; display: grid; justify-items: center; gap: 10px; padding: 20px 8px 16px; border-radius: 22px; background: #fff; border: 1px solid #dbe4f5; color: var(--text); text-decoration: none; font-weight: 700; box-shadow: 0 6px 18px rgba(8, 28, 80, .06); transition: transform .2s, box-shadow .2s, border-color .2s; }
+.appTiles a:hover { transform: translateY(-3px); border-color: var(--c); box-shadow: 0 14px 30px rgba(8, 28, 80, .12); }
+.appTiles i { width: 54px; height: 54px; border-radius: 17px; background: var(--c); box-shadow: 0 8px 18px rgba(8, 28, 80, .18); position: relative; }
+.appTiles i::after { content: ""; position: absolute; inset: 30%; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgba(255, 255, 255, .35); }
+.appTiles b { font-size: .98rem; } .appTiles small { position: absolute; top: 8px; right: 8px; padding: 3px 8px; border-radius: 99px; background: #ffe9a8; color: #6b4a00; font-size: .66rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+@media (max-width: 900px) { .appTiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .appTiles a { padding: 16px 6px 14px; } }
