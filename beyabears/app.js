@@ -75,6 +75,7 @@ const MASCOTS = ['call', 'chat', 'clock', 'core', 'dream', 'emo', 'esim', 'face'
 MASCOTS.forEach((id, n) => { ICON['m_' + id] = `<span class="masc" style="background-position:${(n % 5) * 25}% ${Math.floor(n / 5) * 25}%"></span>`; });
 ICON.mic = ICON.m_mic; // le bouton « Parler » porte la mascotte au micro
 APPS.forEach((app) => { if (MASCOTS.includes(app[0])) { ICON[app[0]] = ICON['m_' + app[0]]; app[2] = 'c-masc'; } });
+ICON.store = '<img class="mascImg" src="store-icone.webp" alt="">'; APPS.find(([id]) => id === 'store')[2] = 'c-masc'; // la mascotte vendeuse
 EXTERNAL.forEach((app) => { if (MASCOTS.includes(app[0])) { app[3] = 'm_' + app[0]; app[2] = 'c-masc'; } });
 const externalTile = ([, label, color, icon, url], cls = '') =>
   `<a class="${cls}" href="${url}" target="_blank" rel="noopener"><i class="${color}">${ICON[icon]}</i>${label}</a>`;

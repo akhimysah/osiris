@@ -56,17 +56,46 @@ function storeStar(k) {
   const [id, line, c1, c2] = STORE_STARS[k % STORE_STARS.length], label = (storeApps().find(([x]) => x === id) || [])[1] || '';
   box.style.setProperty('--a', c1); box.style.setProperty('--b', c2);
   box.dataset.k = k % STORE_STARS.length;
-  box.innerHTML = `<div class="in">${storeIcon(id)}<div><small>À la une</small><b>${label}</b><span>${line}</span></div>${appOn(id) ? `<button type="button" class="open" data-go="${id}">Ouvrir</button>` : `<button type="button" class="get" data-get="${id}">Obtenir</button>`}</div><div class="dots">${STORE_STARS.map((_, i) => `<button type="button" data-star="${i}" class="${i === k % STORE_STARS.length ? 'on' : ''}" aria-label="${i + 1}"></button>`).join('')}</div>`;
+  box.innerHTML = `<div class="in">${storeIcon(id)}<div><small>À la une</small><b>${label}</b><span>${line}</span></div>${appOn(id) ? `<button type="button" class="open" data-go="${id}">Ouvrir</button>` : `<button type="button" class="get" data-get="${id}">Installer</button>`}</div><div class="dots">${STORE_STARS.map((_, i) => `<button type="button" data-star="${i}" class="${i === k % STORE_STARS.length ? 'on' : ''}" aria-label="${i + 1}"></button>`).join('')}</div>`;
 }
-const storeCard = ([id, label], i, on) => `<li data-app="${id}" data-cat="${APP_CAT[id] || 'outil'}" class="${on.includes(id) ? 'on' : ''}" style="--i:${i}">${storeIcon(id)}<b>${label}</b><span>${APP_NOTES[id] || ''}</span>
-  <div class="act">${on.includes(id) ? `${EXTERNAL.some(([x]) => x === id) ? '<em>Installée ✓</em>' : `<button type="button" class="open" data-go="${id}">Ouvrir</button>`}<button type="button" class="drop" data-drop="${id}" aria-label="Retirer ${label}">×</button>` : `<button type="button" class="get" data-get="${id}">Obtenir</button>`}</div></li>`;
+const storeCard = ([id, label], i, on) => `<li data-app="${id}" data-cat="${APP_CAT[id] || 'outil'}" data-q="${esc((label + ' ' + (APP_NOTES[id] || '')).toLowerCase())}" class="${on.includes(id) ? 'on' : ''}" style="--i:${i}"><button type="button" class="tile" data-detail="${id}" aria-label="${label} : voir la fiche">${storeIcon(id)}<b>${label}</b></button>
+  <div class="act">${on.includes(id) ? (EXTERNAL.some(([x]) => x === id) ? '<em>Installée ✓</em>' : `<button type="button" class="open" data-go="${id}">Ouvrir</button>`) : `<button type="button" class="get" data-get="${id}">Installer</button>`}</div></li>`;
+const catLabel = (id) => (STORE_CATS.find(([c]) => c === (APP_CAT[id] || 'outil')) || [])[1] || '';
+// Fiche d'une application : grande icône, description, essai dans l'œil, applications du même rayon.
+function storeDetail(id) {
+  const app = storeApps().find(([x]) => x === id);
+  if (!app) return openStore();
+  clearInterval(openStore.timer);
+  const on = appsOn().includes(id), ext = EXTERNAL.some(([x]) => x === id), near = storeApps().filter(([x]) => x !== id && (APP_CAT[x] || 'outil') === (APP_CAT[id] || 'outil')).slice(0, 3);
+  storeEye(`${storeIcon(id)}<b>${app[1]}</b><small>${on ? 'Installée' : catLabel(id)}</small>`);
+  panel.innerHTML = `<button class="back" data-go="store" type="button">‹ Beya Store</button>
+    <div class="appSheet" data-app="${id}"><div class="appIcon"><img src="m/${id === 'music' ? 'spotify' : id}.webp" alt="" width="220" height="220" onerror="this.remove()"></div>
+      <h2>${app[1]}</h2><p class="by">BeyaBear’s</p>
+      <div class="tags"><span>${catLabel(id)}</span><span>Gratuit dans la démo</span></div>
+      <div class="act">${on ? (ext ? '<em>Installée ✓</em>' : `<button type="button" class="open big" data-go="${id}">Ouvrir</button>`) : `<button type="button" class="get big" data-get="${id}">Installer</button>`}${on ? `<button type="button" class="linkBtn" data-drop="${id}">Retirer</button>` : ''}</div>
+      ${ext ? '' : `<button type="button" class="try" data-go="${id}">Essayer dans l’œil</button>`}
+      <h3 class="sub">Description</h3><p>${APP_NOTES[id] || ''}</p>
+      ${near.length ? `<h3 class="sub">Applications <em>similaires</em></h3><ul class="storeGrid">${near.map((a, i) => storeCard(a, i, appsOn())).join('')}</ul>` : ''}</div>`;
+}
+function openProfile() {
+  const me = account();
+  if (!me) return openStore();
+  clearInterval(openStore.timer);
+  const mine = [...APPS, ...EXTERNAL].filter(([id]) => appOn(id) && id !== 'store');
+  storeEye(`<i class="c-masc"><img class="mascImg" src="store-icone.webp" alt=""></i><b>${me.child ? esc(me.child) : 'Profil'}</b><small>${mine.length} applications</small>`);
+  panel.innerHTML = `${backButton}<span class="pill">Profil</span><h2>${me.child ? esc(me.child) : 'Mon compte'}</h2>
+    <p class="acct">${esc(me.email)}</p>
+    <h3 class="sub">Mes <em>applications</em></h3>
+    <div class="mine">${mine.map(([id, label]) => `<button type="button" data-go="${id}" aria-label="${label}">${storeIcon(id)}</button>`).join('')}</div>
+    <div class="row wrap"><button type="button" class="btn" data-go="store">Ouvrir le Beya Store</button><button type="button" class="btn light" data-signout>Changer de compte</button></div>
+    <p class="notice">Démonstration : l’adresse reste sur cet appareil et rien n’est envoyé. Dans la version finale, le parent crée le compte et valide chaque téléchargement.</p>`;
+}
 function openStore() {
   store.set('welcomed', true);
-  focusEye();
   clearInterval(openStore.timer);
   const me = account(), on = appsOn();
   if (!me) {
-    storeEye(`<i class="c-store">${ICON.store}</i><b>Bienvenue !</b><small>Créez votre compte pour commencer.</small>`);
+    storeEye(`<i class="c-masc"><img class="mascImg" src="store-icone.webp" alt=""></i><b>Bienvenue !</b><small>Créez votre compte pour commencer.</small>`);
     panel.innerHTML = `${backButton}<span class="pill">Première mise en route</span><h2>Votre compte BeyaBear’s</h2>
       <div class="steps"><i class="on">1</i><u></u><i>2</i><u></u><i>3</i></div>
       <p>Comme sur un téléphone neuf : un compte, puis vous téléchargez les applications que vous voulez.</p>
@@ -80,9 +109,9 @@ function openStore() {
     return;
   }
   const all = storeApps();
-  storeEye(`<i class="c-store">${ICON.store}</i><b>Beya Store</b><small>Choisis une application.</small>`);
-  panel.innerHTML = `${backButton}<span class="pill">Beya Store</span><h2>Télécharger des applications</h2>
-    <p class="acct">${me.child ? `<strong>${esc(me.child)}</strong> · ` : ''}${esc(me.email)} <button type="button" class="linkBtn" data-signout>Changer de compte</button></p>
+  storeEye(`<i class="c-masc"><img class="mascImg" src="store-icone.webp" alt=""></i><b>Beya Store</b><small>Choisis une application.</small>`);
+  panel.innerHTML = `${backButton}
+    <div class="storeHead"><img src="store.webp" alt="" width="120" height="120"><div><h2>Beya Store</h2><label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="storeSearch" type="search" placeholder="Rechercher une appli…" aria-label="Rechercher une application" autocomplete="off"></label></div></div>
     <div class="storeStar"></div>
     <div class="storeBar"><span>Ma collection</span><b></b><i></i></div>
     <div class="chips">${STORE_CATS.map(([id, label], i) => `<button type="button" data-cat="${id}" class="${i ? '' : 'on'}">${label}</button>`).join('')}</div>
@@ -110,6 +139,7 @@ function storeGet(id) {
   setTimeout(() => {
     store.set('apps', [...new Set([...appsOn(), id])]);
     if (state.screen !== 'store') return;
+    if (panel.querySelector(`.appSheet[data-app="${id}"]`)) { storeDetail(id); confetti(panel.querySelector('.appIcon'), 20); }
     const now = panel.querySelector(`.storeGrid [data-app="${id}"]`);
     if (now) {
       now.outerHTML = storeCard(storeApps().find(([x]) => x === id), 0, appsOn());
@@ -140,7 +170,10 @@ document.addEventListener('click', (event) => {
   const data = event.target.closest && event.target.closest('button')?.dataset;
   if (!data) return;
   if (data.get) return storeGet(data.get);
-  if (data.drop) return store.set('apps', appsOn().filter((id) => id !== data.drop)), openStore();
+  if (data.drop) return store.set('apps', appsOn().filter((id) => id !== data.drop)), panel.querySelector('.appSheet') ? storeDetail(data.drop) : openStore();
+  if (data.detail) return pop(620, 70), storeDetail(data.detail);
+  if (data.nav === 'profile') return go('store'), openProfile();
+  if (data.nav === 'apps') return go('menu'), setView(false), setTimeout(() => panel.querySelector('.apps')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
   if ('signout' in data) return store.set('account', null), openStore();
   if (data.star) return storeStar(Number(data.star));
   if (data.cat && panel.querySelector('.chips')) {
@@ -179,3 +212,26 @@ document.addEventListener('click', (event) => {
   pop(500 + (pokeN % 5) * 90, 110);
   if (pokeN % 5 === 0) confetti(face, 18);
 });
+
+// Recherche dans le store : filtre les cartes à mesure qu'on écrit.
+document.addEventListener('input', (event) => {
+  if (event.target.id !== 'storeSearch') return;
+  const q = event.target.value.trim().toLowerCase();
+  panel.querySelectorAll('.chips button').forEach((b2, i) => b2.classList.toggle('on', !i));
+  panel.querySelectorAll('.storeGrid li').forEach((li) => { li.hidden = Boolean(q) && !li.dataset.q.includes(q); });
+});
+
+// Barre du bas, comme sur un téléphone : Accueil, Apps, Store, Profil.
+const tabbar = document.createElement('nav');
+tabbar.className = 'tabbar';
+tabbar.setAttribute('aria-label', 'Navigation de l’application');
+tabbar.innerHTML = `<button type="button" data-go="menu" data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg>Accueil</button>
+  <button type="button" data-nav="apps" data-tab="apps"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>Apps</button>
+  <button type="button" data-go="store" data-tab="store"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="2"/></svg>Store</button>
+  <button type="button" data-nav="profile" data-tab="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0z"/></svg>Profil</button>`;
+document.body.append(tabbar);
+setInterval(() => {
+  if (typeof state === 'undefined') return;
+  const tab = state.screen === 'store' ? (panel.querySelector('.mine') ? 'profile' : 'store') : ['home', 'menu'].includes(state.screen) ? 'home' : 'apps';
+  tabbar.querySelectorAll('button').forEach((b2) => b2.classList.toggle('on', b2.dataset.tab === tab));
+}, 400);

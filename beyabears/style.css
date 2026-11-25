@@ -957,3 +957,34 @@ body:not(.kiosk) .faceBadge[data-s="vu"] { background: #fbbf24; } body:not(.kios
 .storeGrid button:active, .storeStar button:active { transform: scale(.94); }
 .storeEye { position: absolute; } .storeEye .confetti u { width: 2.4cqw; height: 2.4cqw; }
 @media (prefers-reduced-motion: reduce) { .heroFace, .ideas *, .apps.lively *, .storeGrid *, .storeStar *, .steps * { animation: none !important; } }
+
+/* ---------- Beya Store façon maquette : mascotte vendeuse, recherche, fiches, barre du bas ---------- */
+img.mascImg { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.storeHead { display: grid; grid-template-columns: 104px 1fr; gap: 12px; align-items: center; margin: 8px 0 6px; }
+.storeHead img { width: 104px; height: 104px; border-radius: 28px; object-fit: cover; box-shadow: 0 10px 22px #1b2f6a33; animation: heroFloat 3s ease-in-out infinite alternate; }
+.storeHead h2 { margin: 0 0 8px; font-size: clamp(1.7rem, 7vw, 2.2rem); }
+.search { display: flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 16px; border: 2px solid #2e63e0; background: #f3f7ff; } .search svg { flex: 0 0 20px; height: 20px; fill: none; stroke: #14224f; stroke-width: 2.4; stroke-linecap: round; }
+.search input { flex: 1; min-width: 0; padding: 12px 0; border: 0; background: none; font: inherit; color: #14224f; outline: none; } .search:focus-within { box-shadow: 0 0 0 4px #2e63e026; }
+.storeGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.storeGrid li { padding: 10px 6px 10px; border-radius: 20px; gap: 6px; }
+.storeGrid .tile { display: grid; justify-items: center; gap: 6px; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; color: inherit; -webkit-tap-highlight-color: transparent; }
+.storeGrid .tile i { width: 100%; max-width: 84px; height: auto; aspect-ratio: 1; box-shadow: 0 0 0 3px #2e63e0, 0 8px 16px #1b2f6a26; } .storeGrid .tile:active i { transform: scale(.92); }
+.storeGrid b { font-size: .92rem; line-height: 1.15; } .storeGrid .act { margin-top: 0; width: 100%; justify-content: center; }
+.storeGrid .get, .storeGrid .open { width: 100%; padding: 8px 4px; font-size: .82rem; } .storeGrid em { font-size: .76rem; }
+.appSheet { display: grid; justify-items: center; text-align: center; gap: 6px; animation: bubblePop .4s cubic-bezier(.3, 1.4, .5, 1); position: relative; }
+.appIcon { width: 150px; height: 150px; border-radius: 38px; overflow: hidden; background: linear-gradient(140deg, #1c3a8a, #0b1640); box-shadow: 0 0 0 4px #2e63e0, 0 16px 30px #1b2f6a40; animation: heroFloat 3s ease-in-out infinite alternate; position: relative; }
+.appIcon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.appSheet h2 { margin: 10px 0 0; } .appSheet .by { margin: 0; color: #3b4d7c; font-weight: 700; }
+.tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 4px 0 8px; } .tags span { padding: 6px 12px; border-radius: 10px; background: #eef2fb; color: #14224f; font-weight: 700; font-size: .86rem; }
+.appSheet > .act { width: 100%; display: grid; gap: 8px; justify-items: center; }
+.get.big, .open.big { position: relative; overflow: hidden; width: 100%; padding: 14px; border: 0; border-radius: 999px; font: 800 1.05rem Lato, system-ui, sans-serif; cursor: pointer; background: #2e63e0; color: #fff; box-shadow: 0 10px 22px #2e63e040; } .open.big { background: #17a05d; box-shadow: 0 10px 22px #17a05d40; }
+.appSheet .try { width: 100%; padding: 12px; border-radius: 999px; border: 2px solid #2e63e0; background: #fff; color: #2e63e0; font: 800 .98rem Lato, system-ui, sans-serif; cursor: pointer; }
+.appSheet .sub, .appSheet > p:not(.by) { justify-self: stretch; text-align: left; } .appSheet .storeGrid { justify-self: stretch; }
+.mine { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 16px; } .mine button { width: 60px; height: 60px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; } .mine i { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 3px #2e63e0; color: #fff; } .mine i svg { width: 56%; height: 56%; }
+.tabbar { position: fixed; left: 50%; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 30; width: min(94vw, 460px); display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px 6px; border-radius: 26px; background: #ffffffee; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 12px 34px #081c5033, 0 0 0 1px #081c5012; }
+.tabbar button { display: grid; justify-items: center; gap: 2px; padding: 4px 0; border: 0; background: none; color: #7a869f; font: 700 .78rem Lato, system-ui, sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: color .2s, transform .15s; }
+.tabbar svg { width: 26px; height: 26px; fill: currentColor; } .tabbar button.on { color: #2e63e0; } .tabbar button.on svg { transform: translateY(-2px) scale(1.12); transition: transform .25s cubic-bezier(.3, 1.7, .5, 1); } .tabbar button:active { transform: scale(.9); }
+body.landing .tabbar, body.kiosk .tabbar, body.guest .tabbar { display: none; }
+body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: 104px; }
+.screen img.mascImg { position: static; inset: auto; width: 100%; height: 100%; }
+.storeHead > div { min-width: 0; }

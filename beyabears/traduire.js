@@ -239,6 +239,9 @@
     "Simuler la recharge": ["Simulate charging", "Simular la carga"],
     "Arrêter": ["Stop", "Parar"],
     "Lumière": ["Mood", "Luz"],
+    "Installer": ["Install", "Instalar"], "Rechercher une appli…": ["Search for an app…", "Buscar una app…"], "Gratuit dans la démo": ["Free in the demo", "Gratis en la demo"], "Essayer dans l’œil": ["Try it in the eye", "Probar en el ojo"],
+    "Description": ["Description", "Descripción"], "similaires": ["apps", "similares"], "Applications": ["Similar", "Aplicaciones"], "Retirer": ["Remove", "Quitar"], "Profil": ["Profile", "Perfil"], "Mon compte": ["My account", "Mi cuenta"],
+    "Ouvrir le Beya Store": ["Open the Beya Store", "Abrir la Beya Store"], "Accueil": ["Home", "Inicio"], "‹ Beya Store": ["‹ Beya Store", "‹ Beya Store"],
     "Coucou": ["Hello", "Hola"], "Touche-moi, je réagis !": ["Tap me, I react!", "¡Tócame, reacciono!"], "Hi hi, ça chatouille !": ["Hee hee, that tickles!", "¡Ji ji, me haces cosquillas!"], "Encore, encore !": ["Again, again!", "¡Otra vez, otra vez!"],
     "Tu veux une histoire ?": ["Would you like a story?", "¿Quieres un cuento?"], "On joue ensemble ?": ["Shall we play together?", "¿Jugamos juntos?"], "Je t’adore !": ["I adore you!", "¡Te adoro!"], "Oh ! Tu m’as surpris !": ["Oh! You surprised me!", "¡Oh! ¡Me has sorprendido!"],
     "Fais-moi un câlin !": ["Give me a hug!", "¡Dame un abrazo!"], "On appelle quelqu’un ?": ["Shall we call someone?", "¿Llamamos a alguien?"],
@@ -366,7 +369,7 @@
     const lead = /^\s*/.exec(v)[0], tail = /\s*$/.exec(v)[0], next = lead + t + tail;
     if (next !== v) node.nodeValue = next;
   }
-  const zones = () => ['.top', 'main', '#toast', '.foot', '.kb', '.flood'].map((s) => document.querySelector(s)).filter(Boolean);
+  const zones = () => ['.top', 'main', '#toast', '.foot', '.kb', '.flood', '.tabbar'].map((s) => document.querySelector(s)).filter(Boolean);
   const start = () => {
     zones().forEach(visit);
     const obs = new MutationObserver((list) => list.forEach((m) => {
