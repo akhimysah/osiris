@@ -243,6 +243,17 @@
 "Assistant": ["Assistant", "Asistente"],
 "Nuit": ["Night", "Noche"],
 "YouTube": ["YouTube", "YouTube"],
+"Œil néon": ["Neon eye", "Ojo neón"],
+"Un regard de machine : des anneaux de lumière bleue tournent autour de la pupille.": ["A machine’s gaze: rings of blue light turn around the pupil.", "Una mirada de máquina: anillos de luz azul giran alrededor de la pupila."],
+"Un iris vivant : ses rayons bougent sans arrêt et changent avec son humeur.": ["A living iris: its rays never stop moving and change with its mood.", "Un iris vivo: sus rayos no dejan de moverse y cambian con su estado de ánimo."],
+"Dessins animés et clips se regardent directement dans l'œil. Touchez l'œil pour mettre en pause.": ["Cartoons and clips play right in the eye. Tap the eye to pause.", "Dibujos animados y vídeos se ven directamente en el ojo. Toca el ojo para pausar."],
+"Normal": ["Normal", "Normal"],
+"Écoute": ["Listening", "Escucha"],
+"Réflexion": ["Thinking", "Reflexión"],
+"Joie": ["Joy", "Alegría"],
+"Ourson BeyaBear's dont l'iris bouge et change d'humeur": ["BeyaBear's bear whose iris moves and changes mood", "Osito BeyaBear's cuyo iris se mueve y cambia de humor"],
+"Œil néon : des anneaux de lumière bleue": ["Neon eye: rings of blue light", "Ojo neón: anillos de luz azul"],
+"Dessin animé BeyaBear's : une montgolfière et des cigognes livrent les peluches": ["BeyaBear's cartoon: a hot-air balloon and storks deliver the plushes", "Dibujo animado BeyaBear's: un globo y unas cigüeñas reparten los peluches"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
