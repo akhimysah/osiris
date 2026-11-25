@@ -908,3 +908,52 @@ body:not(.kiosk) .faceBadge[data-s="vu"] { background: #fbbf24; } body:not(.kios
 .dl { position: relative; width: 44cqw; height: 44cqw; display: grid; place-items: center; } .dl svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .dl circle { fill: none; stroke: #ffffff22; stroke-width: 5; } .dl .run { stroke: #38e1ff; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; animation: dlRun 1.5s ease-in-out forwards; } @keyframes dlRun { to { stroke-dashoffset: 0; } }
 .dl i { width: 26cqw !important; height: 26cqw !important; animation: holoBolt 1s ease-in-out infinite; }
+
+/* ---------- Accueil vivant ---------- */
+.hero { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; margin: 14px 0 6px; }
+.heroFace { width: 104px; height: 104px; padding: 0; border: 0; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #dbe7ff); box-shadow: 0 10px 24px #1b2f6a33, inset 0 -6px 0 #c9d9ff; cursor: pointer; animation: heroFloat 3.2s ease-in-out infinite alternate; position: relative; -webkit-tap-highlight-color: transparent; }
+.heroFace img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+.heroFace.boing { animation: heroBoing .6s cubic-bezier(.3, 1.7, .5, 1); }
+@keyframes heroFloat { to { transform: translateY(-6px) rotate(3deg); } } @keyframes heroBoing { 30% { transform: scale(1.22) rotate(-10deg); } 60% { transform: scale(.92) rotate(6deg); } }
+.hero .hello { margin: 0 0 6px; } .hero .hello em { font-style: normal; color: #2e63e0; }
+.bubble { position: relative; display: inline-block; margin: 0; padding: 9px 14px; border-radius: 16px 16px 16px 4px; background: #eaf1ff; color: #14224f; font-weight: 700; font-size: .95rem; }
+.bubble.pop { animation: bubblePop .45s cubic-bezier(.3, 1.6, .5, 1); } @keyframes bubblePop { from { transform: scale(.6); opacity: 0; } }
+.ideas { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 2px 14px; margin: 8px -6px 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; } .ideas::-webkit-scrollbar { display: none; }
+.ideas button { flex: 0 0 168px; scroll-snap-align: start; display: grid; justify-items: start; gap: 4px; padding: 14px; border: 0; border-radius: 22px; text-align: left; color: #fff; cursor: pointer; background: linear-gradient(140deg, var(--a), var(--b)); box-shadow: 0 10px 22px color-mix(in srgb, var(--b) 40%, transparent), inset 0 2px 0 #ffffff40; animation: tileIn .5s cubic-bezier(.3, 1.4, .5, 1) backwards; animation-delay: calc(var(--i) * 70ms); transition: transform .15s; }
+.ideas button:active { transform: scale(.95); } .ideas i { width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; background: #ffffff33; margin-bottom: 4px; animation: heroFloat 2.6s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -.5s); } .ideas i svg { width: 56%; height: 56%; }
+.ideas b { font-size: 1.02rem; line-height: 1.15; } .ideas span { font-size: .84rem; opacity: .92; line-height: 1.25; }
+.apps.lively button, .apps.lively a { animation: tileIn .5s cubic-bezier(.3, 1.4, .5, 1) backwards; animation-delay: calc(var(--i, 0) * 50ms); } .apps.lively button:active, .apps.lively a:active { transform: scale(.9) rotate(-2deg); }
+.apps.lively i.c-masc { animation: heroFloat 2.8s ease-in-out infinite alternate; animation-delay: calc(var(--i, 0) * -.37s); }
+.apps .more i { width: 78px; height: 78px; border-radius: 50%; background: #eef4ff; border: 3px dashed #9db8f5; color: #2e63e0; font: 300 2.4rem/1 Lato, system-ui, sans-serif; box-shadow: none; }
+@keyframes tileIn { from { transform: translateY(18px) scale(.8); opacity: 0; } }
+.confetti { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; z-index: 9; } .confetti u { position: absolute; width: 9px; height: 9px; border-radius: 2px; animation: confetti 1.2s cubic-bezier(.2, .7, .3, 1) forwards; }
+@keyframes confetti { to { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; } }
+
+/* ---------- Beya Store vivant ---------- */
+.steps { display: flex; align-items: center; gap: 8px; margin: 10px 0; } .steps i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 800 .9rem Lato, system-ui, sans-serif; background: #e3ebfd; color: #6b7fae; } .steps i.on { background: #2e63e0; color: #fff; box-shadow: 0 0 0 5px #2e63e026; animation: heroFloat 1.6s ease-in-out infinite alternate; } .steps u { flex: 0 0 34px; height: 3px; border-radius: 3px; background: #e3ebfd; }
+.storeStar { position: relative; margin: 12px 0; padding: 16px 16px 26px; border-radius: 24px; color: #fff; background: linear-gradient(135deg, var(--a, #5b8cff), var(--b, #2e63e0)); box-shadow: 0 12px 26px color-mix(in srgb, var(--b, #2e63e0) 42%, transparent); overflow: hidden; transition: background .5s; }
+.storeStar::before { content: ""; position: absolute; right: -40px; top: -50px; width: 170px; height: 170px; border-radius: 50%; background: #ffffff22; }
+.storeStar .in { position: relative; display: grid; grid-template-columns: 74px 1fr; gap: 6px 12px; align-items: center; animation: bubblePop .5s cubic-bezier(.3, 1.4, .5, 1); }
+.storeStar i { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; background: #ffffff33; animation: heroFloat 2.4s ease-in-out infinite alternate; } .storeStar i svg { width: 56%; height: 56%; }
+.storeStar small { display: block; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; } .storeStar b { display: block; font-size: 1.3rem; line-height: 1.1; } .storeStar span { display: block; font-size: .9rem; opacity: .95; }
+.storeStar .get, .storeStar .open { grid-column: 2; justify-self: start; margin-top: 4px; padding: 9px 20px; border: 0; border-radius: 999px; background: #fff; color: #14224f; font: 800 .9rem Lato, system-ui, sans-serif; cursor: pointer; }
+.storeStar .dots { position: absolute; left: 0; right: 0; bottom: 9px; display: flex; justify-content: center; gap: 6px; } .storeStar .dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: #ffffff66; cursor: pointer; } .storeStar .dots .on { width: 20px; border-radius: 8px; background: #fff; }
+.storeBar { position: relative; display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 14px; margin: 14px 0 6px; color: #14224f; font-weight: 700; } .storeBar b { color: #2e63e0; }
+.storeBar i { position: absolute; left: 0; right: 0; bottom: 0; height: 8px; border-radius: 8px; background: #e3ebfd; overflow: hidden; } .storeBar i::after { content: ""; position: absolute; inset: 0; width: calc(var(--p, 0) * 1%); border-radius: 8px; background: linear-gradient(90deg, #38e1ff, #2e63e0); transition: width .8s cubic-bezier(.3, 1.3, .5, 1); }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 8px 2px; margin: 0 -6px; scrollbar-width: none; } .chips::-webkit-scrollbar { display: none; }
+.chips button { flex: 0 0 auto; padding: 9px 16px; border-radius: 999px; border: 2px solid #d9e3fb; background: #fff; color: #14224f; font: 700 .9rem Lato, system-ui, sans-serif; cursor: pointer; transition: transform .15s; } .chips button.on { background: #14224f; border-color: #14224f; color: #fff; } .chips button:active { transform: scale(.93); }
+.storeGrid { list-style: none; padding: 0; margin: 10px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.storeGrid li { position: relative; display: grid; justify-items: center; align-content: start; gap: 4px; padding: 14px 10px 12px; border-radius: 22px; background: linear-gradient(#fff, #f4f8ff); border: 2px solid #dfe8fb; text-align: center; box-shadow: 0 8px 18px #1b2f6a14, inset 0 -3px 0 #dfe8fb; animation: tileIn .45s cubic-bezier(.3, 1.4, .5, 1) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
+.storeGrid li[hidden] { display: none; } .storeGrid li.on { border-color: #bfe8d0; background: linear-gradient(#fff, #effaf3); }
+.storeGrid i { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; color: #fff; animation: heroFloat 2.8s ease-in-out infinite alternate; animation-delay: calc(var(--i, 0) * -.41s); } .storeGrid i:not(.c-masc) { border-radius: 22px; } .storeGrid i svg { width: 56%; height: 56%; }
+.storeGrid li.loading i { animation: dlShake .5s ease-in-out infinite; } @keyframes dlShake { 25% { transform: rotate(-9deg) scale(1.06); } 75% { transform: rotate(9deg) scale(1.06); } }
+.storeGrid li.won { animation: heroBoing .7s cubic-bezier(.3, 1.7, .5, 1); }
+.storeGrid b { color: #14224f; font-size: 1rem; } .storeGrid span { color: #55668c; font-size: .8rem; line-height: 1.25; min-height: 2.5em; }
+.storeGrid .act { display: flex; gap: 6px; align-items: center; margin-top: 6px; } .storeGrid em { font-style: normal; font-weight: 800; font-size: .84rem; color: #17804a; }
+.storeGrid .get, .storeGrid .open { position: relative; overflow: hidden; padding: 9px 18px; border: 0; border-radius: 999px; font: 800 .86rem Lato, system-ui, sans-serif; cursor: pointer; white-space: nowrap; }
+.storeGrid .get, .storeStar .get.fill { background: #2e63e0; color: #fff; box-shadow: 0 6px 14px #2e63e040; } .storeGrid .open { background: #17a05d; color: #fff; box-shadow: 0 6px 14px #17a05d40; }
+.get.fill { background: #9db8f5 !important; color: #fff !important; } .get.fill::before { content: ""; position: absolute; inset: 0; background: #2e63e0; transform-origin: left; animation: dlFill 1.6s linear forwards; z-index: 0; mix-blend-mode: multiply; } @keyframes dlFill { from { transform: scaleX(0); } }
+.storeGrid .drop { width: 30px; height: 30px; padding: 0; border-radius: 50%; border: 0; background: #eef2fb; color: #6b7fae; font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.storeGrid button:active, .storeStar button:active { transform: scale(.94); }
+.storeEye { position: absolute; } .storeEye .confetti u { width: 2.4cqw; height: 2.4cqw; }
+@media (prefers-reduced-motion: reduce) { .heroFace, .ideas *, .apps.lively *, .storeGrid *, .storeStar *, .steps * { animation: none !important; } }

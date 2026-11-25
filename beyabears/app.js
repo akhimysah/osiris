@@ -211,12 +211,13 @@ function openMenu({ page = 0 } = {}) {
 }
 function renderHome() {
   panel.innerHTML = `<span class="pill">La peluche dont l’œil est un écran</span>
-    <h2 class="hello">Bonjour, je suis <em>BeyaBear’s</em></h2>
-    <p class="lead">Touchez mon œil ou choisissez une application. Vous pouvez aussi me parler.</p>
+    ${homeHero()}
     <div class="row"><button class="btn go" data-listen type="button">${ICON.mic}Parler à BeyaBear’s</button></div>
     ${account() ? '' : '<div class="setup"><b>Première mise en route</b><span>Créez votre compte pour télécharger d’autres applications.</span><button class="btn" data-go="store" type="button">Créer mon compte</button></div>'}
+    <h3 class="sub">Idées <em>du moment</em></h3>
+    ${homeIdeas()}
     <h3 class="sub">Mes <em>applications</em></h3>
-    <div class="apps">${APPS.filter(([id]) => appOn(id)).map(([id, label, color]) => `<button data-go="${id}" type="button"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.filter(([id]) => appOn(id)).map((app) => externalTile(app)).join('')}</div>
+    <div class="apps lively">${APPS.filter(([id]) => appOn(id) && id !== 'store').map(([id, label, color], i) => `<button data-go="${id}" type="button" style="--i:${i}"><i class="${color}">${ICON[id]}</i>${label}</button>`).join('')}${EXTERNAL.filter(([id]) => appOn(id)).map((app) => externalTile(app)).join('')}<button data-go="store" type="button" class="more" style="--i:9"><i>+</i>Ajouter</button></div>
     ${
       SpeechRecognition
         ? `<label class="check"><input type="checkbox" id="wake" ${state.wake ? 'checked' : ''}> Écouter en continu le mot « Beya »</label>
