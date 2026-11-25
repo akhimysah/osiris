@@ -316,6 +316,9 @@
 "Gros plan sur l'écran rond de la peluche, où se joue une partie de briques": ["Close-up of the plush's round screen, with a game of bricks being played", "Primer plano de la pantalla redonda del peluche, donde se juega una partida de ladrillos"],
 "Touchez une émotion : le visage de l'ourson change, et son iris prend sa couleur et son rythme.": ["Tap an emotion: the bear's face changes, and its iris takes on its colour and rhythm.", "Toca una emoción: la cara del osito cambia, y su iris toma su color y su ritmo."],
 "Douze émotions : chacune a son visage, sa couleur et son rythme.": ["Twelve emotions: each has its own face, colour and rhythm.", "Doce emociones: cada una tiene su cara, su color y su ritmo."],
+"Touchez une mascotte : elle ouvre la vraie application de l'œil.": ["Tap a mascot: it opens the real eye app.", "Toca una mascota: abre la aplicación real del ojo."],
+"Sécurité": ["Safety", "Seguridad"],
+"Aussi dans la démo :": ["Also in the demo:", "También en la demo:"],
   };
   const LANGS = ['fr', 'en', 'es'];
   const norm = (s) => s.replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();

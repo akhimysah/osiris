@@ -210,6 +210,9 @@ function emoEditionSet(id) {
   emoSet(emoEdition()[5].includes(lab.emo) ? lab.emo : 'normal');
 }
 function openEmo() {
+  const asked = params.get('emo');
+  if (asked && !openEmo.done && EMOTIONS.some((e) => e[0] === asked)) lab.emo = asked;
+  openEmo.done = true;
   labClear();
   focusEye();
   emoSet(lab.emo === 'clin' ? 'normal' : lab.emo, lab.msg, lab.zone);
