@@ -139,7 +139,7 @@ function sayInEye(text, label = '') {
   // Une histoire en cours garde sa scène animée : seul le texte change (histoires.js).
   if (label === 'Histoire' && typeof storyEye === 'function' && storyEye(text)) return;
   // TikTok et YouTube : en attendant une vidéo, l'œil montre l'iris néon et la mascotte de l'application.
-  const media = { TikTok: 'tiktok', YouTube: 'youtube' }[label];
+  const media = { TikTok: 'tiktok', YouTube: 'youtube', Visages: 'face', Forfait: 'esim', Souvenirs: 'memory', Téléphone: 'phone', Photo: 'photo', Météo: 'weather', Appels: 'call', Appel: 'call', Musique: 'music', Localisation: 'locate' }[label];
   screen.innerHTML = `<div class="say${text.length > 90 ? ' long' : ''}${label === 'Histoire' ? ' story' : ''}${media ? ' assist media m-' + media : label !== 'Histoire' && state.screen === 'chat' ? ' assist' : ''}"><span>${media ? `<img class="mediaMasc" src="m/${media}.webp" alt="" width="220" height="220">` : ''}${label ? `<small>${esc(L(label))}</small>` : ''}${esc(text)}</span></div>`;
 }
 function applyColor() {
@@ -530,7 +530,7 @@ function renderWeather() {
   if (weather.view === 'map' && place) showWeatherMap();
   else screen.innerHTML = now
     ? `<div class="sky sky-${kind}"><small>${esc(place.name)}</small>${skyIcon(kind)}<strong>${Math.round(now.temperature_2m)}°</strong><span>${label}</span><em>${Math.round(data.daily.temperature_2m_min[0])}° / ${Math.round(data.daily.temperature_2m_max[0])}°</em></div>`
-    : `<div class="say"><span><small>Météo</small>${esc(weather.message || 'Où habitez-vous ?')}</span></div>`;
+    : `<div class="say assist media m-weather"><span><img class="mediaMasc" src="m/weather.webp" alt="" width="220" height="220"><small>Météo</small>${esc(weather.message || 'Où habitez-vous ?')}</span></div>`;
   const days = data
     ? data.daily.time
         .slice(1)

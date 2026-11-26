@@ -1172,3 +1172,6 @@ body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: calc(124px +
 .welNote { margin: 12px 4px 0; font-size: .8rem; line-height: 1.4; color: #7684a6; text-align: center; }
 @media (prefers-reduced-motion: reduce) { .welRing, .welFace, .welSpark u, .welFaces img, .welGo, .welGo::after, .storeEye.welcome b { animation: none !important; } }
 .welHero { margin-top: 54px; } .steps.welSteps { gap: 5px; } .steps.welSteps b { white-space: nowrap; font-size: .78rem; } .steps.welSteps u { min-width: 10px; }
+/* Messages dans l'œil : iris néon + mascotte de l'application pour toutes les applications (plus d'iris sombre et vide) */
+.say.assist.media.long > span { max-width: 60cqw; font-size: 3.7cqw; } .say.assist.media.long .mediaMasc { width: 21cqw; height: 21cqw; } .say.assist.media.long::after { background: radial-gradient(circle, #030814f5 0 42%, #030814b0 58%, transparent 74%); }
+.say.assist.m-face::before, .say.assist.m-photo::before { filter: hue-rotate(-25deg) saturate(1.2); } .say.assist.m-memory::before { filter: hue-rotate(40deg) saturate(1.1); } .say.assist.m-esim::before, .say.assist.m-weather::before { filter: hue-rotate(-50deg) saturate(1.25); } .say.assist.m-call::before { filter: hue-rotate(-90deg) saturate(1.1); }
