@@ -239,6 +239,7 @@
     "Simuler la recharge": ["Simulate charging", "Simular la carga"],
     "Arrêter": ["Stop", "Parar"],
     "Lumière": ["Mood", "Luz"],
+    "Ajoute un proche pour l’appeler.": ["Add a loved one to call them.", "Añade a un ser querido para llamarlo."], "Qui veux-tu appeler ?": ["Who do you want to call?", "¿A quién quieres llamar?"],
     "On t’attendait.": ["We were waiting for you.", "Te estábamos esperando."], "Bienvenue dans la famille": ["Welcome to the family", "Bienvenido a la familia"], "Un compte, et tout son univers s’ouvre.": ["One account, and its whole world opens up.", "Una cuenta, y todo su universo se abre."],
     "Histoires du soir": ["Bedtime stories", "Cuentos de noche"], "Jeux dans l’œil": ["Games in the eye", "Juegos en el ojo"], "Appels câlins": ["Cuddle calls", "Llamadas con cariño"], "Compte": ["Account", "Cuenta"], "Applis": ["Apps", "Apps"], "On joue": ["Let’s play", "A jugar"],
     "Votre e-mail de parent": ["Your parent e-mail", "Su correo de padre o madre"], "Comment s’appelle votre enfant ?": ["What is your child’s name?", "¿Cómo se llama su hijo?"], "C’est parti !": ["Let’s go!", "¡Vamos!"],

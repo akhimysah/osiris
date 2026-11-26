@@ -530,7 +530,7 @@ function renderWeather() {
   if (weather.view === 'map' && place) showWeatherMap();
   else screen.innerHTML = now
     ? `<div class="sky sky-${kind}"><small>${esc(place.name)}</small>${skyIcon(kind)}<strong>${Math.round(now.temperature_2m)}°</strong><span>${label}</span><em>${Math.round(data.daily.temperature_2m_min[0])}° / ${Math.round(data.daily.temperature_2m_max[0])}°</em></div>`
-    : `<div class="say assist media m-weather"><span><img class="mediaMasc" src="m/weather.webp" alt="" width="220" height="220"><small>Météo</small>${esc(weather.message || 'Où habitez-vous ?')}</span></div>`;
+    : `<div class="skyAsk"><i class="sun"></i><i class="cl c1"></i><i class="cl c2"></i><i class="cl c3"></i><i class="hill h1"></i><i class="hill h2"></i><span><img class="mediaMasc" src="m/weather.webp" alt="" width="220" height="220"><small>Météo</small><b>${esc(weather.message || 'Où habitez-vous ?')}</b></span></div>`;
   const days = data
     ? data.daily.time
         .slice(1)
@@ -1264,7 +1264,7 @@ function openCall({ start = false, spoken = '' } = {}) {
   const named = text && contacts().find((c) => text.includes(c.name.toLowerCase()));
   if (named) return startCall('eye', { contact: named });
   if (start) return startCall('eye');
-  if (spoken) sayInEye(contacts().length ? 'Qui veux-tu appeler ?' : 'Ajoutez un proche pour l’appeler à la voix.', 'Appels');
+  if (!call.role) sayInEye(contacts().length ? 'Qui veux-tu appeler ?' : 'Ajoute un proche pour l’appeler.', 'Appels');
 }
 function renderCall() {
   const active = Boolean(call.role);

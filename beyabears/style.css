@@ -1175,3 +1175,20 @@ body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: calc(124px +
 /* Messages dans l'œil : iris néon + mascotte de l'application pour toutes les applications (plus d'iris sombre et vide) */
 .say.assist.media.long > span { max-width: 60cqw; font-size: 3.7cqw; } .say.assist.media.long .mediaMasc { width: 21cqw; height: 21cqw; } .say.assist.media.long::after { background: radial-gradient(circle, #030814f5 0 42%, #030814b0 58%, transparent 74%); }
 .say.assist.m-face::before, .say.assist.m-photo::before { filter: hue-rotate(-25deg) saturate(1.2); } .say.assist.m-memory::before { filter: hue-rotate(40deg) saturate(1.1); } .say.assist.m-esim::before, .say.assist.m-weather::before { filter: hue-rotate(-50deg) saturate(1.25); } .say.assist.m-call::before { filter: hue-rotate(-90deg) saturate(1.1); }
+/* Météo en attente : un petit ciel animé (soleil, nuages, collines) à la place de l'iris */
+.skyAsk { position: absolute; inset: 0; overflow: hidden; display: grid; place-items: center; text-align: center; background: linear-gradient(#3aa0ff, #8fd3ff 58%, #d8f1ff); }
+.skyAsk .sun { position: absolute; right: 14%; top: 12%; width: 22cqw; height: 22cqw; border-radius: 50%; background: radial-gradient(circle, #fff6b0, #ffd23d 62%); box-shadow: 0 0 0 4cqw #ffe36a55, 0 0 0 9cqw #ffe36a2b, 0 0 14cqw #ffd23d; animation: sunPulse 3.4s ease-in-out infinite; }
+.skyAsk .cl { position: absolute; height: 8cqw; width: 24cqw; border-radius: 99px; background: #fff; box-shadow: 6cqw -4cqw 0 1cqw #fff, 13cqw -1.5cqw 0 -.5cqw #fff; opacity: .95; animation: cloudDrift 16s linear infinite; }
+.skyAsk .c1 { top: 22%; left: -30%; } .skyAsk .c2 { top: 36%; left: -30%; transform: scale(.7); animation-duration: 23s; animation-delay: -9s; opacity: .85; } .skyAsk .c3 { top: 13%; left: -30%; transform: scale(.55); animation-duration: 29s; animation-delay: -17s; opacity: .8; }
+.skyAsk .hill { position: absolute; bottom: -34cqw; width: 90cqw; height: 60cqw; border-radius: 50%; } .skyAsk .h1 { left: -22%; background: #58c96b; } .skyAsk .h2 { right: -26%; bottom: -38cqw; background: #3fae58; }
+.skyAsk > span { position: relative; display: grid; justify-items: center; gap: 1cqw; margin-top: 8cqw; color: #0d2a5c; }
+.screen .skyAsk img.mediaMasc { width: 34cqw; height: 34cqw; box-shadow: 0 0 0 1cqw #fff, 0 3cqw 7cqw rgba(13, 42, 92, .35); }
+.skyAsk small { font-size: 3.8cqw; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-top: 2cqw; opacity: .8; } .skyAsk b { font-size: 6.2cqw; font-weight: 900; max-width: 70cqw; line-height: 1.15; padding: 1.4cqw 4cqw; border-radius: 6cqw; background: #ffffffd9; }
+@keyframes sunPulse { 50% { transform: scale(1.08); } } @keyframes cloudDrift { to { left: 120%; } }
+/* Encadrés « démonstration » : une note discrète au lieu d'un gros bloc jaune */
+#panel .notice { background: #f5f8ff; border: 0; border-left: 4px solid #ffc94d; border-radius: 12px; padding: 9px 12px; color: #5b6a8c; font-size: .84rem; line-height: 1.4; } #panel .notice b, #panel .notice strong { color: #14224f; }
+/* Formulaires : champs plus grands et plus doux, comme sur l'écran de bienvenue */
+#panel form.stack input, #panel form.line input, #panel form.stack select, #panel form.stack textarea, #panel .stack textarea { padding: 15px 18px; border-radius: 18px; border: 2px solid #d9e3fb; background: #f5f8ff; font-size: 1.02rem; color: #14224f; transition: border-color .2s, background .2s; }
+#panel form.line input { border-radius: 18px; } #panel form.stack input:focus, #panel form.line input:focus, #panel form.stack textarea:focus { outline: none; border-color: #2e63e0; background: #fff; }
+#panel form.stack { gap: 10px; } #panel form.stack .btn, #panel form.line .btn { padding: 14px 22px; border-radius: 18px; font-weight: 800; }
+@media (prefers-reduced-motion: reduce) { .skyAsk .sun, .skyAsk .cl { animation: none; } .skyAsk .c1 { left: 8%; } .skyAsk .c2 { left: 60%; } }
