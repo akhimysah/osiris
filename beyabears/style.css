@@ -1131,3 +1131,10 @@ a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-h
 .tabbar button[data-tab="home"].on img { box-shadow: none; filter: drop-shadow(0 5px 8px rgba(46, 99, 224, .45)); transform: scale(1.14) translateY(-2px); }
 .tabbar button.on span { font-weight: 900; }
 @media (prefers-reduced-motion: reduce) { .tabbar button img { transition: none; } }
+/* Icônes d'onglets plus grandes, pour voir les détails */
+.tabbar { width: min(96vw, 480px); padding: 9px 4px 7px; }
+.tabbar button img { width: 60px; height: 60px; border-radius: 16px; margin-bottom: 2px; transform: scale(.92); }
+.tabbar button[data-tab="home"] img { width: 66px; height: 66px; margin: -4px 0 0; }
+.tabbar button.on img { transform: scale(1.04) translateY(-2px); } .tabbar button[data-tab="home"].on img { transform: scale(1.1) translateY(-2px); }
+.tabbar button { font-size: .78rem; }
+body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: 128px; }
