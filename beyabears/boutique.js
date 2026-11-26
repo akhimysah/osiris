@@ -10,7 +10,7 @@ const APP_NOTES = {
   memory: 'Les souvenirs gardés par la peluche.', dream: 'Veilleuses et ambiance pour la nuit.', holo: 'Le socle : recharge, lumière et enceinte.',
   locate: 'Savoir où est la peluche.', music: 'Écouter sa musique.', weather: 'La météo du jour dans l’œil.', torch: 'L’œil éclaire comme une lampe.',
   face: 'Reconnaître les proches et les saluer.', phone: 'Afficher l’écran du téléphone dans l’œil.', iris: 'Changer la couleur de l’iris.', esim: 'Le forfait pour rester connecté partout.',
-  whatsapp: 'Ouvrir WhatsApp pour appeler ou écrire.', edu: 'Calcul et couleurs : apprendre en s’amusant, une étoile par bonne réponse.',
+  whatsapp: 'Ouvrir WhatsApp pour appeler ou écrire.', snapchat: 'Ouvrir Snapchat. Réservé aux 13 ans et plus, sous contrôle parental.', facebook: 'Ouvrir Facebook. Réservé aux 13 ans et plus, sous contrôle parental.', instagram: 'Ouvrir Instagram. Réservé aux 13 ans et plus, sous contrôle parental.', edu: 'Calcul et couleurs : apprendre en s’amusant, une étoile par bonne réponse.',
 };
 // Toutes les applications sont là dès le départ, comme dans la démo d'origine. Le Store sert à en retirer ou à en remettre.
 const appsOn = () => { const off = store.get('appsOff', []); return [...APPS, ...EXTERNAL].map(([id]) => id).filter((id) => PREINSTALLED.includes(id) || !off.includes(id)); };
@@ -22,7 +22,7 @@ const storeIcon = (id) => { const a = APPS.find(([x]) => x === id), e = EXTERNAL
 function storeEye(html) { screen.innerHTML = `<div class="storeEye">${html}</div>`; }
 const APP_SHOTS = { edu: 3, music: 2, youtube: 1 }; // aperçus illustrés (dossier shots/)
 const STORE_CATS = [['tous', 'Tout'], ['apprendre', 'Apprendre'], ['jouer', 'Jouer'], ['voir', 'Regarder'], ['lien', 'Partager'], ['nuit', 'Nuit'], ['outil', 'Outils']];
-const APP_CAT = { edu: 'apprendre', games: 'jouer', emo: 'jouer', core: 'jouer', youtube: 'voir', tiktok: 'voir', phone: 'voir', music: 'voir', link: 'lien', whatsapp: 'lien', face: 'lien', memory: 'lien', dream: 'nuit', holo: 'nuit', torch: 'nuit', weather: 'outil', iris: 'outil', esim: 'outil', locate: 'outil' };
+const APP_CAT = { edu: 'apprendre', games: 'jouer', emo: 'jouer', core: 'jouer', youtube: 'voir', tiktok: 'voir', phone: 'voir', music: 'voir', link: 'lien', whatsapp: 'lien', snapchat: 'lien', facebook: 'lien', instagram: 'lien', face: 'lien', memory: 'lien', dream: 'nuit', holo: 'nuit', torch: 'nuit', weather: 'outil', iris: 'outil', esim: 'outil', locate: 'outil' };
 const STORE_STARS = [['edu', 'Apprendre en s’amusant', '#ff9d3d', '#e0631a'], ['games', 'Cinq jeux, zéro ennui', '#ff8a3d', '#ff4d6d'], ['dream', 'Des nuits toutes douces', '#5b62c9', '#14224f'], ['youtube', 'Tes dessins animés préférés', '#ff5d5d', '#b3123a'], ['emo', 'Un œil plein d’émotions', '#ffb62e', '#ff6b8b']];
 const storeApps = () => [...APPS, ...EXTERNAL].map(([id, label]) => [id, label]).filter(([id]) => !PREINSTALLED.includes(id));
 

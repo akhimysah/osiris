@@ -239,6 +239,7 @@
     "Simuler la recharge": ["Simulate charging", "Simular la carga"],
     "Arrêter": ["Stop", "Parar"],
     "Lumière": ["Mood", "Luz"],
+    "Ouvrir Snapchat. Réservé aux 13 ans et plus, sous contrôle parental.": ["Open Snapchat. For ages 13 and over, under parental control.", "Abrir Snapchat. Reservado a mayores de 13 años, bajo control parental."], "Ouvrir Facebook. Réservé aux 13 ans et plus, sous contrôle parental.": ["Open Facebook. For ages 13 and over, under parental control.", "Abrir Facebook. Reservado a mayores de 13 años, bajo control parental."], "Ouvrir Instagram. Réservé aux 13 ans et plus, sous contrôle parental.": ["Open Instagram. For ages 13 and over, under parental control.", "Abrir Instagram. Reservado a mayores de 13 años, bajo control parental."],
     "Lire dans l’œil": ["Play in the eye", "Ver en el ojo"], "Chargement…": ["Loading…", "Cargando…"], "Touche encore pour l’ouvrir dans TikTok.": ["Tap again to open it in TikTok.", "Toca otra vez para abrirlo en TikTok."],
     "Le coup de cœur de Noah": ["Noah’s favourite", "El favorito de Noah"], "La pépite de Zoé": ["Zoé’s gem", "La joya de Zoé"], "Le choix de Léo": ["Léo’s pick", "La elección de Léo"], "Choisis une vidéo": ["Pick a video", "Elige un vídeo"],
     "Vidéo 1": ["Video 1", "Vídeo 1"], "Vidéo 2": ["Video 2", "Vídeo 2"], "Vidéo 3": ["Video 3", "Vídeo 3"],

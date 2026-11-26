@@ -70,6 +70,10 @@ const APPS = [
 const EXTERNAL = [
   // WhatsApp Web gère les appels audio et vidéo depuis 2026 ; sur téléphone, le lien ouvre l'application.
   ['whatsapp', 'WhatsApp', 'c-wa', 'chat', /Android|iPhone|iPad/i.test(navigator.userAgent) ? 'https://wa.me/' : 'https://web.whatsapp.com/'],
+  // Réseaux sociaux : ouverts dans leur application ou leur site, jamais intégrés. Réservés aux 13 ans et plus par leurs éditeurs.
+  ['snapchat', 'Snapchat', 'c-masc', 'm_snapchat', 'https://www.snapchat.com/'],
+  ['facebook', 'Facebook', 'c-masc', 'm_facebook', 'https://www.facebook.com/'],
+  ['instagram', 'Instagram', 'c-masc', 'm_instagram', 'https://www.instagram.com/'],
 ];
 // Les mascottes remplacent les pictogrammes : une image ronde par application.
 // Toutes les mascottes tiennent dans une seule image : un seul chargement, donc jamais d'icône vide isolée.
@@ -78,6 +82,7 @@ MASCOTS.forEach((id, n) => { ICON['m_' + id] = `<span class="masc" style="backgr
 ICON.mic = ICON.m_mic; // le bouton « Parler » porte la mascotte au micro
 APPS.forEach((app) => { if (MASCOTS.includes(app[0])) { ICON[app[0]] = ICON['m_' + app[0]]; app[2] = 'c-masc'; } });
 ICON.edu = '<img class="mascImg" src="m/edu.webp" alt="">';
+['snapchat', 'facebook', 'instagram'].forEach((id) => { ICON['m_' + id] = `<img class="mascImg" src="m/${id}.webp" alt="">`; });
 ICON.secure = '<img class="mascImg" src="m/secure.webp" alt="">';
 ICON.store = '<img class="mascImg" src="store-icone.webp" alt="">'; APPS.find(([id]) => id === 'store')[2] = 'c-masc'; // la mascotte vendeuse
 EXTERNAL.forEach((app) => { if (MASCOTS.includes(app[0])) { app[3] = 'm_' + app[0]; app[2] = 'c-masc'; } });
