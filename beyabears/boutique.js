@@ -99,17 +99,22 @@ function openStore() {
   clearInterval(openStore.timer);
   const me = account(), on = appsOn();
   if (!me) {
-    storeEye(`<i class="c-masc"><img class="mascImg" src="store-icone.webp" alt=""></i><b>Bienvenue !</b><small>Créez votre compte pour commencer.</small>`);
-    panel.innerHTML = `${backButton}<span class="pill">Première mise en route</span><h2>Votre compte BeyaBear’s</h2>
-      <div class="steps"><i class="on">1</i><u></u><i>2</i><u></u><i>3</i></div>
-      <p>Comme sur un téléphone neuf : un compte, puis vous téléchargez les applications que vous voulez.</p>
-      <form class="account" id="accountForm">
-        <label>Adresse e-mail du parent<input name="email" type="email" maxlength="80" required placeholder="prenom@exemple.fr" aria-label="Adresse e-mail du parent" autocomplete="email" value="${esc(store.get('email', ''))}"></label>
-        <label>Prénom de l’enfant <span class="muted">(facultatif)</span><input name="child" maxlength="30" placeholder="Prénom" aria-label="Prénom de l’enfant" autocomplete="off"></label>
-        <label class="check"><input type="checkbox" name="ok" required> Je suis le parent ou le responsable de l’enfant.</label>
-        <button class="btn">Créer le compte</button>
+    storeEye(`<span class="welRing"></span><span class="welSpark">${'<u></u>'.repeat(9)}</span><i class="c-masc welFace"><img class="mascImg" src="store-icone.webp" alt=""></i><b id="welHi">Bienvenue !</b><small>On t’attendait.</small>`);
+    screen.querySelector('.storeEye').classList.add('welcome');
+    panel.innerHTML = `${backButton}
+      <div class="welHero"><div class="welFaces"><img src="oeil/facebook.webp" alt="" width="440" height="440"><img src="oeil/instagram.webp" alt="" width="440" height="440"><img src="oeil/snapchat.webp" alt="" width="440" height="440"></div>
+        <h2>Bienvenue dans la famille <em>BeyaBear’s</em></h2>
+        <p>Un compte, et tout son univers s’ouvre.</p>
+        <ul class="welPerks"><li><i class="c-masc">${ICON.story}</i>Histoires du soir</li><li><i class="c-masc">${ICON.games}</i>Jeux dans l’œil</li><li><i class="c-masc">${ICON.call}</i>Appels câlins</li></ul></div>
+      <div class="steps welSteps"><i class="on">1</i><b>Compte</b><u></u><i>2</i><b>Applis</b><u></u><i>3</i><b>On joue</b></div>
+      <form class="account welForm" id="accountForm">
+        <label>Votre e-mail de parent<input name="email" type="email" maxlength="80" required placeholder="prenom@exemple.fr" aria-label="Adresse e-mail du parent" autocomplete="email" value="${esc(store.get('email', ''))}"></label>
+        <label>Comment s’appelle votre enfant ? <span class="muted">(facultatif)</span><input name="child" maxlength="30" placeholder="Son prénom" aria-label="Prénom de l’enfant" autocomplete="off"></label>
+        <label class="check"><input type="checkbox" name="ok" required><span>Je suis le parent ou le responsable de l’enfant.</span></label>
+        <button class="btn welGo"><span>C’est parti !</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
       </form>
-      <p class="notice">Démonstration : l’adresse reste sur cet appareil et rien n’est envoyé. Dans la version finale, le parent crée le compte et valide chaque téléchargement.</p>`;
+      <p class="welNote">Démonstration : l’adresse reste sur cet appareil et rien n’est envoyé. Dans la version finale, le parent crée le compte et valide chaque téléchargement.</p>`;
+    if (typeof confetti === 'function') setTimeout(() => { const eye = screen.querySelector('.storeEye.welcome'); if (eye) confetti(eye, 22); }, 350);
     return;
   }
   const all = storeApps();
@@ -288,3 +293,10 @@ setInterval(() => {
   const tab = state.screen === 'store' ? (panel.querySelector('.mine') ? 'profile' : 'store') : ['home', 'menu'].includes(state.screen) && !panel.querySelector('.appsPage') ? 'home' : 'apps';
   tabbar.querySelectorAll('button').forEach((b2) => b2.classList.toggle('on', b2.dataset.tab === tab));
 }, 400);
+
+// Écran de bienvenue : l'œil salue l'enfant par son prénom dès qu'on le tape.
+document.addEventListener('input', (event) => {
+  if (!event.target.matches || !event.target.matches('#accountForm [name="child"]')) return;
+  const hi = document.getElementById('welHi'), name = event.target.value.trim().slice(0, 14);
+  if (hi) hi.textContent = name ? `Coucou ${name} !` : 'Bienvenue !';
+});
