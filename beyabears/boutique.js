@@ -275,10 +275,10 @@ document.addEventListener('input', (event) => {
 const tabbar = document.createElement('nav');
 tabbar.className = 'tabbar';
 tabbar.setAttribute('aria-label', 'Navigation de l’application');
-tabbar.innerHTML = `<button type="button" data-go="menu" data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg>Accueil</button>
-  <button type="button" data-nav="apps" data-tab="apps"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>Apps</button>
-  <button type="button" data-go="store" data-tab="store"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="2"/></svg>Store</button>
-  <button type="button" data-nav="profile" data-tab="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0z"/></svg>Profil</button>`;
+tabbar.innerHTML = `<button type="button" data-go="menu" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="t" d="M5 10.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8.5L12 5z"/><path class="l" d="M3 11.5 12 4l9 7.5"/><rect class="s" x="9.7" y="13.6" width="4.6" height="7.4" rx="2.3"/></svg><span>Accueil</span></button>
+  <button type="button" data-nav="apps" data-tab="apps"><svg viewBox="0 0 24 24" aria-hidden="true"><rect class="s" x="3.5" y="3.5" width="7.5" height="7.5" rx="2.4"/><rect class="t" x="13" y="3.5" width="7.5" height="7.5" rx="2.4"/><rect class="t" x="3.5" y="13" width="7.5" height="7.5" rx="2.4"/><circle class="s" cx="16.75" cy="16.75" r="3.9"/><circle class="w" cx="16.75" cy="16.75" r="1.5"/></svg><span>Apps</span></button>
+  <button type="button" data-go="store" data-tab="store"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="t" d="M5 8.5h14l-.9 10.6a2 2 0 0 1-2 1.9H7.9a2 2 0 0 1-2-1.9z"/><path class="l" d="M4.6 8.5h14.8M8.8 8.5V7.2a3.2 3.2 0 0 1 6.4 0v1.3M9.3 13.4a2.9 2.9 0 0 0 5.4 0"/></svg><span>Store</span></button>
+  <button type="button" data-nav="profile" data-tab="profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="s" cx="6.3" cy="6.6" r="2.9"/><circle class="s" cx="17.7" cy="6.6" r="2.9"/><circle class="w" cx="12" cy="13" r="8"/><circle class="t" cx="12" cy="13" r="8"/><circle class="s" cx="12" cy="11.8" r="3.3"/><circle class="w" cx="13.1" cy="10.8" r="1.1"/><path class="l" d="M9.7 17.4a3.3 3.3 0 0 0 4.6 0"/></svg><span>Profil</span></button>`;
 document.body.append(tabbar);
 setInterval(() => {
   if (typeof state === 'undefined') return;

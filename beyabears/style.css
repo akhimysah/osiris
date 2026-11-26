@@ -1111,3 +1111,14 @@ a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-h
 .say.assist.m-tiktok::before { filter: hue-rotate(95deg) saturate(1.3); } .say.assist.m-tiktok .mediaMasc { box-shadow: 0 0 0 .7cqw #fff3, 0 0 6cqw #ff3d8a99; }
 .say.assist.m-youtube::before { filter: hue-rotate(140deg) saturate(1.2); }
 @keyframes mediaBob { 50% { transform: translateY(-1.6cqw); } } @media (prefers-reduced-motion: reduce) { .screen img.mediaMasc { animation: none; } }
+/* Barre d'onglets : icônes bicolores maison (maison, tuiles + œil, sac qui sourit, ourson à un œil), une couleur par onglet quand il est actif */
+.tabbar { padding: 7px 6px 6px; }
+.tabbar button { --c: #2e63e0; position: relative; gap: 3px; padding: 3px 0 2px; color: #8a93ab; font-size: .74rem; letter-spacing: .01em; }
+.tabbar button[data-tab="apps"] { --c: #7c5cf5; } .tabbar button[data-tab="store"] { --c: #f2783c; } .tabbar button[data-tab="profile"] { --c: #12a594; }
+.tabbar button::before { content: ""; position: absolute; top: 0; left: 50%; width: 58px; height: 36px; margin-left: -29px; border-radius: 18px; background: color-mix(in srgb, var(--c) 15%, #fff); transform: scale(.3); opacity: 0; transition: transform .28s cubic-bezier(.3, 1.6, .5, 1), opacity .2s; }
+.tabbar svg { position: relative; width: 28px; height: 28px; margin: 4px 0; fill: none; transition: transform .28s cubic-bezier(.3, 1.6, .5, 1); }
+.tabbar svg .t { fill: currentColor; opacity: .24; } .tabbar svg .s { fill: currentColor; } .tabbar svg .w { fill: #fff; } .tabbar svg .l { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tabbar button span { position: relative; }
+.tabbar button.on { color: var(--c); } .tabbar button.on::before { transform: scale(1); opacity: 1; } .tabbar button.on svg { transform: scale(1.08); } .tabbar button.on span { font-weight: 900; }
+.tabbar button.on svg .t { opacity: .32; }
+@media (prefers-reduced-motion: reduce) { .tabbar button::before, .tabbar svg { transition: none; } }
