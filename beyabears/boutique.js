@@ -239,6 +239,9 @@ function homeExtras() {
     <div class="tryBear"><div class="bearBox"><img src="emo/noah-toucher.webp" alt="Noah, la peluche aviateur BeyaBear’s" width="550" height="760" loading="lazy"><button type="button" class="bearEye" data-clip-big aria-label="Voir cette vidéo dans le grand œil"><video muted loop playsinline autoplay preload="metadata" poster="clips/${HOME_CLIPS[0][0]}.jpg" src="clips/${HOME_CLIPS[0][0]}.mp4"></video></button></div>
       <div class="chips">${HOME_CLIPS.map(([id, label], k) => `<button type="button" data-clip="${id}" class="${k ? '' : 'on'}">${label}</button>`).join('')}</div>
       <p class="muted">Choisissez une vidéo : elle joue dans l’œil de la peluche, comme sur la vraie. Touchez l’œil pour la voir en grand.</p></div>
+    <h3 class="sub">Les réseaux <em>dans l’œil</em></h3>
+    <div class="netRow">${[['facebook', 'Noah', 'Facebook'], ['instagram', 'Alya', 'Instagram'], ['snapchat', 'Enzo', 'Snapchat']].map(([id, who, label], i) => `<button type="button" data-nav="apps" style="--i:${i}"><img src="oeil/${id}.webp" alt="${who}, ${label} dans l’œil" width="440" height="440" loading="lazy"><b>${who}</b><span>${label}</span></button>`).join('')}</div>
+    <p class="muted">La mascotte de chaque réseau s’affiche dans l’œil du compagnon. Réseaux réservés aux 13 ans et plus, sous contrôle parental.</p>
     <button type="button" class="storeBanner" data-go="store"><img src="store.webp" alt="" width="96" height="96" loading="lazy"><span><b>Beya Store</b><small><i>${rest}</i> applications à découvrir</small></span><em>›</em></button>`;
 }
 // Les applications pas encore installées : un toucher ouvre leur fiche.

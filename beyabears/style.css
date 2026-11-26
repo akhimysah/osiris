@@ -1138,3 +1138,8 @@ a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-h
 .tabbar button.on img { transform: scale(1.04) translateY(-2px); } .tabbar button[data-tab="home"].on img { transform: scale(1.1) translateY(-2px); }
 .tabbar button { font-size: .78rem; }
 body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: 128px; }
+/* Accueil : trois compagnons avec un réseau dans l'œil */
+.netRow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0 8px; }
+.netRow button { display: grid; gap: 2px; padding: 0 0 8px; border: 0; border-radius: 18px; background: #fff; box-shadow: 0 6px 16px rgba(8, 28, 80, .1), 0 0 0 1px #e3e9f6; overflow: hidden; font: inherit; color: var(--ink, #14224f); cursor: pointer; text-align: center; animation: heroFloat 3.2s ease-in-out infinite alternate; animation-delay: calc(var(--i, 0) * -.6s); }
+.netRow img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; display: block; margin-bottom: 5px; } .netRow b { font-weight: 900; font-size: .92rem; } .netRow span { font-size: .76rem; color: #6b7896; font-weight: 700; }
+.netRow button:active { transform: scale(.96); } @media (prefers-reduced-motion: reduce) { .netRow button { animation: none; } }
