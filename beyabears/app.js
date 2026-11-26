@@ -755,6 +755,32 @@ const VIDEO = {
     ],
   },
 };
+// Sélection TikTok : un lien court de partage ne contient pas le numéro de la vidéo. On le demande à TikTok
+// (service oEmbed public) pour lire la vidéo dans l'œil ; si TikTok ne répond pas, le deuxième appui ouvre le lien.
+document.addEventListener('click', async (event) => {
+  const link = event.target.closest('.favs.picks a');
+  if (!link || link.dataset.direct) return;
+  event.preventDefault();
+  const known = store.get('tiktokIds', {});
+  let id = known[link.href];
+  if (!id) {
+    sayInEye('Chargement…', 'TikTok');
+    try {
+      const reply = await fetch('https://www.tiktok.com/oembed?url=' + encodeURIComponent(link.href));
+      const data = await reply.json();
+      id = String(data.embed_product_id || (data.html || '').match(/data-video-id="(\d+)"/)?.[1] || '');
+    } catch {
+      id = '';
+    }
+  }
+  if (/^\d{10,25}$/.test(id || '')) {
+    store.set('tiktokIds', { ...known, [link.href]: id });
+    return playVideo('tiktok', id);
+  }
+  link.dataset.direct = '1';
+  link.querySelector('small').textContent = 'Ouvrir dans TikTok';
+  sayInEye('Touche encore pour l’ouvrir dans TikTok.', 'TikTok');
+});
 const videoKey = (app) => (app === 'youtube' ? 'videos' : 'videos.' + app);
 function videoId(app, link) {
   try {
@@ -817,7 +843,7 @@ function openVideo(app, { spoken = '' } = {}) {
         : ''
     }
     ${favorites.length ? `<p class="muted">Mes favoris</p><ul class="favs">${favorites.map((v, i) => item(v, true, i)).join('')}</ul>` : ''}
-    ${(VIDEO[app].links || []).length ? `<p class="muted">Notre sélection ${label}</p><ul class="favs picks">${VIDEO[app].links.map((v) => `<li><a class="btn light" href="${esc(v.url)}" target="_blank" rel="noopener">${ICON[app]}<span>${esc(v.name)}</span><small>Ouvrir dans ${label}</small></a></li>`).join('')}</ul>` : ''}
+    ${(VIDEO[app].links || []).length ? `<p class="muted">Notre sélection ${label}</p><ul class="favs picks">${VIDEO[app].links.map((v) => `<li><a class="btn light" href="${esc(v.url)}" target="_blank" rel="noopener">${ICON[app]}<span>${esc(v.name)}</span><small>Lire dans l’œil</small></a></li>`).join('')}</ul>` : ''}
     ${starters.length ? `<p class="muted">Exemples</p><ul class="favs">${starters.map((v) => item(v, false)).join('')}</ul>` : ''}
     <p class="muted">Le fil d’accueil de ${label} ne peut pas s’afficher dans une page web : ${label} ne l’autorise que dans sa propre application. Sur la peluche, il s’affichera dans l’œil par la recopie du téléphone.</p>`;
   // L'œil ne reste pas vide : on lance le favori demandé, sinon le premier favori ou le premier exemple.
