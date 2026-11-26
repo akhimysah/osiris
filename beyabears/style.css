@@ -1229,3 +1229,4 @@ body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: calc(124px +
 @media (prefers-reduced-motion: reduce) { .wake, .wakeStars, .wakeTxt em { animation: none; } }
 /* Accueil : c'est Luna qui ouvre l'œil (Zoé reste sur le site) */
 .wakePic video { left: 33.56%; top: 25.70%; width: 38.67%; height: 35.20%; }
+.wakePic video { left: 33.56%; top: 29.04%; width: 38.67%; height: 39.78%; }

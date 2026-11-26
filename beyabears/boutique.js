@@ -260,7 +260,7 @@ function homeMore() {
 }
 // Grande scène d'ouverture : Luna ouvre l'œil (vidéo de la paupière jouée dans son œil).
 const wakeLine = () => { const h = new Date().getHours(); return h < 6 || h >= 21 ? ['Chut… c’est l’heure des rêves', 'Luna ferme l’œil avec toi.'] : h < 12 ? ['Coucou, bien dormi ?', 'Luna ouvre l’œil avec toi.'] : ['Coucou, on joue ?', 'Luna garde l’œil ouvert pour toi.']; };
-const homeHero = () => `<button type="button" class="wake" data-wake aria-label="Luna"><span class="wakeStars"></span><span class="wakePic"><img src="dodo/luna.webp" alt="" width="501" height="504"><video autoplay muted loop playsinline preload="auto" poster="dodo/paupiere.jpg"><source src="dodo/paupiere.mp4" type="video/mp4"></video></span><span class="wakeTxt"><b>${wakeLine()[0]}</b><small>${wakeLine()[1]}</small><em>Touche son œil</em></span></button>
+const homeHero = () => `<button type="button" class="wake" data-wake aria-label="Luna"><span class="wakeStars"></span><span class="wakePic"><img src="dodo/luna.webp" alt="" width="501" height="446"><video autoplay muted loop playsinline preload="auto" poster="dodo/paupiere.jpg"><source src="dodo/paupiere.mp4" type="video/mp4"></video></span><span class="wakeTxt"><b>${wakeLine()[0]}</b><small>${wakeLine()[1]}</small><em>Touche son œil</em></span></button>
   <div class="hero"><button type="button" class="heroFace" data-poke aria-label="Toucher BeyaBear’s"><img src="emo/joie.webp" alt="" width="120" height="120"></button>
   <div><h2 class="hello">${homeHello()}</h2><p class="bubble" id="bubble">Touche-moi, je réagis !</p></div></div>`;
 document.addEventListener('click', (event) => {
