@@ -1122,3 +1122,12 @@ a.l-bear { display: block; cursor: pointer; text-decoration: none; -webkit-tap-h
 .tabbar button.on { color: var(--c); } .tabbar button.on::before { transform: scale(1); opacity: 1; } .tabbar button.on svg { transform: scale(1.08); } .tabbar button.on span { font-weight: 900; }
 .tabbar button.on svg .t { opacity: .32; }
 @media (prefers-reduced-motion: reduce) { .tabbar button::before, .tabbar svg { transition: none; } }
+/* Barre d'onglets : les quatre icônes illustrées (maison aux ballons, grille d'apps, vendeur du Store, guitariste) */
+.tabbar { padding: 8px 6px 7px; border-radius: 30px; }
+.tabbar button::before { display: none; }
+.tabbar button img { width: 46px; height: 46px; border-radius: 13px; object-fit: cover; display: block; margin: 0 0 1px; box-shadow: 0 4px 10px rgba(8, 28, 80, .16); opacity: .82; filter: saturate(.85); transform: scale(.88); transition: transform .28s cubic-bezier(.3, 1.6, .5, 1), opacity .2s, filter .2s, box-shadow .2s; }
+.tabbar button[data-tab="home"] img { border-radius: 0; box-shadow: none; filter: saturate(.85) drop-shadow(0 3px 5px rgba(8, 28, 80, .2)); }
+.tabbar button.on img { opacity: 1; filter: none; transform: scale(1.06) translateY(-2px); box-shadow: 0 0 0 2.5px #fff, 0 0 0 5px var(--c), 0 8px 16px color-mix(in srgb, var(--c) 40%, transparent); }
+.tabbar button[data-tab="home"].on img { box-shadow: none; filter: drop-shadow(0 5px 8px rgba(46, 99, 224, .45)); transform: scale(1.14) translateY(-2px); }
+.tabbar button.on span { font-weight: 900; }
+@media (prefers-reduced-motion: reduce) { .tabbar button img { transition: none; } }
