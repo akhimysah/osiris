@@ -139,7 +139,7 @@ function sayInEye(text, label = '') {
   // Une histoire en cours garde sa scène animée : seul le texte change (histoires.js).
   if (label === 'Histoire' && typeof storyEye === 'function' && storyEye(text)) return;
   // TikTok et YouTube : en attendant une vidéo, l'œil montre l'iris néon et la mascotte de l'application.
-  const media = { TikTok: 'tiktok', YouTube: 'youtube', Visages: 'face', Forfait: 'esim', Souvenirs: 'memory', Téléphone: 'phone', Photo: 'photo', Météo: 'weather', Appels: 'call', Appel: 'call', Musique: 'music', Localisation: 'locate' }[label];
+  const media = { TikTok: 'tiktok', YouTube: 'youtube', Visages: 'face', Forfait: 'esim', Souvenirs: 'memory', Téléphone: 'phone', Photo: 'photo', Météo: 'weather', Appels: 'call', Appel: 'call', Musique: 'music', Localisation: 'locate', Assistant: text.length > 90 ? '' : 'chat', 'Je réfléchis': 'chat' }[label];
   screen.innerHTML = `<div class="say${text.length > 90 ? ' long' : ''}${label === 'Histoire' ? ' story' : ''}${media ? ' assist media m-' + media : label !== 'Histoire' && state.screen === 'chat' ? ' assist' : ''}"><span>${media ? `<img class="mediaMasc" src="m/${media}.webp" alt="" width="220" height="220">` : ''}${label ? `<small>${esc(L(label))}</small>` : ''}${esc(text)}</span></div>`;
 }
 function applyColor() {
@@ -857,9 +857,10 @@ function openVideo(app, { spoken = '' } = {}) {
   // « Mets des comptines sur YouTube » : ce qui reste de la phrase devient une recherche.
   const query = app === 'youtube' && !named ? plain(spoken).replace(/[’']/g, ' ').replace(SEARCH_NOISE, ' ').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim() : '';
   if (query.length > 1) return searchYoutube(query);
-  const pick = named || favorites[0] || starters[0];
+  // Sans favori ni demande à la voix, l'œil accueille avec la mascotte au lieu de lancer un exemple d'office.
+  const pick = named || favorites[0] || (spoken ? starters[0] : null);
   if (pick) playVideo(app, pick.id);
-  else sayInEye(app === 'tiktok' ? 'Choisis une vidéo' : 'Collez le lien d’une vidéo pour la voir ici.', label);
+  else sayInEye('Choisis une vidéo', label);
 }
 
 // ---------- Photo ----------

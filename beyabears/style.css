@@ -1192,3 +1192,5 @@ body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: calc(124px +
 #panel form.line input { border-radius: 18px; } #panel form.stack input:focus, #panel form.line input:focus, #panel form.stack textarea:focus { outline: none; border-color: #2e63e0; background: #fff; }
 #panel form.stack { gap: 10px; } #panel form.stack .btn, #panel form.line .btn { padding: 14px 22px; border-radius: 18px; font-weight: 800; }
 @media (prefers-reduced-motion: reduce) { .skyAsk .sun, .skyAsk .cl { animation: none; } .skyAsk .c1 { left: 8%; } .skyAsk .c2 { left: 60%; } }
+/* Assistant et YouTube : leur mascotte dans l'œil */
+.say.assist.m-chat::before { filter: none; } .say.assist.m-youtube .mediaMasc { box-shadow: 0 0 0 .7cqw #fff3, 0 0 6cqw #ff4d4d99; } .say.assist.m-youtube::before { filter: hue-rotate(150deg) saturate(1.3); }
