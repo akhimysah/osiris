@@ -1143,3 +1143,7 @@ body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: 128px; }
 .netRow button { display: grid; gap: 2px; padding: 0 0 8px; border: 0; border-radius: 18px; background: #fff; box-shadow: 0 6px 16px rgba(8, 28, 80, .1), 0 0 0 1px #e3e9f6; overflow: hidden; font: inherit; color: var(--ink, #14224f); cursor: pointer; text-align: center; animation: heroFloat 3.2s ease-in-out infinite alternate; animation-delay: calc(var(--i, 0) * -.6s); }
 .netRow img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; display: block; margin-bottom: 5px; } .netRow b { font-weight: 900; font-size: .92rem; } .netRow span { font-size: .76rem; color: #6b7896; font-weight: 700; }
 .netRow button:active { transform: scale(.96); } @media (prefers-reduced-motion: reduce) { .netRow button { animation: none; } }
+/* Barre d'onglets ancrée tout en bas, pleine largeur et opaque : plus de contenu visible dessous ni autour */
+.tabbar { left: 0; right: 0; bottom: 0; transform: none; width: 100%; max-width: none; border-radius: 22px 22px 0 0; background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 8px max(6px, env(safe-area-inset-left, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-right, 0px)); box-shadow: 0 -6px 22px rgba(8, 28, 80, .12), 0 -1px 0 #e3e9f6; }
+.tabbar::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 120px; background: #fff; }
+body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px)); }
