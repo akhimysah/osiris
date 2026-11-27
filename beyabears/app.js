@@ -1267,6 +1267,57 @@ function openCall({ start = false, spoken = '' } = {}) {
   if (start) return startCall('eye');
   if (!call.role) sayInEye(contacts().length ? 'Qui veux-tu appeler ?' : 'Ajoute un proche pour l’appeler.', 'Appels');
 }
+// Traduction en direct : chacun choisit la langue dans laquelle il veut entendre son correspondant.
+const TRAD_STATUS = {
+  '': '',
+  connexion: 'Connexion à la traduction…',
+  ecoute: 'Traduction en cours. Parlez chacun votre tour.',
+  quota: 'Le temps de traduction du jour est épuisé. Réessayez demain.',
+  bientot: 'La traduction arrive bientôt.',
+  erreur: 'La traduction n’a pas pu démarrer. Réessayez dans un instant.',
+};
+function tradBlock() {
+  const t = TRAD.etat;
+  return `<div class="trad">
+      <p><strong>Traduction en direct</strong>${call.tradPeer ? ' <span class="muted">· votre correspondant l’utilise aussi</span>' : ''}</p>
+      <div class="row"><label class="muted" for="tradLang">J’écoute en</label>
+        <select id="tradLang" aria-label="Langue d’écoute">${TRAD.LANGUES.map(([code, nom]) => `<option value="${code}" ${code === t.cible ? 'selected' : ''}>${nom}</option>`).join('')}</select>
+        <button class="btn ${t.actif ? 'light' : ''}" id="tradToggle" data-on="${t.actif ? 1 : 0}" type="button">${t.actif ? 'Arrêter la traduction' : 'Traduire'}</button></div>
+      <p class="muted" id="tradEtat" role="status">${esc(TRAD_STATUS[t.statut] || '')}</p>
+      <p class="tradLine" id="tradTexte">${esc(t.sousTitre)}</p>
+      <p class="muted">Une IA traduit la voix, avec un léger décalage. Rien n’est enregistré. Avec des écouteurs, c’est plus net.</p>
+    </div>`;
+}
+function tradPaint() {
+  const t = TRAD.etat;
+  const line = $('#tradEtat');
+  if (line) line.textContent = TRAD_STATUS[t.statut] || '';
+  const text = $('#tradTexte');
+  if (text) text.textContent = t.sousTitre;
+  const button = $('#tradToggle');
+  if (button && (button.dataset.on === '1') !== t.actif) renderCall();
+  // Sous-titres dans l'œil, par-dessus le visage du correspondant.
+  let subs = $('.subs', screen);
+  if (!t.actif || !t.sousTitre) return subs?.remove();
+  if (!subs && $('video.remote', screen)) screen.insertAdjacentHTML('beforeend', '<div class="subs" aria-hidden="true"></div>');
+  subs = $('.subs', screen);
+  if (subs) subs.textContent = t.sousTitre.length > 110 ? t.sousTitre.slice(-110).replace(/^\S*\s/, '') : t.sousTitre;
+}
+TRAD.surChangement(tradPaint);
+function tradToggle() {
+  if (TRAD.etat.actif) {
+    TRAD.arreter();
+  } else {
+    const video = $('video.remote', screen);
+    if (!video?.srcObject) return toast('La traduction démarre une fois l’appel établi.');
+    TRAD.demarrer(video.srcObject, video);
+  }
+  // Le correspondant est prévenu qu'une IA traduit sa voix.
+  try {
+    call.conns.forEach((conn) => conn.open && conn.send({ t: 'trad', on: TRAD.etat.actif }));
+  } catch {}
+  renderCall();
+}
 function renderCall() {
   const active = Boolean(call.role);
   const busy = call.busy ? 'disabled' : '';
@@ -1283,6 +1334,7 @@ function renderCall() {
     body = `<p><strong>${esc(call.status)}</strong></p>
       <div class="row"><video class="self" id="self" autoplay playsinline muted></video></div>
       <div class="row"><button class="btn danger" id="hangup" type="button">Raccrocher</button><button class="btn light" id="mute" type="button">${call.muted ? 'Réactiver le micro' : 'Couper le micro'}</button></div>
+      ${call.connected ? tradBlock() : ''}
       ${invite}
       ${
         call.peer
@@ -1536,6 +1588,11 @@ async function startRelayCall(role, callId, run) {
     call.conns.push(conn);
     conn.on('open', () => ((diag.peer = true), diagChanged()));
     conn.on('data', (data) => {
+      if (data?.t === 'trad' && conn.peer === call.remote) {
+        call.tradPeer = Boolean(data.on);
+        if (data.on) toast('Votre correspondant écoute votre voix traduite par une IA. Rien n’est enregistré.');
+        return state.screen === 'call' && renderCall();
+      }
       if (data !== 'bye' || conn.peer !== call.remote) return;
       endCall(false);
       toast('L’appel est terminé.');
@@ -1676,6 +1733,7 @@ function showRemote(stream) {
   const video = $('video.remote', screen);
   // Chaque piste (son, image) relance cet appel : ne pas recharger la vidéo pour le même flux.
   if (video.srcObject !== stream) video.srcObject = stream;
+  TRAD.suivre(stream, video);
   video.play().catch(() => toast('Touchez l’œil pour activer le son.'));
   if (!call.connected) focusEye();
   call.connected = true;
@@ -1751,6 +1809,8 @@ function endCall(sendBye = true, show = true) {
   if (call.ring) clearRing(call.ring, call.id);
   call.pc?.close();
   call.local?.getTracks().forEach((track) => track.stop());
+  TRAD.arreter();
+  call.tradPeer = false;
   Object.assign(call, { id: '', role: '', pc: null, local: null, cursor: '', connected: false, muted: false, busy: false, ring: '', name: '', peer: null, conns: [], remote: '', media: null, wa: null, status: 'Appel terminé.' });
   screen.replaceChildren();
   keepAwake(false);
@@ -2010,6 +2070,8 @@ document.addEventListener('click', (event) => {
       return startCall('guest', { callId: guestCallId });
     case 'hangup':
       return endCall();
+    case 'tradToggle':
+      return tradToggle();
     case 'mute':
       call.muted = !call.muted;
       call.local?.getAudioTracks().forEach((track) => (track.enabled = !call.muted));
@@ -2062,6 +2124,7 @@ document.addEventListener('submit', (event) => {
   }
 });
 document.addEventListener('change', (event) => {
+  if (event.target.id === 'tradLang') return TRAD.choisir(event.target.value);
   if (event.target.id !== 'wake') return;
   state.wake = event.target.checked;
   if (state.wake) startWake();

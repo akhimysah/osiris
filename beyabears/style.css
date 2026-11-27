@@ -1237,3 +1237,10 @@ body:not(.landing):not(.kiosk):not(.guest) > main { padding-bottom: calc(124px +
 /* Accueil : Enzo, dont la fourrure a la teinte de la paupière */
 .wakePic video { left: 37.49%; top: 29.32%; width: 37.30%; height: 38.38%; }
 .wakePic video { -webkit-mask-image: radial-gradient(closest-side, #000 84%, transparent 100%); mask-image: radial-gradient(closest-side, #000 84%, transparent 100%); }
+
+/* Traduction en direct pendant un appel. */
+.trad { margin-top: 14px; padding: 14px 16px; border-radius: 18px; background: rgba(20, 100, 230, .07); border: 1px solid rgba(20, 100, 230, .18); display: grid; gap: 8px; }
+.trad p { margin: 0; } .trad .row { align-items: center; margin: 0; }
+.trad select { font: inherit; padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(20, 100, 230, .35); background: #fff; color: inherit; min-height: 44px; }
+.tradLine { min-height: 1.4em; font-weight: 600; }
+.subs { position: absolute; left: 9%; right: 9%; bottom: 13%; z-index: 3; padding: 2.4cqw 3.4cqw; border-radius: 4cqw; background: rgba(8, 14, 34, .72); color: #fff; font-size: 4.6cqw; line-height: 1.25; font-weight: 600; text-align: center; pointer-events: none; }
