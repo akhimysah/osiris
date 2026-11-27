@@ -69,9 +69,13 @@ main { max-width: 1040px; margin: 0 auto; padding: 8px 16px 48px; display: grid;
 .beam { position: absolute; inset: 0; background: #fff; }
 .beam-night { background: radial-gradient(circle, #ffb45e, #e8791f); opacity: .75; }
 /* Torche plein écran : tout l'écran éclaire. */
-.flood { position: fixed; inset: 0; z-index: 20; background: #fff; display: grid; align-content: end; justify-items: center; padding: 24px 16px calc(28px + env(safe-area-inset-bottom)); }
+.flood { position: fixed; inset: 0; z-index: 20; background: #fff; display: grid; align-content: end; justify-items: center; padding: 24px 16px calc(118px + env(safe-area-inset-bottom)); }
 .flood-night { background: radial-gradient(circle, #ffb45e, #d96a12); }
-.flood .row { justify-content: center; opacity: .55; }
+/* Les commandes restent lisibles sur le blanc et passent au-dessus de la barre d'onglets. */
+.flood .row { justify-content: center; flex-wrap: wrap; gap: 10px; }
+.flood .btn { box-shadow: 0 6px 18px #081c5026; }
+.flood .btn.light { background: #fff; color: #1b3fa8; border: 1.5px solid #1b3fa8; }
+body.kiosk .flood, body.guest .flood, body.landing .flood { padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
 /* Horloge : chiffres rouges lumineux sur fond noir, comme un réveil. */
 .led { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #1a0605, #050202 70%); }
 .led svg { width: 70%; overflow: visible; filter: drop-shadow(0 0 1.6cqw #ff2a1a) drop-shadow(0 0 4cqw #ff2a1a99); }
